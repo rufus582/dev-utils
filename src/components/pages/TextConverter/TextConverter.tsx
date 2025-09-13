@@ -43,6 +43,8 @@ function TextConverter() {
     });
   };
 
+  const supportedFormats = ["PlainText", "Base64", "JSON", "YAML", "TOML"];
+
   return (
     <div className="h-full flex flex-col">
       <Header />
@@ -50,6 +52,7 @@ function TextConverter() {
         <TextFormatSelect
           label="Convert From"
           value={convertDataState.fromFormat.displayable}
+          supportedFormats={supportedFormats}
           onTextFormatChange={(format) =>
             handleTextConvertion(undefined, format)
           }
@@ -57,6 +60,7 @@ function TextConverter() {
         <TextFormatSelect
           label="Convert To"
           value={convertDataState.toFormat.displayable}
+          supportedFormats={supportedFormats}
           onTextFormatChange={(format) =>
             handleTextConvertion(undefined, undefined, format)
           }
