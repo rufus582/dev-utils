@@ -21,7 +21,7 @@ const JSONTableViewer = () => {
 
   const leftPanelRef = useRef<ImperativePanelHandle>(null);
 
-  const handleJsonDataChanged = useCallback((value: string) => {
+  const handleJsonDataChanged = useCallback((value: string): boolean => {
     let parsedJsonData: object | string = {};
     try {
       parsedJsonData = TextFormats.JSON.parse(value ?? "{}");
@@ -30,10 +30,12 @@ const JSONTableViewer = () => {
       }
     } catch (error) {
       // TODO error handling | maybe show a toast?
-      return console.error(error);
+      console.error(error);
+      return false
     }
 
     setJsonDataState(parsedJsonData ?? {});
+    return true
   }, []);
 
   const onOpenFiles = (files: FileList | null) => {
@@ -60,8 +62,7 @@ const JSONTableViewer = () => {
     let isSuccess = false;
     await getClipboardText()
       .then((value) => {
-        isSuccess = true;
-        handleJsonDataChanged(value);
+        isSuccess = handleJsonDataChanged(value);
       })
       .catch((error) => {
         isSuccess = false;
