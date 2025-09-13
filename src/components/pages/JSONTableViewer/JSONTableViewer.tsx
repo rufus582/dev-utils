@@ -10,10 +10,18 @@ import {
 import Header from "@/components/pages/page-header";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 import { Button } from "@/components/ui/custom-components/animated-button";
-import { ClipboardCheck, ClipboardPaste, ClipboardX, FolderOpen, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import {
+  ClipboardCheck,
+  ClipboardPaste,
+  ClipboardX,
+  FolderOpen,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from "lucide-react";
 import useOpenFile from "@/hooks/use-open-file";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import { getClipboardText } from "@/lib/utils";
+import { toast } from "sonner";
 
 const JSONTableViewer = () => {
   const [jsonDataState, setJsonDataState] = useState<JSONObject>();
@@ -21,26 +29,32 @@ const JSONTableViewer = () => {
 
   const leftPanelRef = useRef<ImperativePanelHandle>(null);
 
-  const handleJsonDataChanged = useCallback((value: string): boolean => {
-    let parsedJsonData: object | string = {};
-    try {
-      parsedJsonData = TextFormats.JSON.parse(value ?? "{}");
-      if (typeof parsedJsonData === "string") {
-        throw new Error("Cannot convert string to table");
+  const handleJsonDataChanged = useCallback(
+    (value: string, showToast: boolean = false): boolean => {
+      let parsedJsonData: object | string = {};
+      try {
+        parsedJsonData = TextFormats.JSON.parse(value ?? "{}");
+        if (typeof parsedJsonData === "string") {
+          throw new Error("Cannot convert string to table");
+        }
+      } catch (error) {
+        if (showToast)
+          if (error) toast.error(`${error}`);
+          else toast.error("Unable to parse JSON input");
+        return false;
       }
-    } catch (error) {
-      // TODO error handling | maybe show a toast?
-      console.error(error);
-      return false
-    }
 
-    setJsonDataState(parsedJsonData ?? {});
-    return true
-  }, []);
+      setJsonDataState(parsedJsonData ?? {});
+      return true;
+    },
+    []
+  );
 
   const onOpenFiles = (files: FileList | null) => {
     if (files && files.length > 0) {
-      files[0].text().then((fileContent) => handleJsonDataChanged(fileContent));
+      files[0]
+        .text()
+        .then((fileContent) => handleJsonDataChanged(fileContent, true));
     }
   };
 
@@ -62,7 +76,7 @@ const JSONTableViewer = () => {
     let isSuccess = false;
     await getClipboardText()
       .then((value) => {
-        isSuccess = handleJsonDataChanged(value);
+        isSuccess = handleJsonDataChanged(value, true);
       })
       .catch((error) => {
         isSuccess = false;
@@ -92,7 +106,7 @@ const JSONTableViewer = () => {
         </Tooltip>
         <Tooltip content="Paste copied data from clipboard">
           <Button
-            variant='outline'
+            variant="outline"
             buttonIcon={<ClipboardPaste />}
             loaderIcon={null}
             successIcon={<ClipboardCheck />}

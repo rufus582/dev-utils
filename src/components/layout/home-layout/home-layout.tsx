@@ -1,6 +1,7 @@
 import { Outlet } from "react-router";
 import { SidebarProvider } from "../../ui/sidebar";
 import AppSidebar from "./app-sidebar";
+import { Toaster } from "@/components/ui/sonner";
 
 const HomeLayout = () => {
   return (
@@ -17,6 +18,7 @@ const HomeLayout = () => {
       <main className="bg-background relative w-full overflow-scroll m-2 ml-0">
         <Outlet />
       </main>
+      <Toaster closeButton richColors />
     </SidebarProvider>
   );
 };
