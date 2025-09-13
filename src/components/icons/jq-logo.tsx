@@ -8,7 +8,7 @@ const JQLogo = ({ className }: { className?: string }) => {
       xmlns="http://www.w3.org/2000/svg"
       className={className}
     >
-      <g transform="scale(.1)" stroke="#fff" stroke-width="10">
+      <g transform="scale(.1)" stroke="#fff" strokeWidth="10">
         <g className="fill-muted-foreground">
           <circle cx="220" cy="1570" r="190" />
           <path d="m1330 312c-30 41-698 1492-710 1528s25 66 100 101c77 36 102 34 124 3s701-1477 716-1525c15-47-20-73-84-104s-116-44-146-3z" />

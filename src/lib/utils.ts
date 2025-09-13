@@ -14,7 +14,7 @@ export function getSystemTheme() {
 export const copyToClipboard = async (value: string): Promise<string | undefined> => {
   try {
     if (!navigator.clipboard) {
-      return "Browser don't have support for native clipboard.";
+      return "Browser doesn't have support for native clipboard.";
     }
 
     if (!value) {
@@ -28,4 +28,16 @@ export const copyToClipboard = async (value: string): Promise<string | undefined
     }
     return "Unable to copy text to clipboard"
   }
+};
+
+export const getClipboardText = async () => {
+  return new Promise<string>((resolve, reject) => {
+    if (!window.navigator.clipboard) {
+      return reject("Browser doesn't have support for native clipboard.");
+    }
+
+    window.navigator.clipboard.readText()
+        .then(value => resolve(value))
+        .catch(error => reject(error));
+  })
 };

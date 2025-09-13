@@ -10,9 +10,10 @@ import {
 import Header from "@/components/pages/page-header";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 import { Button } from "@/components/ui/custom-components/animated-button";
-import { FolderOpen, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { ClipboardCheck, ClipboardPaste, ClipboardX, FolderOpen, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import useOpenFile from "@/hooks/use-open-file";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
+import { getClipboardText } from "@/lib/utils";
 
 const JSONTableViewer = () => {
   const [jsonDataState, setJsonDataState] = useState<JSONObject>();
@@ -55,6 +56,21 @@ const JSONTableViewer = () => {
     return true;
   };
 
+  const handleClipboardPaste = async () => {
+    let isSuccess = false;
+    await getClipboardText()
+      .then((value) => {
+        isSuccess = true;
+        handleJsonDataChanged(value);
+      })
+      .catch((error) => {
+        isSuccess = false;
+        console.error(error);
+      });
+
+    return isSuccess;
+  };
+
   return (
     <div className="flex flex-col h-full rounded-xl">
       <Header />
@@ -71,6 +87,23 @@ const JSONTableViewer = () => {
             whileTap={{ scale: 1 }}
           >
             Open File
+          </Button>
+        </Tooltip>
+        <Tooltip content="Paste copied data from clipboard">
+          <Button
+            variant='outline'
+            buttonIcon={<ClipboardPaste />}
+            loaderIcon={null}
+            successIcon={<ClipboardCheck />}
+            successBgColorClass="bg-success-alt"
+            errorIcon={<ClipboardX />}
+            errorBgColorClass="bg-destructive-alt"
+            className="w-fit rounded-full mb-4 ml-2"
+            onClick={handleClipboardPaste}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 1 }}
+          >
+            Paste
           </Button>
         </Tooltip>
         <Button
