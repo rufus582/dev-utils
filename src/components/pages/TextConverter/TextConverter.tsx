@@ -21,26 +21,34 @@ function TextConverter() {
       converted: "",
     });
 
-  const handleTextConvertion = (
+  const handleTextConvertion = async (
     toConvert?: string,
     fromFormat?: TextFormatType,
     toFormat?: TextFormatType
   ) => {
-    setConvertDataState((prevState) => {
-      prevState.toConvert =
-        toConvert !== undefined ? toConvert : prevState.toConvert;
-      prevState.fromFormat = fromFormat ? fromFormat : prevState.fromFormat;
-      prevState.toFormat = toFormat ? toFormat : prevState.toFormat;
+    const newConvertDataState: TextConverterStateType = {
+      toConvert:
+        toConvert !== undefined ? toConvert : convertDataState.toConvert,
+      fromFormat: fromFormat ? fromFormat : convertDataState.fromFormat,
+      toFormat: toFormat ? toFormat : convertDataState.toFormat,
+      converted: convertDataState.converted,
+    };
 
-      try {
-        if (prevState.toConvert) {
-          const parsedObject = prevState.fromFormat.parse(prevState.toConvert);
-          prevState.converted = prevState.toFormat.unparse(parsedObject);
-        }
-      } catch (error) {
-        console.error(error);
+    try {
+      if (newConvertDataState.toConvert) {
+        const parsedObject = newConvertDataState.fromFormat.parse(
+          newConvertDataState.toConvert
+        );
+        newConvertDataState.converted = await Promise.resolve(
+          newConvertDataState.toFormat.unparse(parsedObject)
+        );
       }
-    });
+    } catch (error) {
+      newConvertDataState.converted = `${error}`;
+      console.error(error);
+    }
+
+    setConvertDataState(newConvertDataState);
   };
 
   const supportedFormats = ["PlainText", "Base64", "JSON", "YAML", "TOML"];

@@ -1,6 +1,6 @@
 import CodeEditor from "@/components/ui/code/code-editor";
 import { useCallback, useRef, useState } from "react";
-import { TextFormats } from "@/lib/text-formats";
+import { TextFormats, TextFormatsList } from "@/lib/text-formats";
 import JSONGrid from "@/components/ui/code/json-grid";
 import {
   ResizableHandle,
@@ -22,18 +22,25 @@ import useOpenFile from "@/hooks/use-open-file";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import { getClipboardText } from "@/lib/utils";
 import { toast } from "sonner";
+import { useImmer } from "use-immer";
+
+interface JSONTableViewerStateType {
+  jsonData: JSONObject;
+  jsonStr: string;
+}
 
 const JSONTableViewer = () => {
-  const [jsonDataState, setJsonDataState] = useState<JSONObject>();
+  const [jsonTableViewerState, setJsonTableViewerState] =
+    useImmer<JSONTableViewerStateType>({ jsonData: {}, jsonStr: "" });
   const [isInputCollapsed, setisInputCollapsed] = useState(false);
 
   const leftPanelRef = useRef<ImperativePanelHandle>(null);
 
   const handleJsonDataChanged = useCallback(
-    (value: string, showToast: boolean = false): boolean => {
+    async (value: string, showToast: boolean = false) => {
       let parsedJsonData: object | string = {};
       try {
-        parsedJsonData = TextFormats.JSON.parse(value ?? "{}");
+        parsedJsonData = await TextFormats.JSON.parse(value ?? "{}");
         if (typeof parsedJsonData === "string") {
           throw new Error("Cannot convert string to table");
         }
@@ -44,17 +51,44 @@ const JSONTableViewer = () => {
         return false;
       }
 
-      setJsonDataState(parsedJsonData ?? {});
+      setJsonTableViewerState({
+        jsonData: parsedJsonData,
+        jsonStr: value,
+      });
       return true;
     },
-    []
+    [setJsonTableViewerState]
   );
 
-  const onOpenFiles = (files: FileList | null) => {
+  const onOpenFiles = async (files: FileList | null) => {
     if (files && files.length > 0) {
-      files[0]
-        .text()
-        .then((fileContent) => handleJsonDataChanged(fileContent, true));
+      const file = files[0];
+
+      const fileFormat = TextFormatsList.find(
+        (format) => format.mimeType === file.type
+      );
+      if (!fileFormat || fileFormat === undefined) {
+        return toast.error(
+          "Unsupported file format. Supported formats are: JSON, YAML, CSV"
+        );
+      }
+
+      try {
+        const fileContent = await file.text();
+        const parsedData = await fileFormat.parse(fileContent);
+        const jsonStr = await TextFormats.JSON.unparse(parsedData);
+
+        if (typeof parsedData === "string") {
+          throw new Error("Cannot convert string to table");
+        }
+
+        setJsonTableViewerState({
+          jsonData: parsedData,
+          jsonStr,
+        });
+      } catch (error) {
+        toast.error(`${error}`);
+      }
     }
   };
 
@@ -75,8 +109,8 @@ const JSONTableViewer = () => {
   const handleClipboardPaste = async () => {
     let isSuccess = false;
     await getClipboardText()
-      .then((value) => {
-        isSuccess = handleJsonDataChanged(value, true);
+      .then(async (value) => {
+        isSuccess = await handleJsonDataChanged(value, true);
       })
       .catch((error) => {
         isSuccess = false;
@@ -149,14 +183,14 @@ const JSONTableViewer = () => {
             className="rounded-l-xl h-full"
             onChange={(value) => handleJsonDataChanged(value ?? "")}
             title="JSON Input Content"
-            value={jsonDataState ? TextFormats.JSON.unparse(jsonDataState) : ""}
+            value={jsonTableViewerState.jsonStr}
             language={TextFormats.JSON.highlightName}
           />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel minSize={15} className="overflow-hidden">
           <JSONGrid
-            data={jsonDataState ?? {}}
+            data={jsonTableViewerState.jsonData ?? {}}
             className={`h-full rounded-r-xl ${
               isInputCollapsed ? "rounded-l-xl" : ""
             }`}
