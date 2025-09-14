@@ -190,7 +190,13 @@ const JSONTableViewer = () => {
         <ResizableHandle />
         <ResizablePanel minSize={15} className="overflow-hidden">
           <JSONGrid
-            data={jsonTableViewerState.jsonData ?? {}}
+            data={
+              jsonTableViewerState.jsonData &&
+              (Array.isArray(jsonTableViewerState.jsonData) ||
+                typeof jsonTableViewerState.jsonData === "object")
+                ? jsonTableViewerState.jsonData
+                : {}
+            }
             className={`h-full rounded-r-xl ${
               isInputCollapsed ? "rounded-l-xl" : ""
             }`}
