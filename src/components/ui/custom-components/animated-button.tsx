@@ -126,7 +126,6 @@ function Button({
   successBgColorClass,
   errorBgColor,
   errorBgColorClass,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ref,
   ...props
 }: React.ComponentProps<typeof motion.button> &
@@ -139,7 +138,9 @@ function Button({
     successBgColorClass?: string;
     errorBgColor?: string;
     errorBgColorClass?: string;
-    onClick?: (event: React.MouseEvent<HTMLButtonElement>) => boolean | Promise<boolean>
+    onClick?: (
+      event: React.MouseEvent<HTMLButtonElement>
+    ) => boolean | Promise<boolean>;
   }) {
   const [scope, animate] = useAnimate();
 
@@ -244,7 +245,7 @@ function Button({
       );
     }
   };
-  
+
   const animateError = async () => {
     if (!loaderIcon && !errorIcon) {
       return;
@@ -321,11 +322,11 @@ function Button({
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     await animateLoading();
     if (onClick) {
-      const isSuccess = await onClick(event) as unknown
+      const isSuccess = (await onClick(event)) as unknown;
       if (isSuccess === true) {
-        await animateSuccess()
+        await animateSuccess();
       } else {
-        await animateError()
+        await animateError();
       }
     } else {
       await animateSuccess();
@@ -333,40 +334,48 @@ function Button({
   };
 
   let successBgStyle: MotionStyle = {
-    zIndex: 1
-  }
+    zIndex: 1,
+  };
   if (successBgColor) {
     successBgStyle = {
       ...successBgStyle,
-      backgroundColor: successBgColor
-    }
+      backgroundColor: successBgColor,
+    };
   }
-  
+
   let errorBgStyle: MotionStyle = {
-    zIndex: 1
-  }
+    zIndex: 1,
+  };
   if (errorBgColor) {
     errorBgStyle = {
       ...errorBgStyle,
-      backgroundColor: errorBgColor
-    }
+      backgroundColor: errorBgColor,
+    };
   }
 
   return (
     <motion.button
-      ref={scope}
+      ref={(node) => {
+        if (ref instanceof Function) ref(node);
+        else if (ref) ref.current = node;
+
+        // @ts-expect-error: Readonly ref (Framer's scope), safe to assign at runtime
+        scope.current = node;
+      }}
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       onClick={handleClick}
       {...props}
     >
       <motion.div
-        className={`success-bg absolute w-full h-full ${successBgColorClass ?? ''}`}
+        className={`success-bg absolute w-full h-full ${
+          successBgColorClass ?? ""
+        }`}
         initial={{ opacity: 0 }}
         style={successBgStyle}
       />
       <motion.div
-        className={`error-bg absolute w-full h-full ${errorBgColorClass ?? ''}`}
+        className={`error-bg absolute w-full h-full ${errorBgColorClass ?? ""}`}
         initial={{ opacity: 0 }}
         style={errorBgStyle}
       />

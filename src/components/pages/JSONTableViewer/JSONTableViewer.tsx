@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/resizable";
 import Header from "@/components/pages/page-header";
 import type { ImperativePanelHandle } from "react-resizable-panels";
+// import { Button } from "@/components/ui/custom-components/animated-button";
 import { Button } from "@/components/ui/custom-components/animated-button";
 import {
   ClipboardCheck,
@@ -125,7 +126,7 @@ const JSONTableViewer = () => {
       <Header />
       <FileInputComponent />
       <div>
-        <Tooltip content="Supported files: JSON, YAML, CSV, PARQUET">
+        <Tooltip content="Supported files: JSON, YAML, CSV, PARQUET" asChild>
           <Button
             loaderIcon={null}
             buttonIcon={<FolderOpen />}
@@ -138,7 +139,7 @@ const JSONTableViewer = () => {
             Open File
           </Button>
         </Tooltip>
-        <Tooltip content="Paste copied data from clipboard">
+        <Tooltip content="Paste copied data from clipboard" asChild>
           <Button
             variant="outline"
             buttonIcon={<ClipboardPaste />}
