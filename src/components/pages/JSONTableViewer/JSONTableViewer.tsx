@@ -24,6 +24,7 @@ import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import { getClipboardText } from "@/lib/utils";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
+import _ from "lodash";
 
 interface JSONTableViewerStateType {
   jsonData: JSONObject;
@@ -64,24 +65,33 @@ const JSONTableViewer = () => {
   const onOpenFiles = async (files: FileList | null) => {
     if (files && files.length > 0) {
       const file = files[0];
+      const fileExtension = _.toPath(file.name).pop();
 
       const fileFormat = TextFormatsList.find(
-        (format) => format.mimeType === file.type
+        (format) =>
+          format.mimeType === file.type ||
+          (fileExtension && format.extensions.includes(fileExtension))
       );
       if (!fileFormat || fileFormat === undefined) {
         return toast.error(
-          "Unsupported file format. Supported formats are: JSON, YAML, CSV"
+          "Unsupported file format. Supported formats are: JSON, YAML, CSV, PARQUET"
         );
       }
 
       try {
-        const fileContent = await file.text();
+        const fileContent = await (fileFormat.isBinary
+          ? file.arrayBuffer()
+          : file.text());
         const parsedData = await fileFormat.parse(fileContent);
-        const jsonStr = await TextFormats.JSON.unparse(parsedData);
+        const jsonStr = !fileFormat.isBinary
+          ? await TextFormats.JSON.unparse(parsedData)
+          : "";
 
         if (typeof parsedData === "string") {
           throw new Error("Cannot convert string to table");
         }
+
+        leftPanelRef.current?.collapse();
 
         setJsonTableViewerState({
           jsonData: parsedData,
