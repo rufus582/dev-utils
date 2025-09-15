@@ -2,8 +2,11 @@ import { Outlet } from "react-router";
 import { SidebarProvider } from "../../ui/sidebar";
 import AppSidebar from "./app-sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import Cookies from "js-cookie";
 
 const HomeLayout = () => {
+  const sidebarStateCookie = Cookies.get("sidebar_state");
+
   return (
     <SidebarProvider
       style={
@@ -13,6 +16,7 @@ const HomeLayout = () => {
         } as React.CSSProperties
       }
       className="max-h-[100vh] max-w-[100vw]"
+      defaultOpen={sidebarStateCookie === "true"}
     >
       <AppSidebar />
       <main className="bg-background relative w-full overflow-scroll m-2 ml-0">
