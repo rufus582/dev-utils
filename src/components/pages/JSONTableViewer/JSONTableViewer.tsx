@@ -1,5 +1,5 @@
 import CodeEditor from "@/components/ui/code/code-editor";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { TextFormats, TextFormatsList } from "@/lib/text-formats";
 import JSONGrid from "@/components/ui/code/json-grid";
 import {
@@ -9,22 +9,31 @@ import {
 } from "@/components/ui/resizable";
 import Header from "@/components/pages/page-header";
 import type { ImperativePanelHandle } from "react-resizable-panels";
-// import { Button } from "@/components/ui/custom-components/animated-button";
 import { Button } from "@/components/ui/custom-components/animated-button";
 import {
+  Braces,
   ClipboardCheck,
   ClipboardPaste,
   ClipboardX,
   FolderOpen,
   PanelLeftClose,
   PanelLeftOpen,
+  PlayCircle,
 } from "lucide-react";
 import useOpenFile from "@/hooks/use-open-file";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
-import { getClipboardText } from "@/lib/utils";
+import { getClipboardText, getCurrentEnvironment } from "@/lib/utils";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
 import _ from "lodash";
+import { useCurl } from "@/hooks/use-curl";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Arrow } from "@radix-ui/react-popover";
+import { Textarea } from "@/components/ui/textarea";
 
 interface JSONTableViewerStateType {
   jsonData: JSONObject;
@@ -131,6 +140,65 @@ const JSONTableViewer = () => {
     return isSuccess;
   };
 
+  const curlState = useCurl();
+  const curlInputRef = useRef<HTMLTextAreaElement>(null);
+  const [isCURLPopOverOpen, setIsCURLPopOverOpen] = useState(false);
+
+  useEffect(() => {
+    if (curlState.error) {
+      toast.error(
+        <p>
+          <b>Unable to fetch JSON from CURL!</b>
+          <br />
+          {`${curlState.error}`}
+        </p>
+      );
+    }
+  }, [curlState.error]);
+
+  const handleCurlExecution = async () => {
+    let isSuccess = false;
+    if (!curlInputRef.current?.value) {
+      toast.error("Provided CURL Command is empty");
+      return isSuccess;
+    }
+
+    await curlState
+      .execute(curlInputRef.current.value)
+      .then(async (curlResponse) => {
+        try {
+          if (
+            !curlResponse.isSuccess &&
+            curlResponse.statusCode &&
+            curlResponse.statusText
+          ) {
+            toast.error(
+              `${curlResponse.statusCode} :: ${curlResponse.statusText}`
+            );
+            isSuccess = false;
+          } else {
+            if (curlResponse.responseJson) {
+              const responseStr = await TextFormats.JSON.unparse(
+                curlResponse.responseJson
+              );
+              isSuccess = await handleJsonDataChanged(responseStr, true);
+            } else isSuccess = false;
+          }
+        } catch (error) {
+          toast.error(`Unable to parse JSON from CURL: ${error}`);
+          isSuccess = false;
+        }
+      })
+      .catch((error) => {
+        isSuccess = false;
+        console.error(error);
+      });
+    if (isSuccess) setIsCURLPopOverOpen(false);
+    return isSuccess;
+  };
+
+  const currentEnv = getCurrentEnvironment();
+
   return (
     <div className="flex flex-col h-full rounded-xl">
       <Header />
@@ -166,6 +234,50 @@ const JSONTableViewer = () => {
             Paste
           </Button>
         </Tooltip>
+        {currentEnv === "development" && (
+          <Popover
+            modal
+            open={isCURLPopOverOpen}
+            onOpenChange={setIsCURLPopOverOpen}
+          >
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                loaderIcon={null}
+                buttonIcon={<Braces />}
+                successIcon={null}
+                errorIcon={null}
+                className="w-fit rounded-full mb-4 ml-2"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 1 }}
+              >
+                Fetch from CURL
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[40vw] rounded-xl" align="start">
+              <Arrow className="fill-muted-foreground" />
+              <div className="">
+                <Textarea
+                  ref={curlInputRef}
+                  placeholder="CURL Command"
+                  className="h-[20vh] resize-none focus-visible:ring-0 focus-visible:border-primary rounded-t-xl rounded-b-none border-primary"
+                  defaultValue={curlState.curlCommand}
+                />
+                <Button
+                  buttonIcon={<PlayCircle />}
+                  successBgColorClass=""
+                  errorBgColorClass=""
+                  className="w-full rounded-b-xl rounded-t-none"
+                  onClick={handleCurlExecution}
+                  size="lg"
+                  disabled={curlState.isFetching}
+                >
+                  Execute
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
         <Button
           variant="outline"
           loaderIcon={null}
