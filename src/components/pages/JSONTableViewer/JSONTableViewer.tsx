@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import useOpenFile from "@/hooks/use-open-file";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
-import { getClipboardText } from "@/lib/utils";
+import { getClipboardText, getCurrentEnvironment } from "@/lib/utils";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
 import _ from "lodash";
@@ -197,6 +197,8 @@ const JSONTableViewer = () => {
     return isSuccess;
   };
 
+  const currentEnv = getCurrentEnvironment();
+
   return (
     <div className="flex flex-col h-full rounded-xl">
       <Header />
@@ -232,7 +234,7 @@ const JSONTableViewer = () => {
             Paste
           </Button>
         </Tooltip>
-        <Tooltip content="Fetch JSON from provided CURL Command" asChild>
+        {currentEnv === "development" && (
           <Popover
             modal
             open={isCURLPopOverOpen}
@@ -275,7 +277,7 @@ const JSONTableViewer = () => {
               </div>
             </PopoverContent>
           </Popover>
-        </Tooltip>
+        )}
         <Button
           variant="outline"
           loaderIcon={null}

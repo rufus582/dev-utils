@@ -11,22 +11,29 @@ export function getSystemTheme() {
     : "light";
 }
 
-export const copyToClipboard = async (value: string): Promise<string | undefined> => {
+type EnvironmentType = "development" | "preview" | "production";
+export function getCurrentEnvironment(): EnvironmentType {
+  return (process.env.VERCEL_ENV || "development") as EnvironmentType;
+}
+
+export const copyToClipboard = async (
+  value: string
+): Promise<string | undefined> => {
   try {
     if (!navigator.clipboard) {
       return "Browser doesn't have support for native clipboard.";
     }
 
     if (!value) {
-      return "No value to copy to clipboard"
+      return "No value to copy to clipboard";
     }
 
     await navigator.clipboard.writeText(value);
   } catch (error) {
     if (error instanceof DOMException) {
-      return error.message
+      return error.message;
     }
-    return "Unable to copy text to clipboard"
+    return "Unable to copy text to clipboard";
   }
 };
 
@@ -36,8 +43,9 @@ export const getClipboardText = async () => {
       return reject("Browser doesn't have support for native clipboard.");
     }
 
-    window.navigator.clipboard.readText()
-        .then(value => resolve(value))
-        .catch(error => reject(error));
-  })
+    window.navigator.clipboard
+      .readText()
+      .then((value) => resolve(value))
+      .catch((error) => reject(error));
+  });
 };

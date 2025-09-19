@@ -14,10 +14,13 @@ export default defineConfig({
         {
           src: "node_modules/jq-web/jq.wasm",
           dest: "./",
-        }
+        },
       ],
     }),
   ],
+  define: {
+    "process.env.VERCEL_ENV": JSON.stringify(process.env.VERCEL_ENV),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
