@@ -18,7 +18,6 @@ import {
   FolderOpen,
   PanelLeftClose,
   PanelLeftOpen,
-  Play,
   PlayCircle,
 } from "lucide-react";
 import useOpenFile from "@/hooks/use-open-file";
