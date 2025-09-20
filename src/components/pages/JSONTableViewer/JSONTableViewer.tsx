@@ -201,7 +201,7 @@ const JSONTableViewer = () => {
 
   return (
     <div className="flex flex-col h-full rounded-xl">
-      <Header />
+      <Header separator />
       <FileInputComponent />
       <div>
         <Tooltip content="Supported files: JSON, YAML, CSV, PARQUET" asChild>

@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -48,4 +49,15 @@ export const getClipboardText = async () => {
       .then((value) => resolve(value))
       .catch((error) => reject(error));
   });
+};
+
+export const openLinkInNewTab = (
+  link: string,
+  isWidelyAvailable: boolean = true
+) => {
+  if (getCurrentEnvironment() !== "production" || isWidelyAvailable) {
+    window.open(link);
+  } else {
+    toast.info("This is still a work in progress!");
+  }
 };

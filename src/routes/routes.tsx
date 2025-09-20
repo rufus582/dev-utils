@@ -1,7 +1,8 @@
-import { createBrowserRouter, Link } from "react-router";
+import { createBrowserRouter } from "react-router";
 import { RouterProvider as ReactRouterProvider } from "react-router/dom";
 import HomeLayout from "@/components/layout/home-layout/home-layout";
 import { routeDefinitions } from "./route-definitions";
+import HomePage from "@/components/pages/HomePage/HomePage";
 
 const router = createBrowserRouter([
   {
@@ -9,7 +10,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <Link to='/jq'>Load</Link>
+        element: <HomePage />
       },
       ...routeDefinitions
     ]

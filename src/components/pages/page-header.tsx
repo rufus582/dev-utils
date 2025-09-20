@@ -6,11 +6,19 @@ import { Separator } from "../ui/separator";
 import type React from "react";
 import { Tooltip } from "../ui/custom-components/tooltip-wrapper";
 
-const Header = ({title}: {title?: React.ReactNode}) => {
-  const location = useLocation()
+const Header = ({
+  title,
+  separator,
+}: {
+  title?: React.ReactNode;
+  separator?: boolean;
+}) => {
+  const location = useLocation();
 
-  const routeDefinition = routeDefinitions.find(route => route.path === location.pathname)
-  
+  const routeDefinition = routeDefinitions.find(
+    (route) => route.path === location.pathname
+  );
+
   return (
     <>
       <div className="w-full flex pb-4 pt-4 justify-between">
@@ -22,11 +30,13 @@ const Header = ({title}: {title?: React.ReactNode}) => {
         </span>
         <ThemeToggle variant="outline" className="my-auto" />
       </div>
-      <div className="grid grid-cols-1">
-        <Separator className="mb-4" />
-      </div>
+      {separator && (
+        <div className="grid grid-cols-1">
+          <Separator className="mb-4" />
+        </div>
+      )}
     </>
   );
 };
 
-export default Header
+export default Header;

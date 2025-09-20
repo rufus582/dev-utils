@@ -72,7 +72,7 @@ export default function JQPlayground() {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <Header title={titleContent} />
+      <Header title={titleContent} separator />
       <div
         className="h-full w-full grid grid-cols-2 gap-2 pt-0"
         style={{ viewTransitionName: "code-view" }}
