@@ -12,7 +12,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "../../ui/sidebar";
 import { routeDefinitions } from "@/routes/route-definitions";
 import { NavLink } from "react-router";
@@ -20,7 +19,6 @@ import { useState } from "react";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>()
-  const sidebarCtx = useSidebar()
 
   return (
     <Sidebar variant="floating" collapsible="icon">
@@ -29,10 +27,21 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton
               className="cursor-pointer"
-              onClick={sidebarCtx.toggleSidebar}
+              asChild
             >
-              <CodeSquareIcon />{" "}
-              <span className="text-base font-semibold">Dev-Utils.</span>
+              <NavLink to="/" viewTransition>
+                {
+                  () => {
+                    setActivePathDefinition(-1)
+                    return (
+                      <>
+                        <CodeSquareIcon />{" "}
+                        <span className="text-base font-semibold">Dev-Utils.</span>
+                      </>
+                    )
+                  }
+                }
+              </NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

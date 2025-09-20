@@ -55,7 +55,7 @@ function TextConverter() {
 
   return (
     <div className="h-full flex flex-col">
-      <Header />
+      <Header separator />
       <div className="flex justify-between my-auto px-2 pt-0 py-4">
         <TextFormatSelect
           label="Convert From"

@@ -60,7 +60,7 @@ const CodeEditor = ({
       <div className="p-2 px-4 gap-4 flex bg-muted text-muted-foreground">
         {title && <span className="my-auto">{title}</span>}
         <div className="ml-auto flex gap-2">
-          {fileButton?.enabled && <Tooltip content={fileButton.tooltipContent ?? ''} className={fileButton.tooltipContent ? '' : 'hidden'}>
+          {fileButton?.enabled && <Tooltip content={fileButton.tooltipContent ?? ''} className={fileButton.tooltipContent ? '' : 'hidden'} asChild>
             <Button
               className="rounded-full hover:bg-secondary bg-secondary text-secondary-foreground border-border border-2"
               size="sm"
