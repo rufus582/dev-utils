@@ -13,7 +13,7 @@ interface ProfileLinkProps {
   text: string;
 }
 
-const HomePage = () => {
+const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
   const links: ProfileLinkProps[] = [
     {
       link: "https://github.com/rufus582/dev-utils",
@@ -31,16 +31,18 @@ const HomePage = () => {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <Header title="" />
-      <div className="m-auto text-center">
+      {!isMobile && <Header />}
+      <div className="m-auto text-center w-full">
         <CodeSquareIcon
           width="15rem"
           height="15rem"
           className="text-primary w-full"
         />
         <h2 className="font-bold text-6xl text-muted-foreground">Dev-Utils.</h2>
-        <p className="mt-2 text-muted-foreground">
-          Select one of the items in the sidebar to begin!
+        <p className="mt-2 text-muted-foreground w-[75%] mx-auto">
+          {isMobile
+            ? "This app is designed for desktop use only. Please access it from a laptop or desktop device."
+            : "Select one of the items in the sidebar to begin!"}
         </p>
         {links.map((linkItem, index) => {
           let borderRadiusClasses = "rounded-none";
@@ -51,6 +53,7 @@ const HomePage = () => {
 
           return (
             <Button
+              key={linkItem.text}
               variant="outline"
               className={`${borderRadiusClasses} fill-foreground mt-4`}
               size="lg"
