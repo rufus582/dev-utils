@@ -14,11 +14,13 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: ResolvedTheme;
   setTheme: (theme: Theme) => void;
+  isSystemTheme: boolean;
 };
 
 const initialState: ThemeProviderState = {
   theme: "" as ResolvedTheme,
   setTheme: () => null,
+  isSystemTheme: false,
 };
 
 const setGlobalTheme = (theme: ResolvedTheme) => {
@@ -64,6 +66,7 @@ export function ThemeProvider({
         setTheme(theme);
       }
     },
+    isSystemTheme: theme === "system"
   };
 
   return (

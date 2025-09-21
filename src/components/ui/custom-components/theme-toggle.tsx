@@ -3,13 +3,13 @@ import { useTheme } from "@/store/theme-provider";
 import { Moon, Sparkle, Sun } from "lucide-react";
 import { Tooltip } from "./tooltip-wrapper";
 
-const TOOLTIP_DELAY = 300
+const TOOLTIP_DELAY = 300;
 
 const ThemeToggle = (props: {
   className?: string;
   variant?: "default" | "outline";
 }) => {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme, isSystemTheme } = useTheme();
 
   return (
     <ToggleGroup
@@ -21,7 +21,7 @@ const ThemeToggle = (props: {
         <ToggleGroupItem
           value="dark"
           aria-label="Toggle dark theme"
-          data-state={theme === "dark" ? "on" : "off"}
+          data-state={theme === "dark" && !isSystemTheme ? "on" : "off"}
         >
           <Moon className="h-4 w-4" />
         </ToggleGroupItem>
@@ -30,7 +30,7 @@ const ThemeToggle = (props: {
         <ToggleGroupItem
           value="system"
           aria-label="Toggle system theme"
-          data-state={theme === "system" ? "on" : "off"}
+          data-state={isSystemTheme ? "on" : "off"}
         >
           <Sparkle className="h-4 w-4" />
         </ToggleGroupItem>
@@ -39,7 +39,7 @@ const ThemeToggle = (props: {
         <ToggleGroupItem
           value="light"
           aria-label="Toggle light theme"
-          data-state={theme === "light" ? "on" : "off"}
+          data-state={theme === "light" && !isSystemTheme ? "on" : "off"}
         >
           <Sun className="h-4 w-4" />
         </ToggleGroupItem>
