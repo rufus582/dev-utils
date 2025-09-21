@@ -6,10 +6,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getSystemTheme() {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
+export function getSystemTheme(onThemeChange?: (theme: "dark" | "light") => void) {
+  const matcher = window.matchMedia("(prefers-color-scheme: dark)");
+
+  if (onThemeChange) matcher.onchange = (ev) => onThemeChange(ev.matches ? "dark" : "light");
+
+  return matcher.matches ? "dark" : "light";
 }
 
 type EnvironmentType = "development" | "preview" | "production";
