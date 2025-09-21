@@ -10,7 +10,7 @@ interface JSONGridPropsType {
 }
 
 const JSONGrid = ({ className, title, ...props }: JSONGridPropsType) => {
-  const { getResolvedTheme } = useTheme();
+  const { theme } = useTheme();
 
   const darkModeTheme = {
     bgColor: "#1e1e1e",
@@ -56,9 +56,7 @@ const JSONGrid = ({ className, title, ...props }: JSONGridPropsType) => {
       )}
       <div className="overflow-scroll">
         <ReactJSONGrid
-          customTheme={
-            getResolvedTheme() === "dark" ? darkModeTheme : lightModeTheme
-          }
+          customTheme={theme === "dark" ? darkModeTheme : lightModeTheme}
           {...props}
         />
       </div>
