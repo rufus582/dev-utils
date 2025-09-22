@@ -49,13 +49,12 @@ export function ThemeProvider({
   };
 
   useEffect(() => {
-    if (theme === "system") {
-      const systemTheme = getSystemTheme(setSystemTheme);
-      setSystemTheme(systemTheme);
-      return;
-    }
+    const systemTheme = getSystemTheme(
+      setSystemTheme,
+      theme === "system" ? "add" : "remove"
+    );
 
-    setSystemTheme(theme);
+    setSystemTheme(theme === "system" ? systemTheme : theme);
   }, [theme]);
 
   const value: ThemeProviderState = {
@@ -66,7 +65,7 @@ export function ThemeProvider({
         setTheme(theme);
       }
     },
-    isSystemTheme: theme === "system"
+    isSystemTheme: theme === "system",
   };
 
   return (
