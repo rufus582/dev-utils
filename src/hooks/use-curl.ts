@@ -13,11 +13,11 @@ interface CurlResponseType {
   statusText: string;
 }
 
-export function useCurl() {
+export function useCurl(initialCurl = "") {
   const [isFetching, setIsFetching] = useState(false);
 
   const [curlState, setCurlState] = useState<CurlStateType>({
-    curlCommand: "",
+    curlCommand: initialCurl,
   });
 
   const execute = async (curlCommand?: string): Promise<CurlResponseType> => {

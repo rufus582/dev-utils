@@ -1,5 +1,4 @@
 import CodeEditor from "@/components/ui/code/code-editor";
-import { useImmer } from "use-immer";
 import jmespath, { type JSONValue } from "@metrichor/jmespath";
 import {
   ResizablePanelGroup,
@@ -9,20 +8,15 @@ import {
 import Header from "@/components/pages/page-header";
 import JMESPathLogo from "@/components/icons/jmespath-logo/logo";
 import { TextFormats } from "@/lib/text-formats";
-
-type JMESPathDataStateType = {
-  expression: string;
-  result: string;
-  jsonStr: string;
-};
+import { useDispatch, useSelector } from "react-redux";
+import type { AppStateType } from "@/store/redux";
+import { JMESPathActions } from "@/store/redux/jmespath-slice";
 
 export default function JMESPathPlayground() {
-  const [jmesPathDataState, setJMESPathDataState] =
-    useImmer<JMESPathDataStateType>({
-      expression: "",
-      result: "",
-      jsonStr: "",
-    });
+  const jmesPathDataState = useSelector(
+    (state: AppStateType) => state.jmespath
+  );
+  const dispatch = useDispatch();
 
   const handleCodeChanged = async (
     expressionVal?: string,
@@ -34,10 +28,9 @@ export default function JMESPathPlayground() {
         : expressionVal;
     const jsonStr =
       jsonStrVal === undefined ? jmesPathDataState.jsonStr : jsonStrVal;
-    setJMESPathDataState((prevState) => {
-      prevState.expression = jmesPathExpression;
-      prevState.jsonStr = jsonStr;
-    });
+
+    dispatch(JMESPathActions.setExpression(jmesPathExpression));
+    dispatch(JMESPathActions.setJsonStr(jsonStr));
 
     let rawResult = "";
 
@@ -59,9 +52,7 @@ export default function JMESPathPlayground() {
       }
     }
 
-    setJMESPathDataState((prevState) => {
-      prevState.result = rawResult ?? prevState.result;
-    });
+    dispatch(JMESPathActions.setResult(rawResult));
   };
 
   const onOpenJSONFile = (files: FileList | null) => {

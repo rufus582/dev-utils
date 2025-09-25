@@ -1,25 +1,19 @@
-import { useImmer } from "use-immer";
-import { TextFormats } from "@/lib/text-formats";
 import type { TextFormatType } from "@/lib/text-formats";
 import TextFormatSelect from "./TextFormatSelect";
 import CodeEditor from "@/components/ui/code/code-editor";
 import Header from "@/components/pages/page-header";
-
-interface TextConverterStateType {
-  fromFormat: TextFormatType;
-  toConvert: string;
-  toFormat: TextFormatType;
-  converted: string;
-}
+import { useDispatch, useSelector } from "react-redux";
+import type { AppStateType } from "@/store/redux";
+import {
+  TextConverterActions,
+  type TextConverterStateType,
+} from "@/store/redux/text-converter-slice";
 
 function TextConverter() {
-  const [convertDataState, setConvertDataState] =
-    useImmer<TextConverterStateType>({
-      fromFormat: TextFormats.Base64,
-      toConvert: "",
-      toFormat: TextFormats.JSON,
-      converted: "",
-    });
+  const convertDataState = useSelector(
+    (state: AppStateType) => state.textConverter
+  );
+  const dispatch = useDispatch();
 
   const handleTextConvertion = async (
     toConvert?: string,
@@ -48,7 +42,7 @@ function TextConverter() {
       console.error(error);
     }
 
-    setConvertDataState(newConvertDataState);
+    dispatch(TextConverterActions.setConvertDataState(newConvertDataState));
   };
 
   const supportedFormats = ["PlainText", "Base64", "JSON", "YAML", "TOML"];

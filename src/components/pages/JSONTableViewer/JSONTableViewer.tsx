@@ -1,5 +1,5 @@
 import CodeEditor from "@/components/ui/code/code-editor";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TextFormats, TextFormatsList } from "@/lib/text-formats";
 import JSONGrid from "@/components/ui/code/json-grid";
 import {
@@ -24,7 +24,6 @@ import useOpenFile from "@/hooks/use-open-file";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import { getClipboardText, getCurrentEnvironment } from "@/lib/utils";
 import { toast } from "sonner";
-import { useImmer } from "use-immer";
 import _ from "lodash";
 import { useCurl } from "@/hooks/use-curl";
 import {
@@ -34,42 +33,41 @@ import {
 } from "@/components/ui/popover";
 import { Arrow } from "@radix-ui/react-popover";
 import { Textarea } from "@/components/ui/textarea";
-
-interface JSONTableViewerStateType {
-  jsonData: JSONObject;
-  jsonStr: string;
-}
+import { useDispatch, useSelector } from "react-redux";
+import type { AppStateType } from "@/store/redux";
+import { JSONTableViewerActions } from "@/store/redux/json-table-viewer-slice";
 
 const JSONTableViewer = () => {
-  const [jsonTableViewerState, setJsonTableViewerState] =
-    useImmer<JSONTableViewerStateType>({ jsonData: {}, jsonStr: "" });
+  const jsonTableViewerState = useSelector(
+    (state: AppStateType) => state.jsonTableViewer
+  );
+  const dispatch = useDispatch();
+
   const [isInputCollapsed, setisInputCollapsed] = useState(false);
 
   const leftPanelRef = useRef<ImperativePanelHandle>(null);
 
-  const handleJsonDataChanged = useCallback(
-    async (value: string, showToast: boolean = false) => {
-      let parsedJsonData: object | string = {};
-      try {
-        parsedJsonData = await TextFormats.JSON.parse(value ?? "{}");
-        if (typeof parsedJsonData === "string") {
-          throw new Error("Cannot convert string to table");
-        }
-      } catch (error) {
-        if (showToast)
-          if (error) toast.error(`${error}`);
-          else toast.error("Unable to parse JSON input");
-        return false;
+  const handleJsonDataChanged = async (
+    value: string,
+    showToast: boolean = false
+  ) => {
+    let parsedJsonData: object | string = {};
+    try {
+      parsedJsonData = await TextFormats.JSON.parse(value ?? "{}");
+      if (typeof parsedJsonData === "string") {
+        throw new Error("Cannot convert string to table");
       }
+    } catch (error) {
+      if (showToast)
+        if (error) toast.error(`${error}`);
+        else toast.error("Unable to parse JSON input");
+      return false;
+    }
 
-      setJsonTableViewerState({
-        jsonData: parsedJsonData,
-        jsonStr: value,
-      });
-      return true;
-    },
-    [setJsonTableViewerState]
-  );
+    dispatch(JSONTableViewerActions.setJsonData(parsedJsonData));
+    dispatch(JSONTableViewerActions.setJsonStr(value));
+    return true;
+  };
 
   const onOpenFiles = async (files: FileList | null) => {
     if (files && files.length > 0) {
@@ -102,10 +100,8 @@ const JSONTableViewer = () => {
 
         leftPanelRef.current?.collapse();
 
-        setJsonTableViewerState({
-          jsonData: parsedData,
-          jsonStr,
-        });
+        dispatch(JSONTableViewerActions.setJsonData(parsedData));
+        dispatch(JSONTableViewerActions.setJsonStr(jsonStr));
       } catch (error) {
         toast.error(`${error}`);
       }
@@ -140,7 +136,7 @@ const JSONTableViewer = () => {
     return isSuccess;
   };
 
-  const curlState = useCurl();
+  const curlState = useCurl(jsonTableViewerState.curl);
   const curlInputRef = useRef<HTMLTextAreaElement>(null);
   const [isCURLPopOverOpen, setIsCURLPopOverOpen] = useState(false);
 
@@ -163,8 +159,11 @@ const JSONTableViewer = () => {
       return isSuccess;
     }
 
+    const curlStr = curlInputRef.current.value;
+    dispatch(JSONTableViewerActions.setCurl(curlStr));
+
     await curlState
-      .execute(curlInputRef.current.value)
+      .execute(curlStr)
       .then(async (curlResponse) => {
         try {
           if (

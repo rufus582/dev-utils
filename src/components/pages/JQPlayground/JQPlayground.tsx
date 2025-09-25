@@ -1,5 +1,4 @@
 import CodeEditor from "@/components/ui/code/code-editor";
-import { useImmer } from "use-immer";
 import JQ from "jq-web";
 import {
   ResizablePanelGroup,
@@ -8,19 +7,13 @@ import {
 } from "@/components/ui/resizable";
 import Header from "@/components/pages/page-header";
 import JQLogo from "@/components/icons/jq-logo";
-
-type JQDataStateType = {
-  filter: string;
-  result: string;
-  jsonStr: string;
-};
+import { useDispatch, useSelector } from "react-redux";
+import { JQActions } from "@/store/redux/jq-slice";
+import type { AppStateType } from "@/store/redux";
 
 export default function JQPlayground() {
-  const [jqDataState, setJqDataState] = useImmer<JQDataStateType>({
-    filter: "",
-    result: "",
-    jsonStr: "",
-  });
+  const jqDataState = useSelector((state: AppStateType) => state.jq);
+  const dispatch = useDispatch();
 
   const handleCodeChanged = async (
     jqFilterVal?: string,
@@ -29,10 +22,9 @@ export default function JQPlayground() {
     const jqFilter =
       jqFilterVal === undefined ? jqDataState.filter : jqFilterVal;
     const jsonStr = jsonStrVal === undefined ? jqDataState.jsonStr : jsonStrVal;
-    setJqDataState((prevState) => {
-      prevState.filter = jqFilter;
-      prevState.jsonStr = jsonStr;
-    });
+
+    dispatch(JQActions.setFilter(jqFilter));
+    dispatch(JQActions.setJsonStr(jsonStr));
 
     let rawResult = "";
 
@@ -50,9 +42,7 @@ export default function JQPlayground() {
       }
     }
 
-    setJqDataState((prevState) => {
-      prevState.result = rawResult ?? prevState.result;
-    });
+    dispatch(JQActions.setResult(rawResult));
   };
 
   const onOpenJSONFile = (files: FileList | null) => {
