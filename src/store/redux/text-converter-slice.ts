@@ -1,17 +1,16 @@
-import { TextFormats, type TextFormatType } from "@/lib/text-formats";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface TextConverterStateType {
-  fromFormat: TextFormatType;
+  fromFormatName: string;
   toConvert: string;
-  toFormat: TextFormatType;
+  toFormatName: string;
   converted: string;
 }
 
 const initialState: TextConverterStateType = {
-  fromFormat: TextFormats.Base64,
+  fromFormatName: "Base64",
   toConvert: "",
-  toFormat: TextFormats.JSON,
+  toFormatName: "JSON",
   converted: "",
 };
 
@@ -19,11 +18,11 @@ const textConverterSlice = createSlice({
   name: "textConverter",
   initialState,
   reducers: {
-    setFromFormat: (state, action: PayloadAction<TextFormatType>) => {
-      state.fromFormat = action.payload;
+    setFromFormat: (state, action: PayloadAction<string>) => {
+      state.fromFormatName = action.payload;
     },
-    setToFormat: (state, action: PayloadAction<TextFormatType>) => {
-      state.toFormat = action.payload;
+    setToFormat: (state, action: PayloadAction<string>) => {
+      state.toFormatName = action.payload;
     },
     setTextToConvert: (state, action: PayloadAction<string>) => {
       state.toConvert = action.payload;
