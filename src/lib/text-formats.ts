@@ -134,3 +134,17 @@ export const TextFormats = Object.fromEntries(
 ) as {
   [K in (typeof TextFormatsList)[number]["displayable"]]: TextFormatType;
 };
+
+export function getTextFormat(
+  textFormatName: string,
+  onNotFound?: () => void
+): TextFormatType | undefined {
+  const textFormat = TextFormatsList.filter(
+    (format) => textFormatName === format.displayable
+  );
+  if (textFormat.length == 0) {
+    onNotFound?.();
+    return undefined;
+  }
+  return textFormat[0];
+}

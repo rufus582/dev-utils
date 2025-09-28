@@ -121,6 +121,7 @@ const CodeEditor = ({
             minimap: { enabled: false },
             wordWrap: "on",
             lineNumbers: lineNumbers ? "on" : "off",
+            unusualLineTerminators: "auto",
           }}
           theme={theme === "dark" ? "vs-dark" : "light"}
         />

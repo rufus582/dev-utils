@@ -42,7 +42,7 @@ export default function JQPlayground() {
       }
     }
 
-    dispatch(JQActions.setResult(rawResult));
+    dispatch(JQActions.setResult(rawResult ?? ""));
   };
 
   const onOpenJSONFile = (files: FileList | null) => {
