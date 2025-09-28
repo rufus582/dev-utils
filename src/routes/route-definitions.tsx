@@ -2,7 +2,7 @@ import JQPlayground from "@/components/pages/JQPlayground/JQPlayground";
 import TextConverter from "@/components/pages/TextConverter/TextConverter";
 import JSONTableViewer from "@/components/pages/JSONTableViewer/JSONTableViewer";
 import type React from "react";
-import { Grid2x2, WholeWord } from "lucide-react";
+import { Database, Grid2x2, WholeWord } from "lucide-react";
 import type { RouteObject } from "react-router";
 import JQLogo from "@/components/icons/jq-logo";
 import JMESPathPlayground from "@/components/pages/JMESPathPlayground/JMESPathPlayground";
@@ -54,7 +54,7 @@ export const routeDefinitions: RouteDefinition[] = [
     definitionId: 5,
     path: "/sql",
     element: <SQLPlayground />,
-    icon: <Grid2x2 />,
+    icon: <Database />,
     displayable: "SQL Playground",
   },
 ];

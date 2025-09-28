@@ -4,7 +4,6 @@ import CodeEditor, {
 import { useEffect, useRef, useState } from "react";
 import { useImmer } from "use-immer";
 import { TextFormatsList } from "@/lib/text-formats";
-import JSONGrid from "@/components/ui/code/json-grid";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -45,11 +44,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import type {
+  JSONGridTabDataProps,
+  JSONGridTabsRefType,
+} from "@/components/ui/code/json-grid-tabs";
+import JSONGridTabs from "@/components/ui/code/json-grid-tabs";
 
 interface SQLDataStateType {
   db?: Database;
   sqlCode: string;
-  result: JSONObject;
+  resultData: JSONGridTabDataProps[];
 }
 
 interface ImportTableFormType {
@@ -61,10 +65,11 @@ const SQLPlayground = () => {
   const [isSQLPanelCollapsed, setIsSQLPanelCollapsed] = useState(false);
   const [sqlDataState, setSQLDataState] = useImmer<SQLDataStateType>({
     sqlCode: "",
-    result: {},
+    resultData: [],
   });
 
   const editorRef: CodeEditorRefType = useRef(null);
+  const resultViewerRef: JSONGridTabsRefType = useRef(null);
 
   useEffect(() => {
     if (!sqlDataState.db) {
@@ -84,6 +89,13 @@ const SQLPlayground = () => {
       console.log("SQLite DB connection closed");
     };
   }, [setSQLDataState, sqlDataState.db]);
+
+  useEffect(() => {
+    if (sqlDataState.resultData.length > 0)
+      resultViewerRef.current?.setSelectedTabValue(
+        sqlDataState.resultData[0]?.value
+      );
+  }, [sqlDataState.resultData]);
 
   const [isImportFormOpen, setIsImportFormOpen] = useState<boolean>(false);
   const importTableFormRef = useRef<HTMLFormElement>(null);
@@ -163,11 +175,19 @@ const SQLPlayground = () => {
         return true;
       }
 
-      console.log(result);
+      const resultData: JSONGridTabDataProps[] = result.map(
+        (resultItem, index) => {
+          const resultRecords = convertSqlResultToRecords(resultItem);
+          return {
+            displayable: `Result ${index + 1}`,
+            value: `${index + 1}`,
+            content: resultRecords,
+          };
+        }
+      );
 
-      const resultRecords = convertSqlResultToRecords(result[0]);
       setSQLDataState((state) => {
-        state.result = resultRecords;
+        state.resultData = resultData;
       });
     } catch (error) {
       toast.error(`${error}`);
@@ -352,23 +372,27 @@ const SQLPlayground = () => {
             }
             title="SQL"
             value={sqlDataState.sqlCode}
-            language="SQL"
+            language="sql"
           />
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel minSize={15} className="overflow-hidden">
-          <JSONGrid
-            data={
-              sqlDataState.result &&
-              (Array.isArray(sqlDataState.result) ||
-                typeof sqlDataState.result === "object")
-                ? sqlDataState.result
-                : {}
+          <JSONGridTabs
+            ref={resultViewerRef}
+            tabsData={
+              sqlDataState.resultData.length
+                ? sqlDataState.resultData
+                : [
+                    {
+                      displayable: "Result",
+                      value: "1",
+                      content: {},
+                    },
+                  ]
             }
             className={`h-full rounded-b-xl ${
               isSQLPanelCollapsed ? "rounded-t-xl" : ""
             }`}
-            title="Result"
           />
         </ResizablePanel>
       </ResizablePanelGroup>
