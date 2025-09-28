@@ -1,4 +1,5 @@
-import Editor from "@monaco-editor/react";
+import Editor, { type OnMount } from "@monaco-editor/react";
+import { editor } from "monaco-editor";
 import { Button } from "@/components/ui/custom-components/animated-button";
 import {
   Clipboard,
@@ -10,6 +11,9 @@ import { useTheme } from "@/store/theme-provider";
 import { copyToClipboard } from "@/lib/utils";
 import useOpenFile, { type IUseOpenFileInputType } from "@/hooks/use-open-file";
 import { Tooltip } from "../custom-components/tooltip-wrapper";
+import type React from "react";
+
+export type CodeEditorRefType = React.RefObject<editor.IStandaloneCodeEditor | null>
 
 interface ICodeEditorProps {
   title?: string;
@@ -24,6 +28,7 @@ interface ICodeEditorProps {
   lineNumbers?: boolean;
   border?: boolean;
   fileButton?: ICodeEditorFileButtonOptions;
+  ref?: CodeEditorRefType;
 }
 
 interface ICodeEditorFileButtonOptions extends IUseOpenFileInputType {
@@ -39,6 +44,7 @@ const CodeEditor = ({
   lineNumbers = true,
   border = true,
   fileButton,
+  ref,
   ...editorProps
 }: ICodeEditorProps) => {
   const { theme } = useTheme();
@@ -55,6 +61,10 @@ const CodeEditor = ({
       return false;
     }
     return true;
+  };
+
+  const handleEditorDidMount: OnMount = (editor) => {
+    if (ref) ref.current = editor;
   };
 
   return (
@@ -124,6 +134,7 @@ const CodeEditor = ({
             unusualLineTerminators: "auto",
           }}
           theme={theme === "dark" ? "vs-dark" : "light"}
+          onMount={handleEditorDidMount}
         />
       </div>
     </div>

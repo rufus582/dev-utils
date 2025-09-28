@@ -6,6 +6,7 @@ import { Grid2x2, WholeWord } from "lucide-react";
 import type { RouteObject } from "react-router";
 import JQLogo from "@/components/icons/jq-logo";
 import JMESPathPlayground from "@/components/pages/JMESPathPlayground/JMESPathPlayground";
+import SQLPlayground from "@/components/pages/SQLPlayground/SQLPlayground";
 
 type RouteDefinition = RouteObject & {
   definitionId: number;
@@ -48,5 +49,12 @@ export const routeDefinitions: RouteDefinition[] = [
     element: <JSONTableViewer />,
     icon: <Grid2x2 />,
     displayable: "JSON Table Viewer",
+  },
+  {
+    definitionId: 5,
+    path: "/sql",
+    element: <SQLPlayground />,
+    icon: <Grid2x2 />,
+    displayable: "SQL Playground",
   },
 ];
