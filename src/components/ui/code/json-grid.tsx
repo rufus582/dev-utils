@@ -46,7 +46,7 @@ const JSONGrid = ({ className, title, ...props }: JSONGridPropsType) => {
 
   return (
     <div
-      className={`${className} overflow-hidden flex flex-col border border-border bg-[#ffffff] dark:bg-[#1e1e1e]`}
+      className={`overflow-hidden flex flex-col border border-border bg-[#ffffff] dark:bg-[#1e1e1e] ${className}`}
     >
       {title && (
         <div className="p-2 px-4 gap-4 flex bg-muted text-muted-foreground">

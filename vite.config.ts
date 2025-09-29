@@ -15,6 +15,10 @@ export default defineConfig({
           src: "node_modules/jq-web/jq.wasm",
           dest: "./",
         },
+        {
+          src: "node_modules/sql.js/dist/sql-wasm.wasm",
+          dest: "./",
+        },
       ],
     }),
   ],
