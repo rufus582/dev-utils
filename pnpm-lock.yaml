@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@marcbachmann/cel-js':
+        specifier: ^2.2.2
+        version: 2.2.2
       '@metrichor/jmespath':
         specifier: ^0.3.1
         version: 0.3.1
@@ -528,6 +531,10 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
+
+  '@marcbachmann/cel-js@2.2.2':
+    resolution: {integrity: sha512-GXvrcuDG/LvC4/6/h7wYn1dBY1qOoeC+F57hJ1NKKK8+6/urt2/DgMFJXmzX5vuErzbOByYfnb91msd9Lh2rZQ==}
+    engines: {node: '>=20.19.0'}
 
   '@metrichor/jmespath@0.3.1':
     resolution: {integrity: sha512-X/S90FG+VlEWGNEptEpZ15QN7h9aRhdOZm3yjE4lHItig8lSpJbmYDqAPo3iKc4CjUGfUSv4z+VhKrFw6iHBMg==}
@@ -2564,6 +2571,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@marcbachmann/cel-js@2.2.2': {}
 
   '@metrichor/jmespath@0.3.1': {}
 

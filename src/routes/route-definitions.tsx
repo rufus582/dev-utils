@@ -7,6 +7,8 @@ import type { RouteObject } from "react-router";
 import JQLogo from "@/components/icons/jq-logo";
 import JMESPathPlayground from "@/components/pages/JMESPathPlayground/JMESPathPlayground";
 import SQLPlayground from "@/components/pages/SQLPlayground/SQLPlayground";
+import CELPlayground from "@/components/pages/CELPlayground/CELPlayground";
+import CELLogo from "@/components/icons/cel-logo";
 
 type RouteDefinition = RouteObject & {
   definitionId: number;
@@ -56,5 +58,12 @@ export const routeDefinitions: RouteDefinition[] = [
     element: <SQLPlayground />,
     icon: <Database />,
     displayable: "SQL Playground",
+  },
+  {
+    definitionId: 6,
+    path: "/cel",
+    element: <CELPlayground />,
+    icon: <CELLogo />,
+    displayable: "CEL Playground",
   },
 ];
