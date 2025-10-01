@@ -256,7 +256,7 @@ const SQLPlayground = () => {
                     id="tableName"
                     name="tableName"
                     type="text"
-                    className="rounded-full col-span-4"
+                    className="rounded-full col-span-4 hover:border-muted-foreground transition-colors"
                     placeholder="Example: users"
                   />
                   <Label htmlFor="fileInput">Open File</Label>
@@ -266,7 +266,7 @@ const SQLPlayground = () => {
                     name="file"
                     type="file"
                     accept=".json,.csv,.parquet"
-                    className="file:text-secondary-foreground file:bg-secondary file:border-border file:border file:px-2 file:h-full file:rounded-full rounded-full px-1 cursor-pointer file:cursor-pointer col-span-4"
+                    className="file:text-secondary-foreground file:bg-secondary file:border-border file:border file:px-2 file:h-full file:rounded-full hover:file:bg-secondary/60 hover:border-muted-foreground rounded-full px-1 cursor-pointer file:cursor-pointer col-span-4 transition-colors"
                   />
                   <Separator className="col-span-5" />
                 </div>
