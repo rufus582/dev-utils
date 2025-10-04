@@ -30,13 +30,15 @@ function DialogClose({
 
 function DialogOverlay({
   className,
+  bgBlur,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+}: React.ComponentProps<typeof DialogPrimitive.Overlay> & { bgBlur?: boolean }) {
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50",
+        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50 transition",
+        bgBlur ? "backdrop-blur-xs" : "",
         className
       )}
       {...props}
@@ -48,13 +50,15 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  bgBlur,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  bgBlur?: boolean
 }) {
   return (
     <DialogPortal data-slot="dialog-portal">
-      <DialogOverlay />
+      <DialogOverlay bgBlur={bgBlur} />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(

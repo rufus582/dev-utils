@@ -171,29 +171,30 @@ const SQLPlayground = () => {
         throw new Error("SQL Query is empty!");
 
       const result = sqlDataState.db?.exec(queryToRun);
-      if (!result || result.length === 0) {
-        return true;
+      if (result && result.length > 0) {
+        const resultData: JSONGridTabDataProps[] = result.map(
+          (resultItem, index) => {
+            const resultRecords = convertSqlResultToRecords(resultItem);
+            return {
+              displayable: `Result ${index + 1}`,
+              value: `${index + 1}`,
+              content: resultRecords,
+            };
+          }
+        );
+
+        setSQLDataState((state) => {
+          state.resultData = resultData;
+        });
       }
 
-      const resultData: JSONGridTabDataProps[] = result.map(
-        (resultItem, index) => {
-          const resultRecords = convertSqlResultToRecords(resultItem);
-          return {
-            displayable: `Result ${index + 1}`,
-            value: `${index + 1}`,
-            content: resultRecords,
-          };
-        }
-      );
+      toast.success("SQL Query ran successfully!")
+      return true;
 
-      setSQLDataState((state) => {
-        state.resultData = resultData;
-      });
     } catch (error) {
       toast.error(`${error}`);
       return false;
     }
-    return true;
   };
 
   const handleClipboardPaste = async () => {
@@ -236,7 +237,7 @@ const SQLPlayground = () => {
                 Import Table
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent bgBlur>
               <DialogHeader>
                 <DialogTitle>Import Table</DialogTitle>
                 <DialogDescription>
