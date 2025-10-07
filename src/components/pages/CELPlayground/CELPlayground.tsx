@@ -5,16 +5,15 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import Header from "@/components/pages/page-header";
-import { useDispatch, useSelector } from "react-redux";
 import { CELActions } from "@/store/redux/cel-slice";
-import type { AppStateType } from "@/store/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import * as CEL from "@marcbachmann/cel-js";
 import { TextFormats } from "@/lib/text-formats";
 import CELLogo from "@/components/icons/cel-logo";
 
 export default function CELPlayground() {
-  const celDataState = useSelector((state: AppStateType) => state.cel);
-  const dispatch = useDispatch();
+  const celDataState = useAppSelector(state => state.cel);
+  const dispatch = useAppDispatch();
 
   const handleCodeChanged = async (
     celExpressionVal?: string,

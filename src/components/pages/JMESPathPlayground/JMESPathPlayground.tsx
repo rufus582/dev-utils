@@ -8,15 +8,12 @@ import {
 import Header from "@/components/pages/page-header";
 import JMESPathLogo from "@/components/icons/jmespath-logo/logo";
 import { TextFormats } from "@/lib/text-formats";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppStateType } from "@/store/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JMESPathActions } from "@/store/redux/jmespath-slice";
 
 export default function JMESPathPlayground() {
-  const jmesPathDataState = useSelector(
-    (state: AppStateType) => state.jmespath
-  );
-  const dispatch = useDispatch();
+  const jmesPathDataState = useAppSelector(state => state.jmespath);
+  const dispatch = useAppDispatch();
 
   const handleCodeChanged = async (
     expressionVal?: string,

@@ -33,15 +33,12 @@ import {
 } from "@/components/ui/popover";
 import { Arrow } from "@radix-ui/react-popover";
 import { Textarea } from "@/components/ui/textarea";
-import { useDispatch, useSelector } from "react-redux";
-import type { AppStateType } from "@/store/redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JSONTableViewerActions } from "@/store/redux/json-table-viewer-slice";
 
 const JSONTableViewer = () => {
-  const jsonTableViewerState = useSelector(
-    (state: AppStateType) => state.jsonTableViewer
-  );
-  const dispatch = useDispatch();
+  const jsonTableViewerState = useAppSelector(state => state.jsonTableViewer);
+  const dispatch = useAppDispatch();
 
   const [isInputCollapsed, setisInputCollapsed] = useState(false);
 

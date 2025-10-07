@@ -30,7 +30,7 @@ const textConverterSlice = createSlice({
     setConvertedText: (state, action: PayloadAction<string>) => {
       state.converted = action.payload;
     },
-    setConvertDataState: (_, action: PayloadAction<TextConverterStateType>) =>
+    setState: (_, action: PayloadAction<TextConverterStateType>) =>
       action.payload,
   },
 });
