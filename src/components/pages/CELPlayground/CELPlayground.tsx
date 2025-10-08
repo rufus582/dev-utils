@@ -1,55 +1,58 @@
 import CodeEditor from "@/components/ui/code/code-editor";
-import jmespath, { type JSONValue } from "@metrichor/jmespath";
 import {
   ResizablePanelGroup,
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
 import Header from "@/components/pages/page-header";
-import JMESPathLogo from "@/components/icons/jmespath-logo/logo";
-import { TextFormats } from "@/lib/text-formats";
+import { CELActions } from "@/store/redux/cel-slice";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { JMESPathActions } from "@/store/redux/jmespath-slice";
+import * as CEL from "@marcbachmann/cel-js";
+import { TextFormats } from "@/lib/text-formats";
+import CELLogo from "@/components/icons/cel-logo";
 
-export default function JMESPathPlayground() {
-  const jmesPathDataState = useAppSelector(state => state.jmespath);
+export default function CELPlayground() {
+  const celDataState = useAppSelector(state => state.cel);
   const dispatch = useAppDispatch();
 
   const handleCodeChanged = async (
-    expressionVal?: string,
+    celExpressionVal?: string,
     jsonStrVal?: string
   ) => {
-    const jmesPathExpression =
-      expressionVal === undefined
-        ? jmesPathDataState.expression
-        : expressionVal;
+    const celExpression =
+      celExpressionVal === undefined
+        ? celDataState.expression
+        : celExpressionVal;
     const jsonStr =
-      jsonStrVal === undefined ? jmesPathDataState.jsonStr : jsonStrVal;
+      jsonStrVal === undefined ? celDataState.jsonStr : jsonStrVal;
 
-    dispatch(JMESPathActions.setExpression(jmesPathExpression));
-    dispatch(JMESPathActions.setJsonStr(jsonStr));
+    dispatch(CELActions.setCELExpression(celExpression));
+    dispatch(CELActions.setJsonStr(jsonStr));
 
     let rawResult = "";
 
     try {
-      const parsedJsonValue = await TextFormats.JSON.parse(jsonStr);
-      const result = jmespath.search(
-        parsedJsonValue as JSONValue,
-        jmesPathExpression
+      const parsedJsonData = await Promise.resolve(
+        TextFormats.JSON.parse(jsonStr)
       );
-      rawResult = await TextFormats.JSON.unparse(result as object);
+
+      if (typeof parsedJsonData === "string" || Array.isArray(parsedJsonData))
+        throw new Error("Invalid input JSON data");
+
+      const celResult = CEL.evaluate(celExpression, parsedJsonData);
+      rawResult = await Promise.resolve(TextFormats.JSON.unparse(celResult));
     } catch (error: unknown) {
       if (error && typeof error === "object") {
         const err = error as { stderr?: string; message?: string };
         rawResult = `${
-          err.stderr ?? err.message ?? "Error processing JMESPath Expression"
+          err.stderr ?? err.message ?? "Error processing CEL Expression"
         }`;
       } else {
-        rawResult = "Error processing JMESPath Expression";
+        rawResult = "Error processing CEL Expression";
       }
     }
 
-    dispatch(JMESPathActions.setResult(rawResult));
+    dispatch(CELActions.setResult(rawResult ?? ""));
   };
 
   const onOpenJSONFile = (files: FileList | null) => {
@@ -62,7 +65,7 @@ export default function JMESPathPlayground() {
 
   const titleContent = (
     <div className="flex gap-2">
-      <JMESPathLogo className="m-auto h-5" />
+      <CELLogo className="m-auto h-8" colorVariant="original" />
       <p>Playground</p>
     </div>
   );
@@ -78,9 +81,9 @@ export default function JMESPathPlayground() {
         <ResizablePanel minSize={10} maxSize={30} defaultSize={15}>
           <CodeEditor
             className="rounded-t-xl rounded-b-none h-full w-full"
-            value={jmesPathDataState.expression}
+            value={celDataState.expression}
             onChange={(expression) => handleCodeChanged(expression)}
-            title="JMESPath Expression"
+            title="CEL Expression"
             copyButton
             lineNumbers={false}
           />
@@ -91,7 +94,7 @@ export default function JMESPathPlayground() {
             <ResizablePanel minSize={30}>
               <CodeEditor
                 className="rounded-t-none rounded-bl-xl rounded-br-none h-full"
-                value={jmesPathDataState.jsonStr}
+                value={celDataState.jsonStr}
                 title="Input JSON"
                 language="json"
                 onChange={(jsonStr) => handleCodeChanged(undefined, jsonStr)}
@@ -108,7 +111,7 @@ export default function JMESPathPlayground() {
             <ResizablePanel minSize={20}>
               <CodeEditor
                 className="rounded-br-xl rounded-bl-none rounded-t-none h-full"
-                value={jmesPathDataState.result}
+                value={celDataState.result}
                 title="Output"
                 language="json"
                 readOnly

@@ -2,19 +2,34 @@ import JQPlayground from "@/components/pages/JQPlayground/JQPlayground";
 import TextConverter from "@/components/pages/TextConverter/TextConverter";
 import JSONTableViewer from "@/components/pages/JSONTableViewer/JSONTableViewer";
 import type React from "react";
-import { Database, Grid2x2, WholeWord } from "lucide-react";
+import { Archive, Database, Grid2x2, PlusIcon, WholeWord } from "lucide-react";
 import type { RouteObject } from "react-router";
 import JQLogo from "@/components/icons/jq-logo";
 import JMESPathPlayground from "@/components/pages/JMESPathPlayground/JMESPathPlayground";
 import SQLPlayground from "@/components/pages/SQLPlayground/SQLPlayground";
+import CELPlayground from "@/components/pages/CELPlayground/CELPlayground";
+import CELLogo from "@/components/icons/cel-logo";
+import SnapshotsPage from "@/components/pages/SnapshotsPage/SnapshotsPage";
+import CreateSnapshotDialog from "@/components/pages/SnapshotsPage/CreateSnapshotDialog";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-type RouteDefinition = RouteObject & {
+interface IRouteDefinitionActionElementProps {
+  definition: RouteDefinition;
+  isActive: boolean;
+}
+
+export type RouteDefinition = RouteObject & {
   definitionId: number;
   path: string;
   element: React.ReactNode;
   displayable: React.ReactNode;
   icon: React.ReactNode;
   children?: RouteDefinition[];
+  sidebarPlace: "header" | "content" | "footer";
+  actionElement?: (
+    props: IRouteDefinitionActionElementProps
+  ) => React.ReactNode;
 };
 
 export const routeDefinitions: RouteDefinition[] = [
@@ -24,6 +39,7 @@ export const routeDefinitions: RouteDefinition[] = [
     element: <TextConverter />,
     icon: <WholeWord />,
     displayable: "Text Converter",
+    sidebarPlace: "content",
   },
   {
     definitionId: 2,
@@ -31,6 +47,7 @@ export const routeDefinitions: RouteDefinition[] = [
     element: <JQPlayground />,
     icon: <JQLogo />,
     displayable: "JQ Playground",
+    sidebarPlace: "content",
   },
   {
     definitionId: 3,
@@ -42,6 +59,7 @@ export const routeDefinitions: RouteDefinition[] = [
       </div>
     ),
     displayable: "JMESPath Playground",
+    sidebarPlace: "content",
   },
   {
     definitionId: 4,
@@ -49,6 +67,7 @@ export const routeDefinitions: RouteDefinition[] = [
     element: <JSONTableViewer />,
     icon: <Grid2x2 />,
     displayable: "JSON Table Viewer",
+    sidebarPlace: "content",
   },
   {
     definitionId: 5,
@@ -56,5 +75,39 @@ export const routeDefinitions: RouteDefinition[] = [
     element: <SQLPlayground />,
     icon: <Database />,
     displayable: "SQL Playground",
+    sidebarPlace: "content",
+  },
+  {
+    definitionId: 6,
+    path: "/cel",
+    element: <CELPlayground />,
+    icon: <CELLogo />,
+    displayable: "CEL Playground",
+    sidebarPlace: "content",
+  },
+  {
+    definitionId: 7,
+    path: "/snapshots",
+    element: <SnapshotsPage />,
+    icon: <Archive />,
+    displayable: "Saved Snapshots",
+    sidebarPlace: "footer",
+    actionElement: ({ isActive }) => (
+      <CreateSnapshotDialog
+        trigger={
+          <Button
+            size="icon"
+            className={cn(
+              "rounded-xl duration-150 transition-all shadow-primary",
+              "active:scale-90 hover:scale-110 hover:shadow-[0px_0_15px]",
+              "absolute top-1.5 right-1 flex after:absolute group-data-[collapsible=icon]:hidden",
+              isActive && "shadow-[-10px_0_50px]"
+            )}
+          >
+            <PlusIcon strokeWidth={7} />
+          </Button>
+        }
+      />
+    ),
   },
 ];

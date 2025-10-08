@@ -35,7 +35,7 @@ export function generateTableQueryFromJsonArray(
   const tableColumnsStr = sqlTableSchema
     .map(
       (column) =>
-        `${column.key} ${column.type === "STRINGIFY" ? "TEXT" : column.type}`
+        `"${column.key}" ${column.type === "STRINGIFY" ? "TEXT" : column.type}`
     )
     .join(",");
 
@@ -57,9 +57,9 @@ export function generateTableQueryFromJsonArray(
       }
     });
 
-    return `INSERT INTO '${tableName}' (${columns.join(
-      ", "
-    )}) VALUES ('${values.join("', '")}')`;
+    return `INSERT INTO "${tableName}" ("${columns.join(
+      '", "'
+    )}") VALUES ('${values.join("', '")}')`;
   });
 
   return {

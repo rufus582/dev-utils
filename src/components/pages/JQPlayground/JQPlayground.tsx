@@ -7,13 +7,12 @@ import {
 } from "@/components/ui/resizable";
 import Header from "@/components/pages/page-header";
 import JQLogo from "@/components/icons/jq-logo";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JQActions } from "@/store/redux/jq-slice";
-import type { AppStateType } from "@/store/redux";
 
 export default function JQPlayground() {
-  const jqDataState = useSelector((state: AppStateType) => state.jq);
-  const dispatch = useDispatch();
+  const jqDataState = useAppSelector(state => state.jq);
+  const dispatch = useAppDispatch();
 
   const handleCodeChanged = async (
     jqFilterVal?: string,

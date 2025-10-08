@@ -55,7 +55,7 @@ const JSONGridTabs = ({
         </TabsList>
       </div>
       {tabsData.map((tabData) => (
-        <TabsContent key={tabData.value} value={tabData.value}>
+        <TabsContent key={tabData.value} className="overflow-scroll" value={tabData.value}>
           <JSONGrid
             data={tabData.content}
             className="mt-0 border-0 pt-0"

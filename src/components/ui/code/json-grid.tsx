@@ -15,7 +15,7 @@ const JSONGrid = ({ className, title, ...props }: JSONGridPropsType) => {
   const darkModeTheme = {
     bgColor: "#1e1e1e",
     borderColor: "#3c3c3c",
-    selectHighlightBgColor: "#264f78",
+    selectHighlightBgColor: "#264f7870",
     cellBorderColor: "#333333",
     keyColor: "#9cdcfe",
     indexColor: "#cccccc",
@@ -31,7 +31,7 @@ const JSONGrid = ({ className, title, ...props }: JSONGridPropsType) => {
   const lightModeTheme = {
     bgColor: "#ffffff",
     borderColor: "#e1e1e1",
-    selectHighlightBgColor: "#add6ff",
+    selectHighlightBgColor: "#add6ff70",
     cellBorderColor: "#dcdcdc",
     keyColor: "#001080",
     indexColor: "#333333",

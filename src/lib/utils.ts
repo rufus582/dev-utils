@@ -74,3 +74,5 @@ export const openLinkInNewTab = (
     toast.info("This is still a work in progress!");
   }
 };
+
+export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
