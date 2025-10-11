@@ -17,7 +17,7 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
   const links: ProfileLinkProps[] = [
     {
       link: "https://github.com/rufus582/dev-utils",
-      isWidelyAvailable: false,
+      isWidelyAvailable: true,
       icon: <GitHubLogo />,
       text: "Source Code",
     },
