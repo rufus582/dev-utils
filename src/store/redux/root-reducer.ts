@@ -4,6 +4,7 @@ import jmesPathReducer from "./jmespath-slice";
 import textConverterReducer from "./text-converter-slice";
 import jsonTableViewerReducer from "./json-table-viewer-slice";
 import celReducer from "./cel-slice";
+import jsonpathReducer from "./jsonpath-slice";
 
 const RESET_STATE = "root/resetState";
 
@@ -13,6 +14,7 @@ const appReducer = combineReducers({
   textConverter: textConverterReducer,
   jsonTableViewer: jsonTableViewerReducer,
   cel: celReducer,
+  jsonpath: jsonpathReducer,
 });
 
 export type AppStateType = ReturnType<typeof appReducer>;

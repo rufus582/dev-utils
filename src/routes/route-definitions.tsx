@@ -8,6 +8,8 @@ import JQLogo from "@/components/icons/jq-logo";
 import JMESPathPlayground from "@/components/pages/JMESPathPlayground/JMESPathPlayground";
 import SQLPlayground from "@/components/pages/SQLPlayground/SQLPlayground";
 import CELPlayground from "@/components/pages/CELPlayground/CELPlayground";
+import JSONPathPlayground from "@/components/pages/JSONPathPlayground/JSONPathPlayground";
+import { FileJson } from "lucide-react";
 import CELLogo from "@/components/icons/cel-logo";
 import SnapshotsPage from "@/components/pages/SnapshotsPage/SnapshotsPage";
 import CreateSnapshotDialog from "@/components/pages/SnapshotsPage/CreateSnapshotDialog";
@@ -87,6 +89,14 @@ export const routeDefinitions: RouteDefinition[] = [
   },
   {
     definitionId: 7,
+    path: "/jsonpath",
+    element: <JSONPathPlayground />,
+    icon: <FileJson />,
+    displayable: "JSONPath Playground",
+    sidebarPlace: "content",
+  },
+  {
+    definitionId: 8,
     path: "/snapshots",
     element: <SnapshotsPage />,
     icon: <Archive />,
