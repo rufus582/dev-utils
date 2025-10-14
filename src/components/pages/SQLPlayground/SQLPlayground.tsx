@@ -56,6 +56,7 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import * as z from "zod";
+import { AnimatePresence, motion } from "motion/react";
 
 interface SQLDataStateType {
   db?: Database;
@@ -67,7 +68,7 @@ const ImportTableFormFields = z.strictObject({
   tableName: z
     .string()
     .regex(
-      /^[^0-9][a-zA-z_]*$/,
+      /^[^0-9][a-zA-z_0-9]*$/,
       "Table name cannot be empty, must start with an alphabet and can contain only alphanumeric or underscore(_) characters."
     ),
   file: z
@@ -287,15 +288,25 @@ const SQLPlayground = () => {
                       )}
                       onChange={() => setImportTableFormErrors(undefined)}
                     />
-                    {importTableFormErrors?.fieldErrors.tableName && (
-                      <FieldError
-                        errors={importTableFormErrors.fieldErrors.tableName.map(
-                          (val) => ({
-                            message: val,
-                          })
-                        )}
-                      />
-                    )}
+                    <AnimatePresence>
+                      {importTableFormErrors?.fieldErrors.tableName && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                          className="text-destructive text-sm font-normal"
+                        >
+                          <FieldError
+                            errors={importTableFormErrors.fieldErrors.tableName.map(
+                              (err) => ({
+                                message: err,
+                              })
+                            )}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </Field>
                   <Field
                     data-invalid={Boolean(
@@ -314,20 +325,38 @@ const SQLPlayground = () => {
                         importTableFormErrors?.fieldErrors.file
                       )}
                     />
-                    {importTableFormErrors?.fieldErrors.file && (
-                      <FieldError
-                        errors={importTableFormErrors.fieldErrors.file.map(
-                          (err) => ({
-                            message: err,
-                          })
-                        )}
-                      />
-                    )}
-                    {!importTableFormErrors?.fieldErrors.file && (
-                      <FieldDescription>
-                        Supported formats: JSON, CSV, PARQUET
-                      </FieldDescription>
-                    )}
+                    <AnimatePresence>
+                      {importTableFormErrors?.fieldErrors.file && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                        >
+                          <FieldError
+                            errors={importTableFormErrors.fieldErrors.file.map(
+                              (err) => ({
+                                message: err,
+                              })
+                            )}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <AnimatePresence>
+                      {!importTableFormErrors?.fieldErrors.file && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                        >
+                          <FieldDescription>
+                            Supported formats: JSON, CSV, PARQUET
+                          </FieldDescription>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </Field>
                   <Separator className="mb-4" />
                 </FieldSet>
@@ -347,6 +376,11 @@ const SQLPlayground = () => {
                     className="rounded-full"
                     onClick={onImportTableFormSubmit}
                     whileHover={{ scale: 1.1 }}
+                    transition={{
+                      type: "spring",
+                      bounce: 0.6,
+                      ease: "easeInOut",
+                    }}
                   >
                     Load Table
                   </Button>

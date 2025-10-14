@@ -143,23 +143,22 @@ function Button({
     ) => boolean | Promise<boolean>;
   }) {
   const [scope, animate] = useAnimate();
+  const [loading, setLoading] = React.useState(false)
 
   const animateLoading = async () => {
     if (!loaderIcon && !successIcon) {
       return;
     }
 
-    if (buttonIcon) {
-      await animate(
-        ".icon",
-        {
-          scale: 0,
-        },
-        {
-          duration: 0.2,
-        }
-      );
-    }
+    await animate(
+      ".icon",
+      {
+        scale: 0,
+      },
+      {
+        duration: 0.2,
+      }
+    );
     if (loaderIcon) {
       await animate(
         ".loader",
@@ -233,17 +232,15 @@ function Button({
       }
     }
 
-    if (buttonIcon) {
-      await animate(
-        ".icon",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        }
-      );
-    }
+    await animate(
+      ".icon",
+      {
+        scale: 1,
+      },
+      {
+        duration: 0.2,
+      }
+    );
   };
 
   const animateError = async () => {
@@ -306,21 +303,21 @@ function Button({
       }
     }
 
-    if (buttonIcon) {
-      await animate(
-        ".icon",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        }
-      );
-    }
+    await animate(
+      ".icon",
+      {
+        scale: 1,
+      },
+      {
+        duration: 0.2,
+      }
+    );
   };
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    setLoading(true)
     await animateLoading();
+    setLoading(false)
     if (onClick) {
       const isSuccess = (await onClick(event)) as unknown;
       if (isSuccess === true) {
@@ -366,6 +363,7 @@ function Button({
       className={cn(buttonVariants({ variant, size, className }))}
       onClick={handleClick}
       {...props}
+      disabled={loading}
     >
       <motion.div
         className={`success-bg absolute w-full h-full ${

@@ -21,6 +21,7 @@ import { snapshotOps } from "@/store/indexed-db/snapshots";
 import { toast } from "sonner";
 import * as z from "zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import { AnimatePresence, motion } from "motion/react";
 
 const CreateSnapshotFormFields = z.strictObject({
   name: z.string().min(5, "Name must have atleast 5 characters."),
@@ -109,15 +110,24 @@ const CreateSnapshotDialog = ({ trigger }: ICreateSnapshotDialogProps) => {
                 )}
                 onChange={() => setCreateSnapshotFormErrors(undefined)}
               />
-              {createSnapshotFormErrors?.fieldErrors.name && (
-                <FieldError
-                  errors={createSnapshotFormErrors.fieldErrors.name.map(
-                    (val) => ({
-                      message: val,
-                    })
-                  )}
-                />
-              )}
+              <AnimatePresence>
+                {createSnapshotFormErrors?.fieldErrors.name && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <FieldError
+                      errors={createSnapshotFormErrors.fieldErrors.name.map(
+                        (val) => ({
+                          message: val,
+                        })
+                      )}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </Field>
           </div>
           <DialogFooter className="mt-4">
@@ -132,6 +142,11 @@ const CreateSnapshotDialog = ({ trigger }: ICreateSnapshotDialogProps) => {
               className="rounded-full"
               onClick={handleSaveSnapshot}
               whileHover={{ scale: 1.1 }}
+              transition={{
+                type: "spring",
+                bounce: 0.6,
+                ease: "easeInOut",
+              }}
             >
               Save
             </AnimatedButton>
