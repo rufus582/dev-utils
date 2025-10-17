@@ -207,8 +207,7 @@ const JSONTableViewer = () => {
             successIcon={null}
             className="w-fit rounded-full mb-4 ml-2"
             onClick={() => openFileDialog() || true}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 1 }}
+            useDefaultInteractionAnimation
           >
             Open File
           </Button>
@@ -224,8 +223,7 @@ const JSONTableViewer = () => {
             errorBgColorClass="bg-destructive-alt"
             className="w-fit rounded-full mb-4 ml-2"
             onClick={handleClipboardPaste}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 1 }}
+            useDefaultInteractionAnimation
           >
             Paste
           </Button>
@@ -244,8 +242,7 @@ const JSONTableViewer = () => {
                 successIcon={null}
                 errorIcon={null}
                 className="w-fit rounded-full mb-4 ml-2"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 1 }}
+                useDefaultInteractionAnimation
               >
                 Fetch from CURL
               </Button>
@@ -267,6 +264,7 @@ const JSONTableViewer = () => {
                   onClick={handleCurlExecution}
                   size="lg"
                   disabled={curlState.isFetching}
+                  useDefaultInteractionAnimation={false}
                 >
                   Execute
                 </Button>
@@ -281,8 +279,7 @@ const JSONTableViewer = () => {
           successIcon={null}
           className="w-fit rounded-full mb-4 ml-2"
           onClick={toggleLeftPanel}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 1 }}
+          useDefaultInteractionAnimation
         >
           {isInputCollapsed ? "Show" : "Hide"} Input
         </Button>

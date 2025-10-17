@@ -141,12 +141,7 @@ const CreateSnapshotDialog = ({ trigger }: ICreateSnapshotDialogProps) => {
               buttonIcon={<SaveIcon />}
               className="rounded-full"
               onClick={handleSaveSnapshot}
-              whileHover={{ scale: 1.1 }}
-              transition={{
-                type: "spring",
-                bounce: 0.6,
-                ease: "easeInOut",
-              }}
+              useDefaultInteractionAnimation
             >
               Save
             </AnimatedButton>

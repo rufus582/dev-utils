@@ -251,8 +251,7 @@ const SQLPlayground = () => {
                 successIcon={null}
                 errorIcon={null}
                 className="w-fit rounded-full mb-4 ml-2"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 1 }}
+                useDefaultInteractionAnimation
               >
                 Import Table
               </Button>
@@ -375,12 +374,7 @@ const SQLPlayground = () => {
                     buttonIcon={<Grid2x2Plus />}
                     className="rounded-full"
                     onClick={onImportTableFormSubmit}
-                    whileHover={{ scale: 1.1 }}
-                    transition={{
-                      type: "spring",
-                      bounce: 0.6,
-                      ease: "easeInOut",
-                    }}
+                    useDefaultInteractionAnimation
                   >
                     Load Table
                   </Button>
@@ -399,8 +393,7 @@ const SQLPlayground = () => {
               errorBgColorClass="bg-destructive-alt"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={handleClipboardPaste}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 1 }}
+              useDefaultInteractionAnimation
             >
               Paste
             </Button>
@@ -420,8 +413,7 @@ const SQLPlayground = () => {
               errorBgColorClass="bg-primary"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={() => onClickRunSQL()}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 1 }}
+              useDefaultInteractionAnimation
             >
               Run SQL
             </Button>
@@ -439,8 +431,7 @@ const SQLPlayground = () => {
               errorBgColorClass="bg-primary"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={() => onClickRunSQL(true)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 1 }}
+              useDefaultInteractionAnimation
             >
               Run Selected
             </Button>

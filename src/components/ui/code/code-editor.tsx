@@ -90,9 +90,8 @@ const CodeEditor = ({
                 errorIcon={null}
                 successIcon={null}
                 loaderIcon={null}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
                 onClick={() => openFileDialog() || true}
+                useDefaultInteractionAnimation
               >
                 Open File
               </Button>
@@ -115,9 +114,8 @@ const CodeEditor = ({
             successBgColorClass="bg-success-alt"
             errorIcon={<ClipboardX />}
             errorBgColorClass="bg-destructive-alt"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
             onClick={handleCopyToClipboard}
+            useDefaultInteractionAnimation
           >
             Copy
           </Button>
