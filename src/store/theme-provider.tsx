@@ -1,6 +1,15 @@
 /* eslint-disable react-refresh/only-export-components */
-import { getSystemTheme } from "@/lib/utils";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  getSystemTheme,
+  getSystemThemeChangeEventHandler,
+} from "@/lib/theme-utils";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type Theme = "dark" | "light" | "system";
 type ResolvedTheme = "dark" | "light";
@@ -39,8 +48,10 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const initTheme = (localStorage.getItem(storageKey) as Theme) || defaultTheme;
   const [theme, setTheme] = useState<Theme>(initTheme);
+
+  const systemTheme = getSystemTheme();
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(
-    initTheme !== "system" ? initTheme : getSystemTheme()
+    initTheme !== "system" ? initTheme : systemTheme.theme
   );
 
   const setSystemTheme = (newSystemTheme: ResolvedTheme) => {
@@ -48,14 +59,25 @@ export function ThemeProvider({
     setResolvedTheme(newSystemTheme);
   };
 
-  useEffect(() => {
-    const systemTheme = getSystemTheme(
-      setSystemTheme,
-      theme === "system" ? "add" : "remove"
-    );
+  const onThemeChange = useCallback(
+    (ev: MediaQueryListEvent) =>
+      getSystemThemeChangeEventHandler(setSystemTheme)(ev),
+    []
+  );
 
-    setSystemTheme(theme === "system" ? systemTheme : theme);
-  }, [theme]);
+  useEffect(() => {
+    const systemTheme = getSystemTheme();
+
+    if (theme === "system") {
+      systemTheme.listener.addEventListener("change", onThemeChange);
+      setSystemTheme(systemTheme.theme);
+    } else {
+      setSystemTheme(theme);
+    }
+
+    return () =>
+      systemTheme.listener.removeEventListener("change", onThemeChange);
+  }, [theme, onThemeChange]);
 
   const value: ThemeProviderState = {
     theme: resolvedTheme,

@@ -6,25 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function getSystemTheme(
-  onThemeChange?: (theme: "dark" | "light") => void,
-  operation: "add" | "remove" = "add"
-) {
-  const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-  if (onThemeChange)
-    if (operation === "add")
-      colorSchemeQuery.addEventListener("change", (ev) =>
-        onThemeChange(ev.matches ? "dark" : "light")
-      );
-    else
-      colorSchemeQuery.removeEventListener("change", (ev) =>
-        onThemeChange(ev.matches ? "dark" : "light")
-      );
-
-  return colorSchemeQuery.matches ? "dark" : "light";
-}
-
 type EnvironmentType = "development" | "preview" | "production";
 export function getCurrentEnvironment(): EnvironmentType {
   return (process.env.VERCEL_ENV || "development") as EnvironmentType;

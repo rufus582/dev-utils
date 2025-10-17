@@ -6,6 +6,15 @@ import { motion, useAnimate, type MotionStyle } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
+const defaultInteractionAnimation: React.ComponentProps<typeof motion.button> = {
+  whileHover: { scale: 1.1 },
+  transition: {
+    type: "spring",
+    bounce: 0.6,
+    ease: "easeInOut",
+  },
+};
+
 const buttonVariants = cva(
   "cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive relative overflow-hidden",
   {
@@ -119,9 +128,11 @@ function Button({
   size,
   buttonIcon,
   onClick,
+  disabled = undefined,
   loaderIcon = <Loader />,
   successIcon = <CheckIcon />,
   errorIcon = <XIcon />,
+  useDefaultInteractionAnimation,
   successBgColor,
   successBgColorClass,
   errorBgColor,
@@ -141,25 +152,25 @@ function Button({
     onClick?: (
       event: React.MouseEvent<HTMLButtonElement>
     ) => boolean | Promise<boolean>;
+    useDefaultInteractionAnimation?: boolean,
   }) {
   const [scope, animate] = useAnimate();
+  const [loading, setLoading] = React.useState(false)
 
   const animateLoading = async () => {
     if (!loaderIcon && !successIcon) {
       return;
     }
 
-    if (buttonIcon) {
-      await animate(
-        ".icon",
-        {
-          scale: 0,
-        },
-        {
-          duration: 0.2,
-        }
-      );
-    }
+    await animate(
+      ".icon",
+      {
+        scale: 0,
+      },
+      {
+        duration: 0.2,
+      }
+    );
     if (loaderIcon) {
       await animate(
         ".loader",
@@ -233,17 +244,15 @@ function Button({
       }
     }
 
-    if (buttonIcon) {
-      await animate(
-        ".icon",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        }
-      );
-    }
+    await animate(
+      ".icon",
+      {
+        scale: 1,
+      },
+      {
+        duration: 0.2,
+      }
+    );
   };
 
   const animateError = async () => {
@@ -306,21 +315,21 @@ function Button({
       }
     }
 
-    if (buttonIcon) {
-      await animate(
-        ".icon",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        }
-      );
-    }
+    await animate(
+      ".icon",
+      {
+        scale: 1,
+      },
+      {
+        duration: 0.2,
+      }
+    );
   };
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    setLoading(true)
     await animateLoading();
+    setLoading(false)
     if (onClick) {
       const isSuccess = (await onClick(event)) as unknown;
       if (isSuccess === true) {
@@ -365,7 +374,9 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       onClick={handleClick}
+      disabled={disabled !== undefined ? disabled : loading}
       {...props}
+      {...(useDefaultInteractionAnimation ? defaultInteractionAnimation : {})}
     >
       <motion.div
         className={`success-bg absolute w-full h-full ${

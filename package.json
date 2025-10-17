@@ -43,6 +43,7 @@
     "immer": "^10.1.1",
     "jq-web": "^0.6.2",
     "js-cookie": "^3.0.5",
+    "jsonpathly": "^2.0.3",
     "lodash": "^4.17.21",
     "lucide-react": "^0.542.0",
     "monaco-editor": "^0.53.0",
@@ -60,7 +61,8 @@
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.12",
     "use-immer": "^0.11.0",
-    "yaml": "^2.8.1"
+    "yaml": "^2.8.1",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",

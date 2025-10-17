@@ -42,13 +42,21 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import type {
   JSONGridTabDataProps,
   JSONGridTabsRefType,
 } from "@/components/ui/code/json-grid-tabs";
 import JSONGridTabs from "@/components/ui/code/json-grid-tabs";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  FieldSet,
+} from "@/components/ui/field";
+import * as z from "zod";
+import { AnimatePresence, motion } from "motion/react";
 
 interface SQLDataStateType {
   db?: Database;
@@ -56,10 +64,20 @@ interface SQLDataStateType {
   resultData: JSONGridTabDataProps[];
 }
 
-interface ImportTableFormType {
-  tableName?: string;
-  file?: File;
-}
+const ImportTableFormFields = z.strictObject({
+  tableName: z
+    .string()
+    .regex(
+      /^[^0-9][a-zA-z_0-9]*$/,
+      "Table name cannot be empty, must start with an alphabet and can contain only alphanumeric or underscore(_) characters."
+    ),
+  file: z
+    .file()
+    .min(1, "Supported formats: JSON, CSV, PARQUET. File cannot be empty."),
+});
+
+type ImportTableFormType = z.infer<typeof ImportTableFormFields>;
+type ImportTableFormErrorType = z.core.$ZodFlattenedError<ImportTableFormType>;
 
 const SQLPlayground = () => {
   const [isSQLPanelCollapsed, setIsSQLPanelCollapsed] = useState(false);
@@ -98,27 +116,22 @@ const SQLPlayground = () => {
   }, [sqlDataState.resultData]);
 
   const [isImportFormOpen, setIsImportFormOpen] = useState<boolean>(false);
+  const [importTableFormErrors, setImportTableFormErrors] =
+    useState<ImportTableFormErrorType>();
   const importTableFormRef = useRef<HTMLFormElement>(null);
   const onImportTableFormSubmit = async (): Promise<boolean> => {
-    const formData = new FormData(importTableFormRef.current ?? undefined);
-    const formResponse = Object.fromEntries(
-      formData.entries()
-    ) as unknown as ImportTableFormType;
-    const fileExtension = _.toPath(formResponse.file?.name).pop();
-
-    if (
-      !formResponse.file ||
-      formResponse.file.size === 0 ||
-      !formResponse.tableName ||
-      formResponse.tableName === ""
-    ) {
-      return false;
-    }
-
     try {
+      const formData = new FormData(importTableFormRef.current ?? undefined);
+      const formResponse = ImportTableFormFields.parse(
+        Object.fromEntries(formData.entries()),
+        {}
+      );
+
+      const fileExtension = _.toPath(formResponse.file.name).pop();
+
       const fileFormat = TextFormatsList.find(
         (format) =>
-          format.mimeType === formResponse.file?.type ||
+          format.mimeType === formResponse.file.type ||
           (fileExtension && format.extensions.includes(fileExtension))
       );
       if (!fileFormat || fileFormat === undefined) {
@@ -147,14 +160,22 @@ const SQLPlayground = () => {
       tableQueryData.insertQueries.forEach(
         async (query) => await Promise.resolve(sqlDataState.db?.run(query))
       );
+
+      toast.success(`Successfully imported table: ${formResponse.tableName}`);
+      setIsImportFormOpen(false);
+      return true;
     } catch (error) {
-      toast.error(`${error}`);
+      if (error instanceof z.ZodError)
+        setImportTableFormErrors(z.flattenError(error));
+      else toast.error(`${error}`);
+
       return false;
     }
+  };
 
-    toast.success(`Successfully imported table: ${formResponse.tableName}`);
-    setIsImportFormOpen(false);
-    return true;
+  const onImportTableFormOpenChange = (open: boolean) => {
+    setIsImportFormOpen(open);
+    setImportTableFormErrors(undefined);
   };
 
   const onClickRunSQL = (selection: boolean = false): boolean => {
@@ -188,9 +209,8 @@ const SQLPlayground = () => {
         });
       }
 
-      toast.success("SQL Query ran successfully!")
+      toast.success("SQL Query ran successfully!");
       return true;
-
     } catch (error) {
       toast.error(`${error}`);
       return false;
@@ -221,7 +241,7 @@ const SQLPlayground = () => {
         <div>
           <Dialog
             open={isImportFormOpen}
-            onOpenChange={(open) => setIsImportFormOpen(open)}
+            onOpenChange={onImportTableFormOpenChange}
           >
             <DialogTrigger asChild>
               <Button
@@ -231,8 +251,7 @@ const SQLPlayground = () => {
                 successIcon={null}
                 errorIcon={null}
                 className="w-fit rounded-full mb-4 ml-2"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 1 }}
+                useDefaultInteractionAnimation
               >
                 Import Table
               </Button>
@@ -250,27 +269,96 @@ const SQLPlayground = () => {
                   ev.preventDefault();
                 }}
               >
-                <div className="grid grid-cols-5 gap-4">
-                  <Label htmlFor="tableName">Table Name</Label>
-                  <Input
-                    required
-                    id="tableName"
-                    name="tableName"
-                    type="text"
-                    className="rounded-full col-span-4 hover:border-muted-foreground transition-colors"
-                    placeholder="Example: users"
-                  />
-                  <Label htmlFor="fileInput">Open File</Label>
-                  <Input
-                    required
-                    id="fileInput"
-                    name="file"
-                    type="file"
-                    accept=".json,.csv,.parquet"
-                    className="file:text-secondary-foreground file:bg-secondary file:border-border file:border file:px-2 file:h-full file:rounded-full hover:file:bg-secondary/60 hover:border-muted-foreground rounded-full px-1 cursor-pointer file:cursor-pointer col-span-4 transition-colors"
-                  />
-                  <Separator className="col-span-5" />
-                </div>
+                <FieldSet>
+                  <Field
+                    data-invalid={Boolean(
+                      importTableFormErrors?.fieldErrors.tableName
+                    )}
+                  >
+                    <FieldLabel htmlFor="tableName">Table Name</FieldLabel>
+                    <Input
+                      id="tableName"
+                      name="tableName"
+                      type="text"
+                      className="rounded-full hover:border-muted-foreground transition-colors aria-[invalid=true]:border-destructive"
+                      placeholder="Example: users"
+                      aria-invalid={Boolean(
+                        importTableFormErrors?.fieldErrors.tableName
+                      )}
+                      onChange={() => setImportTableFormErrors(undefined)}
+                    />
+                    <AnimatePresence>
+                      {importTableFormErrors?.fieldErrors.tableName && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                          className="text-destructive text-sm font-normal"
+                        >
+                          <FieldError
+                            errors={importTableFormErrors.fieldErrors.tableName.map(
+                              (err) => ({
+                                message: err,
+                              })
+                            )}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </Field>
+                  <Field
+                    data-invalid={Boolean(
+                      importTableFormErrors?.fieldErrors.file
+                    )}
+                  >
+                    <FieldLabel htmlFor="fileInput">Open File</FieldLabel>
+                    <Input
+                      id="fileInput"
+                      name="file"
+                      type="file"
+                      accept=".json,.csv,.parquet"
+                      className="file:text-secondary-foreground file:bg-secondary file:border-border file:border file:px-2 file:h-full file:rounded-full hover:file:bg-secondary/60 hover:border-muted-foreground rounded-full px-1 cursor-pointer file:cursor-pointer col-span-4 transition-colors"
+                      onChange={() => setImportTableFormErrors(undefined)}
+                      aria-invalid={Boolean(
+                        importTableFormErrors?.fieldErrors.file
+                      )}
+                    />
+                    <AnimatePresence>
+                      {importTableFormErrors?.fieldErrors.file && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                        >
+                          <FieldError
+                            errors={importTableFormErrors.fieldErrors.file.map(
+                              (err) => ({
+                                message: err,
+                              })
+                            )}
+                          />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    <AnimatePresence>
+                      {!importTableFormErrors?.fieldErrors.file && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2, ease: "easeInOut" }}
+                        >
+                          <FieldDescription>
+                            Supported formats: JSON, CSV, PARQUET
+                          </FieldDescription>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </Field>
+                  <Separator className="mb-4" />
+                </FieldSet>
                 <DialogFooter>
                   <DialogClose asChild>
                     <NormalButton
@@ -286,7 +374,7 @@ const SQLPlayground = () => {
                     buttonIcon={<Grid2x2Plus />}
                     className="rounded-full"
                     onClick={onImportTableFormSubmit}
-                    whileHover={{ scale: 1.1 }}
+                    useDefaultInteractionAnimation
                   >
                     Load Table
                   </Button>
@@ -305,8 +393,7 @@ const SQLPlayground = () => {
               errorBgColorClass="bg-destructive-alt"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={handleClipboardPaste}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 1 }}
+              useDefaultInteractionAnimation
             >
               Paste
             </Button>
@@ -326,8 +413,7 @@ const SQLPlayground = () => {
               errorBgColorClass="bg-primary"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={() => onClickRunSQL()}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 1 }}
+              useDefaultInteractionAnimation
             >
               Run SQL
             </Button>
@@ -345,8 +431,7 @@ const SQLPlayground = () => {
               errorBgColorClass="bg-primary"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={() => onClickRunSQL(true)}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 1 }}
+              useDefaultInteractionAnimation
             >
               Run Selected
             </Button>

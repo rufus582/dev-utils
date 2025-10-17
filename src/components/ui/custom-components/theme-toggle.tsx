@@ -11,21 +11,8 @@ const ThemeToggle = (props: {
 }) => {
   const { setTheme, theme, isSystemTheme } = useTheme();
 
-  const onThemeChange = (curTheme: "light" | "dark" | "system") => {
-    setTheme(curTheme);
-
-    // Reload page if theme was changed from "system" to "light/dark"
-    if (curTheme !== "system" && isSystemTheme) window.location.reload();
-  };
-
   return (
-    <ToggleGroup
-      onValueChange={(value) =>
-        onThemeChange(value as "light" | "dark" | "system")
-      }
-      type="single"
-      {...props}
-    >
+    <ToggleGroup onValueChange={setTheme} type="single" {...props}>
       <Tooltip content="Dark Theme" delayDuration={TOOLTIP_DELAY} asChild>
         <ToggleGroupItem
           value="dark"
