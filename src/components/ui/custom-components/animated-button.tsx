@@ -119,6 +119,7 @@ function Button({
   size,
   buttonIcon,
   onClick,
+  disabled = undefined,
   loaderIcon = <Loader />,
   successIcon = <CheckIcon />,
   errorIcon = <XIcon />,
@@ -362,8 +363,8 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       onClick={handleClick}
+      disabled={disabled !== undefined ? disabled : loading}
       {...props}
-      disabled={loading}
     >
       <motion.div
         className={`success-bg absolute w-full h-full ${
