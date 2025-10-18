@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/input-button";
 import { sleep } from "@/lib/utils";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/custom-components/animated-button";
 import SelectedSnapshotsActionBar from "./SnapshotsTable/action-bar";
 import {
   Empty,
@@ -131,8 +131,15 @@ const SnapshotsPage = () => {
         </InputButtonProvider>
         <CreateSnapshotDialog
           trigger={
-            <Button className="w-fit ml-auto rounded-full">
-              <SaveIcon /> Create Snapshot
+            <Button
+              className="w-fit ml-auto rounded-full"
+              buttonIcon={<SaveIcon />}
+              loaderIcon={null}
+              errorIcon={null}
+              successIcon={null}
+              useDefaultInteractionAnimation
+            >
+              Create Snapshot
             </Button>
           }
         />

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import LinkedInLogo from "@/components/icons/linkedin-logo";
 import { openLinkInNewTab } from "@/lib/utils";
 import type React from "react";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 interface ProfileLinkProps {
   link: string;
@@ -44,18 +45,12 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
             ? "This app is designed for desktop use only. Please access it from a laptop or desktop device."
             : "Select one of the items in the sidebar to begin!"}
         </p>
-        {links.map((linkItem, index) => {
-          let borderRadiusClasses = "rounded-none";
-          if (index === 0)
-            borderRadiusClasses = "rounded-l-full rounded-r-none";
-          else if (index === links.length - 1)
-            borderRadiusClasses = "rounded-r-full rounded-l-none";
-
-          return (
+        <ButtonGroup className="mt-4 mx-auto">
+          {links.map((linkItem) => (
             <Button
               key={linkItem.text}
               variant="outline"
-              className={`${borderRadiusClasses} fill-foreground mt-4`}
+              className="fill-foreground rounded-full"
               size="lg"
               onClick={() =>
                 openLinkInNewTab(linkItem.link, linkItem.isWidelyAvailable)
@@ -64,8 +59,8 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
               {linkItem.icon}
               {linkItem.text}
             </Button>
-          );
-        })}
+          ))}
+        </ButtonGroup>
       </div>
     </div>
   );
