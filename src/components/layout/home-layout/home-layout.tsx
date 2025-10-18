@@ -2,8 +2,9 @@ import { Outlet } from "react-router";
 import { SidebarProvider } from "../../ui/sidebar";
 import AppSidebar from "./app-sidebar";
 import Cookies from "js-cookie";
+import AppError from "./app-error";
 
-const HomeLayout = () => {
+const HomeLayout = ({ showErrorLayout }: { showErrorLayout?: boolean }) => {
   const sidebarStateCookie = Cookies.get("sidebar_state");
 
   return (
@@ -19,7 +20,7 @@ const HomeLayout = () => {
     >
       <AppSidebar />
       <main className="bg-background relative w-full overflow-scroll m-2 ml-0">
-        <Outlet />
+        {showErrorLayout ? <AppError /> : <Outlet />}
       </main>
     </SidebarProvider>
   );
