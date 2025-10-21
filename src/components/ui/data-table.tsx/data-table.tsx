@@ -88,7 +88,7 @@ export function DataTable<TData, TValue>({
             <TableRow>
               <TableCell
                 colSpan={table.getAllColumns().length}
-                className="h-24 text-center"
+                className="min-h-24 text-center"
               >
                 {emptyContent ?? "No records."}
               </TableCell>
