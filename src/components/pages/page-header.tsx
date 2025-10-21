@@ -1,10 +1,11 @@
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
 import ThemeToggle from "../ui/custom-components/theme-toggle";
 import { useLocation } from "react-router";
 import { routeDefinitions } from "@/routes/route-definitions";
 import { Separator } from "../ui/separator";
 import type React from "react";
 import { Tooltip } from "../ui/custom-components/tooltip-wrapper";
+import SidebarToggleIcon from "../icons/sidebar-toggle-icon";
 
 const Header = ({
   title,
@@ -19,11 +20,18 @@ const Header = ({
     (route) => route.path === location.pathname
   );
 
+  const { toggleSidebar, open } = useSidebar();
+
   return (
     <>
       <div className="w-full flex pb-4 pt-4 justify-between">
         <Tooltip content="Toggle Sidebar" asChild>
-          <SidebarTrigger className="my-auto" />
+          <button
+            className="p-2 cursor-pointer hover:bg-accent dark:hover:bg-accent/50 rounded-xl"
+            onClick={toggleSidebar}
+          >
+            <SidebarToggleIcon isOpen={open} />
+          </button>
         </Tooltip>
         <span className="font-bold text-2xl text-primary">
           {title ?? routeDefinition?.displayable}

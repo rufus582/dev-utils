@@ -7,16 +7,17 @@ import HomePage from "@/components/pages/HomePage/HomePage";
 const router = createBrowserRouter([
   {
     Component: HomeLayout,
+    errorElement: <HomeLayout showErrorLayout />,
     children: [
       {
-        path: '/',
-        element: <HomePage />
+        path: "/",
+        element: <HomePage />,
       },
-      ...routeDefinitions
-    ]
+      ...routeDefinitions,
+    ],
   },
 ]);
 
-const RouterProvider = () => <ReactRouterProvider router={router} />
+const RouterProvider = () => <ReactRouterProvider router={router} />;
 
-export default RouterProvider
+export default RouterProvider;

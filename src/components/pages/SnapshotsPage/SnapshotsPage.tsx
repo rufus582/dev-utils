@@ -1,4 +1,4 @@
-import { SaveIcon, XIcon } from "lucide-react";
+import { ArchiveIcon, SaveIcon, XIcon } from "lucide-react";
 import Header from "../page-header";
 import { useLiveQuery } from "dexie-react-hooks";
 import { snapshotOps, type ISnapshot } from "@/store/indexed-db/snapshots";
@@ -23,10 +23,31 @@ import {
 } from "@/components/ui/input-button";
 import { sleep } from "@/lib/utils";
 import CreateSnapshotDialog from "./CreateSnapshotDialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/custom-components/animated-button";
 import SelectedSnapshotsActionBar from "./SnapshotsTable/action-bar";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 
 const defaultSnapshot: ISnapshot[] = [];
+
+const NoSnapshots = () => {
+  return (
+    <Empty className="h-full">
+      <EmptyHeader>
+        <EmptyMedia variant="icon">
+          <ArchiveIcon />
+        </EmptyMedia>
+        <EmptyTitle>No Saved Snapshots Found</EmptyTitle>
+        <EmptyDescription>You haven't saved any snapshots yet</EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  );
+};
 
 const SnapshotsPage = () => {
   const snapshots = useLiveQuery(snapshotOps.readAll);
@@ -110,8 +131,15 @@ const SnapshotsPage = () => {
         </InputButtonProvider>
         <CreateSnapshotDialog
           trigger={
-            <Button className="w-fit ml-auto rounded-full">
-              <SaveIcon /> Create Snapshot
+            <Button
+              className="w-fit ml-auto rounded-full"
+              buttonIcon={<SaveIcon />}
+              loaderIcon={null}
+              errorIcon={null}
+              successIcon={null}
+              useDefaultInteractionAnimation
+            >
+              Create Snapshot
             </Button>
           }
         />
@@ -119,7 +147,7 @@ const SnapshotsPage = () => {
       <DataTable
         viewTransitionName="code-view"
         tableState={tableState}
-        emptyContent="No saved snapshots found."
+        emptyContent={<NoSnapshots />}
       />
       <SelectedSnapshotsActionBar
         tableState={tableState}
