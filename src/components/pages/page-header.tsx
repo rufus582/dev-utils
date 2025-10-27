@@ -25,7 +25,7 @@ const Header = ({
   return (
     <>
       <div className="w-full flex pb-4 pt-4 justify-between">
-        <Tooltip content="Toggle Sidebar" asChild>
+        <Tooltip content={`${open ? "Close" : "Open"} Sidebar`} asChild>
           <button
             className="p-2 cursor-pointer hover:bg-accent dark:hover:bg-accent/50 rounded-xl"
             onClick={toggleSidebar}
