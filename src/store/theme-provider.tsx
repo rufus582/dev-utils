@@ -10,6 +10,8 @@ import {
   useEffect,
   useState,
 } from "react";
+import { settingsOps } from "./indexed-db/settings";
+import { useLiveQuery } from "dexie-react-hooks";
 
 type Theme = "dark" | "light" | "system";
 type ResolvedTheme = "dark" | "light";
@@ -46,8 +48,23 @@ export function ThemeProvider({
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
-  const initTheme = (localStorage.getItem(storageKey) as Theme) || defaultTheme;
-  const [theme, setTheme] = useState<Theme>(initTheme);
+  const settings = useLiveQuery(settingsOps.get);
+  const initTheme =
+    settings?.theme ||
+    (localStorage.getItem(storageKey) as Theme) ||
+    defaultTheme;
+  const [theme, setThemeState] = useState<Theme>(initTheme);
+
+  const setTheme = useCallback(
+    async (theme: Theme) => {
+      if (theme) {
+        localStorage.setItem(storageKey, theme);
+        await settingsOps.update({ theme });
+        setThemeState(theme);
+      }
+    },
+    [storageKey]
+  );
 
   const systemTheme = getSystemTheme();
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(
@@ -66,6 +83,10 @@ export function ThemeProvider({
   );
 
   useEffect(() => {
+    if (settings?.theme) setTheme(settings?.theme);
+  }, [settings, setTheme]);
+
+  useEffect(() => {
     const systemTheme = getSystemTheme();
 
     if (theme === "system") {
@@ -81,12 +102,7 @@ export function ThemeProvider({
 
   const value: ThemeProviderState = {
     theme: resolvedTheme,
-    setTheme: (theme: Theme) => {
-      if (theme) {
-        localStorage.setItem(storageKey, theme);
-        setTheme(theme);
-      }
-    },
+    setTheme,
     isSystemTheme: theme === "system",
   };
 
