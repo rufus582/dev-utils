@@ -6,14 +6,15 @@ import { motion, useAnimate, type MotionStyle } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
-const defaultInteractionAnimation: React.ComponentProps<typeof motion.button> = {
-  whileHover: { scale: 1.1 },
-  transition: {
-    type: "spring",
-    bounce: 0.6,
-    ease: "easeInOut",
-  },
-};
+const defaultInteractionAnimation: React.ComponentProps<typeof motion.button> =
+  {
+    whileHover: { scale: 1.1 },
+    transition: {
+      type: "spring",
+      bounce: 0.6,
+      ease: "easeInOut",
+    },
+  };
 
 const buttonVariants = cva(
   "cursor-pointer inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive relative overflow-hidden",
@@ -152,10 +153,10 @@ function Button({
     onClick?: (
       event: React.MouseEvent<HTMLButtonElement>
     ) => boolean | Promise<boolean>;
-    useDefaultInteractionAnimation?: boolean,
+    useDefaultInteractionAnimation?: boolean;
   }) {
   const [scope, animate] = useAnimate();
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
 
   const animateLoading = async () => {
     if (!loaderIcon && !successIcon) {
@@ -327,17 +328,18 @@ function Button({
   };
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    setLoading(true)
+    setLoading(true);
     await animateLoading();
-    setLoading(false)
     if (onClick) {
       const isSuccess = (await onClick(event)) as unknown;
+      setLoading(false);
       if (isSuccess === true) {
         await animateSuccess();
       } else {
         await animateError();
       }
     } else {
+      setLoading(false);
       await animateSuccess();
     }
   };
