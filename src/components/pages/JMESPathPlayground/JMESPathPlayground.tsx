@@ -5,7 +5,7 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 import JMESPathLogo from "@/components/icons/jmespath-logo/logo";
 import { TextFormats } from "@/lib/text-formats";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";

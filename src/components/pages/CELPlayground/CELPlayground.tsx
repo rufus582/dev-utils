@@ -4,7 +4,7 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 import { CELActions } from "@/store/redux/cel-slice";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import * as CEL from "@marcbachmann/cel-js";

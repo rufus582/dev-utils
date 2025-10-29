@@ -1,5 +1,5 @@
 import { CodeSquareIcon } from "lucide-react";
-import Header from "../page-header";
+import Header from "@/components/layout/header/page-header";
 import GitHubLogo from "@/components/icons/github-logo";
 import { Button } from "@/components/ui/button";
 import LinkedInLogo from "@/components/icons/linkedin-logo";

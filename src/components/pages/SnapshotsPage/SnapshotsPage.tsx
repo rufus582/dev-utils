@@ -1,5 +1,5 @@
 import { ArchiveIcon, SaveIcon, XIcon } from "lucide-react";
-import Header from "../page-header";
+import Header from "@/components/layout/header/page-header";
 import { useLiveQuery } from "dexie-react-hooks";
 import { snapshotOps, type ISnapshot } from "@/store/indexed-db/snapshots";
 import { DataTable } from "@/components/ui/data-table.tsx/data-table";

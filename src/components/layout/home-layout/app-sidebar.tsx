@@ -19,6 +19,8 @@ import {
 } from "@/routes/route-definitions";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { settingsOps } from "@/store/indexed-db/settings";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>(-1);
@@ -29,7 +31,7 @@ const AppSidebar = () => {
     (def) => def.sidebarPlace === "footer"
   );
 
-  const shouldAnimate = import.meta.env.VITE_PAGE_TRANSITION_ANIMATIONS === "true";
+  const settings = useLiveQuery(settingsOps.get);
 
   const navigate = useNavigate();
   const { open } = useSidebar();
@@ -40,7 +42,7 @@ const AppSidebar = () => {
         ? -1
         : routeDefinition.definitionId
     );
-    navigate(routeDefinition.path ?? "/", { viewTransition: shouldAnimate });
+    navigate(routeDefinition.path ?? "/", { viewTransition: settings?.pageTransition });
   };
 
   return (

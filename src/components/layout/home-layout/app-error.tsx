@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { EmptyDescription } from "@/components/ui/empty";
 import { openLinkInNewTab } from "@/lib/utils";
 import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 
 const AppError = () => {
   const navigate = useNavigate();

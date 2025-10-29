@@ -7,7 +7,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 import { Button } from "@/components/ui/custom-components/animated-button";
 import {

@@ -9,7 +9,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 import { Button } from "@/components/ui/custom-components/animated-button";
 import { Button as NormalButton } from "@/components/ui/button";
 import {
