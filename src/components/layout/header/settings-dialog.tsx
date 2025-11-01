@@ -30,6 +30,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 import { settingsOps } from "@/store/indexed-db/settings";
 import { cn, sleep } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const SettingsFormFields = z.strictObject({
   theme: z.literal(["system", "light", "dark"]),
@@ -42,6 +43,22 @@ type SettingsFormErrors = z.core.$ZodFlattenedError<SettingsFormType>;
 interface ISettingsDialogProps {
   trigger: ReactNode;
 }
+
+const SettingsSkeleton = ({ fieldsCount = 2 }: { fieldsCount?: number }) => {
+  return (
+    <div className="flex flex-col col-span-5 **:data-field-separator:w-full **:data-field-separator:my-4">
+      {Array.from({ length: fieldsCount }).map((_, index) => (
+        <div key={index}>
+          <div className="flex gap-4">
+            <Skeleton className="h-5 my-auto w-1/2 rounded-full" />
+            <Skeleton className="h-8 w-1/2 rounded-full" />
+          </div>
+          <Separator data-field-separator />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
   const settings = useLiveQuery(settingsOps.get);
@@ -104,7 +121,7 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
             </Alert>
             <Separator className="col-span-5" /> */}
 
-            {settings && (
+            {settings ? (
               <>
                 <Field
                   data-invalid={Boolean(formErrors?.fieldErrors.theme)}
@@ -177,6 +194,8 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
                 </Field>
                 <Separator data-field-separator />
               </>
+            ) : (
+              <SettingsSkeleton fieldsCount={2} />
             )}
           </div>
           <DialogFooter className="*:w-[48%] sm:justify-between">
