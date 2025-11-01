@@ -25,7 +25,7 @@ export type RouteDefinition = RouteObject & {
   definitionId: number;
   path: string;
   element: React.ReactNode;
-  displayable: React.ReactNode;
+  displayable: string;
   icon: React.ReactNode;
   children?: RouteDefinition[];
   sidebarPlace: "header" | "content" | "footer";
