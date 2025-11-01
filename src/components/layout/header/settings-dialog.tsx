@@ -95,7 +95,7 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
             ev.preventDefault();
           }}
         >
-          <div className="grid grid-cols-5 gap-0 [&_[data-field-separator]]:col-span-5 [&_[data-field-separator]]:my-4">
+          <div className="grid grid-cols-5 gap-0 **:data-field-separator:col-span-5 **:data-field-separator:my-4">
             {/* <Alert className="col-span-5 rounded-xl">
               <InfoIcon />
               <AlertDescription>
@@ -117,7 +117,7 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
                       name="theme"
                       className={cn(
                         "my-auto max-w-[120px] rounded-full transition-all border-0 dark:bg-transparent",
-                        "dark:data-[state=open]:bg-input/50 [&:is(:hover,[data-state=open])]:bg-input",
+                        "dark:data-[state=open]:bg-input/50 [:hover,[data-state=open]]:bg-input",
                         "[&>svg]:bg-input [&:is([data-state=open],_:hover)>svg]:bg-accent-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1"
                       )}
                       size="sm"
@@ -179,7 +179,7 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
               </>
             )}
           </div>
-          <DialogFooter className="[&>*]:w-[48%] sm:justify-between">
+          <DialogFooter className="*:w-[48%] sm:justify-between">
             <DialogClose asChild>
               <Button variant="outline" className="rounded-full" type="button">
                 Cancel

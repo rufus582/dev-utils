@@ -393,7 +393,7 @@ function Button({
         style={errorBgStyle}
       />
       <motion.div layout className="flex gap-0.5">
-        <div className="relative w-[20px] items-center">
+        <div className="relative w-5 items-center">
           <motion.div
             className="loader absolute top-[8%]"
             initial={{

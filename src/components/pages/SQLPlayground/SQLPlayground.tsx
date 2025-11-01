@@ -280,7 +280,7 @@ const SQLPlayground = () => {
                       id="tableName"
                       name="tableName"
                       type="text"
-                      className="rounded-full hover:border-muted-foreground transition-colors aria-[invalid=true]:border-destructive"
+                      className="rounded-full hover:border-muted-foreground transition-colors aria-invalid:border-destructive"
                       placeholder="Example: users"
                       aria-invalid={Boolean(
                         importTableFormErrors?.fieldErrors.tableName
