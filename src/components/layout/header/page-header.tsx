@@ -27,7 +27,11 @@ const Header = ({
   return (
     <>
       <div className="w-full flex pb-4 pt-4 justify-between">
-        <Tooltip content={`${open ? "Close" : "Open"} Sidebar`} asChild>
+        <Tooltip
+          variant="secondary"
+          content={`${open ? "Close" : "Open"} Sidebar`}
+          asChild
+        >
           <button
             className="p-2 cursor-pointer hover:bg-accent dark:hover:bg-accent/50 rounded-xl"
             onClick={toggleSidebar}
@@ -38,7 +42,13 @@ const Header = ({
         <span className="font-bold text-2xl text-primary">
           {title ?? routeDefinition?.displayable}
         </span>
-        <SettingsDialog trigger={<Button size="icon" variant="outline" className="my-auto mr-2"><SettingsIcon /></Button>}></SettingsDialog>
+        <SettingsDialog
+          trigger={
+            <Button size="icon" variant="outline" className="my-auto mr-2">
+              <SettingsIcon strokeWidth="2" />
+            </Button>
+          }
+        />
       </div>
       {separator && (
         <div className="grid grid-cols-1">

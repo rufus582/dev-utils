@@ -21,6 +21,7 @@
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.2.6",
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-toggle": "^1.1.10",
     "@radix-ui/react-toggle-group": "^1.1.11",
@@ -78,6 +79,8 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2",
-    "vite-plugin-static-copy": "^3.1.2"
+    "vite-plugin-pwa": "^1.1.0",
+    "vite-plugin-static-copy": "^3.1.2",
+    "workbox-window": "^7.3.0"
   }
 }

@@ -1,11 +1,4 @@
-import {
-  CheckCircle2Icon,
-  MoonIcon,
-  SaveIcon,
-  SunIcon,
-  SunMoonIcon,
-  XCircleIcon,
-} from "lucide-react";
+import { MoonIcon, SaveIcon, SunIcon, SunMoonIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
 import {
@@ -35,16 +28,16 @@ import {
 } from "@/components/ui/select";
 import { useLiveQuery } from "dexie-react-hooks";
 import { settingsOps } from "@/store/indexed-db/settings";
-import { sleep } from "@/lib/utils";
+import { cn, sleep } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
 const SettingsFormFields = z.strictObject({
   theme: z.literal(["system", "light", "dark"]),
-  pageTransition: z.literal(["true", "false"]),
+  pageTransition: z.literal(["on", "off", undefined]),
 });
 
 type SettingsFormType = z.infer<typeof SettingsFormFields>;
-type SettingsFormErrors =
-  z.core.$ZodFlattenedError<SettingsFormType>;
+type SettingsFormErrors = z.core.$ZodFlattenedError<SettingsFormType>;
 
 interface ISettingsDialogProps {
   trigger: ReactNode;
@@ -59,13 +52,14 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
   const handleSaveSettings = async (): Promise<boolean> => {
     try {
       const formData = new FormData(formRef.current ?? undefined);
+      console.log(Object.fromEntries(formData.entries()));
       const formResponse = SettingsFormFields.parse(
         Object.fromEntries(formData.entries())
       );
 
       await settingsOps.update({
         ...formResponse,
-        pageTransition: formResponse.pageTransition === "true",
+        pageTransition: formResponse.pageTransition === "on",
       });
 
       // Delay to make theme transition less intrusive
@@ -90,7 +84,7 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
   return (
     <Dialog open={isFormOpen} onOpenChange={onFormOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent bgBlur>
+      <DialogContent className="rounded-3xl" bgBlur>
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
           <DialogDescription>Set your preferences here.</DialogDescription>
@@ -101,7 +95,7 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
             ev.preventDefault();
           }}
         >
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-5 gap-0 [&_[data-field-separator]]:col-span-5 [&_[data-field-separator]]:my-4">
             {/* <Alert className="col-span-5 rounded-xl">
               <InfoIcon />
               <AlertDescription>
@@ -114,16 +108,19 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
               <>
                 <Field
                   data-invalid={Boolean(formErrors?.fieldErrors.theme)}
-                  className="col-span-5 grid grid-cols-5"
+                  className="col-span-5 flex flex-row"
                 >
-                  <FieldLabel className="col-span-2" htmlFor="theme">
-                    Theme
-                  </FieldLabel>
+                  <FieldLabel htmlFor="theme">Theme</FieldLabel>
                   <Select name="theme" defaultValue={settings.theme}>
                     <SelectTrigger
                       id="theme"
                       name="theme"
-                      className="my-auto col-span-3 rounded-full"
+                      className={cn(
+                        "my-auto max-w-[120px] rounded-full transition-all border-0 dark:bg-transparent",
+                        "dark:data-[state=open]:bg-input/50 [&:is(:hover,[data-state=open])]:bg-input",
+                        "[&>svg]:bg-input [&:is([data-state=open],_:hover)>svg]:bg-accent-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1"
+                      )}
+                      size="sm"
                     >
                       <SelectValue placeholder="Select Theme" />
                     </SelectTrigger>
@@ -163,61 +160,26 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
                     )}
                   </AnimatePresence>
                 </Field>
+                <Separator data-field-separator />
                 <Field
                   data-invalid={Boolean(formErrors?.fieldErrors.pageTransition)}
-                  className="col-span-5 grid grid-cols-5"
+                  className="col-span-5 flex flex-row"
                 >
-                  <FieldLabel className="col-span-2" htmlFor="pageTransition">
-                    Page Transition
+                  <FieldLabel htmlFor="pageTransition">
+                    Page Transition Animation
                   </FieldLabel>
-                  <Select
-                    defaultValue={`${settings.pageTransition}`}
+                  <Switch
+                    id="pageTransition"
                     name="pageTransition"
-                  >
-                    <SelectTrigger
-                      id="pageTransition"
-                      name="pageTransition"
-                      className="my-auto col-span-3 rounded-full"
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-b-xl">
-                      <SelectGroup>
-                        <SelectLabel>Select Theme</SelectLabel>
-                        <SelectItem key="true" value="true">
-                          <CheckCircle2Icon />
-                          Animate
-                        </SelectItem>
-                        <SelectItem key="false" value="false">
-                          <XCircleIcon />
-                          Don't Animate
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <AnimatePresence>
-                    {formErrors?.fieldErrors.theme && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                        className="col-span-5"
-                      >
-                        <FieldError
-                          errors={formErrors.fieldErrors.theme.map((val) => ({
-                            message: val,
-                          }))}
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                    className="max-w-8"
+                    defaultChecked={settings.pageTransition}
+                  />
                 </Field>
-                <Separator className="col-span-5" />
+                <Separator data-field-separator />
               </>
             )}
           </div>
-          <DialogFooter className="mt-4">
+          <DialogFooter className="[&>*]:w-[48%] sm:justify-between">
             <DialogClose asChild>
               <Button variant="outline" className="rounded-full" type="button">
                 Cancel
