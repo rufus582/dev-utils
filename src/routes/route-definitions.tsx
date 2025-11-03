@@ -27,6 +27,7 @@ export type RouteDefinition = RouteObject & {
   element: React.ReactNode;
   displayable: string;
   icon: React.ReactNode;
+  keywords?: string[],
   children?: RouteDefinition[];
   sidebarPlace: "header" | "content" | "footer";
   actionElement?: (
@@ -42,6 +43,7 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <WholeWord />,
     displayable: "Text Converter",
     sidebarPlace: "content",
+    keywords: ["base64", "json", "yaml", "toml"]
   },
   {
     definitionId: 2,
@@ -70,6 +72,7 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <Grid2x2 />,
     displayable: "JSON Table Viewer",
     sidebarPlace: "content",
+    keywords: ["csv", "parquet"]
   },
   {
     definitionId: 5,
@@ -102,6 +105,7 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <Archive />,
     displayable: "Saved Snapshots",
     sidebarPlace: "footer",
+    keywords: ["data"],
     actionElement: ({ isActive }) => (
       <CreateSnapshotDialog
         trigger={

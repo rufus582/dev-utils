@@ -22,6 +22,7 @@ interface ICodeEditorProps {
   title?: string;
   className?: string;
   copyButton?: boolean;
+  ignoreCommandKeyCombination?: boolean;
   onChange?: (value?: string) => void;
   defaultValue?: string;
   defaultLanguage?: string;
@@ -43,6 +44,7 @@ const CodeEditor = ({
   title,
   readOnly,
   copyButton,
+  ignoreCommandKeyCombination = true,
   className,
   lineNumbers = true,
   border = true,
@@ -66,8 +68,16 @@ const CodeEditor = ({
     return true;
   };
 
-  const handleEditorDidMount: OnMount = (editor) => {
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
     if (ref) ref.current = editor;
+
+    if (ignoreCommandKeyCombination)
+      monaco.editor.addKeybindingRules([
+        {
+          keybinding: monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyK,
+          command: null,
+        },
+      ]);
   };
 
   return (

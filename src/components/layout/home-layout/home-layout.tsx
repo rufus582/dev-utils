@@ -3,6 +3,7 @@ import { SidebarProvider } from "../../ui/sidebar";
 import AppSidebar from "./app-sidebar";
 import Cookies from "js-cookie";
 import AppError from "./app-error";
+import DevUtilsCommandPrompt from "@/components/layout/home-layout/command-prompt/command";
 
 const HomeLayout = ({ showErrorLayout }: { showErrorLayout?: boolean }) => {
   const sidebarStateCookie = Cookies.get("sidebar_state");
@@ -20,6 +21,7 @@ const HomeLayout = ({ showErrorLayout }: { showErrorLayout?: boolean }) => {
     >
       <AppSidebar />
       <main className="bg-background relative w-full overflow-scroll m-2 ml-0">
+        <DevUtilsCommandPrompt />
         {showErrorLayout ? <AppError /> : <Outlet />}
       </main>
     </SidebarProvider>
