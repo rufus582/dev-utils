@@ -9,7 +9,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 import { Button } from "@/components/ui/custom-components/animated-button";
 import { Button as NormalButton } from "@/components/ui/button";
 import {
@@ -280,7 +280,7 @@ const SQLPlayground = () => {
                       id="tableName"
                       name="tableName"
                       type="text"
-                      className="rounded-full hover:border-muted-foreground transition-colors aria-[invalid=true]:border-destructive"
+                      className="rounded-full hover:border-muted-foreground transition-colors aria-invalid:border-destructive"
                       placeholder="Example: users"
                       aria-invalid={Boolean(
                         importTableFormErrors?.fieldErrors.tableName

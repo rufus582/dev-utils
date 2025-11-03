@@ -12,8 +12,11 @@ import { copyToClipboard } from "@/lib/utils";
 import useOpenFile, { type IUseOpenFileInputType } from "@/hooks/use-open-file";
 import { Tooltip } from "../custom-components/tooltip-wrapper";
 import type React from "react";
+import { Skeleton } from "../skeleton";
+import { Spinner } from "../spinner";
 
-export type CodeEditorRefType = React.RefObject<editor.IStandaloneCodeEditor | null>
+export type CodeEditorRefType =
+  React.RefObject<editor.IStandaloneCodeEditor | null>;
 
 interface ICodeEditorProps {
   title?: string;
@@ -131,6 +134,11 @@ const CodeEditor = ({
             lineNumbers: lineNumbers ? "on" : "off",
             unusualLineTerminators: "auto",
           }}
+          loading={
+            <Skeleton className="h-full w-full flex rounded-none">
+              <Spinner className="m-auto size-8" />
+            </Skeleton>
+          }
           theme={theme === "dark" ? "vs-dark" : "light"}
           onMount={handleEditorDidMount}
         />

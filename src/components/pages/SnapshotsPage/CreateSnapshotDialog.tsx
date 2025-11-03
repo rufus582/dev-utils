@@ -103,7 +103,7 @@ const CreateSnapshotDialog = ({ trigger }: ICreateSnapshotDialogProps) => {
                 id="name"
                 name="name"
                 type="text"
-                className="rounded-full hover:border-muted-foreground transition-colors aria-[invalid=true]:border-destructive"
+                className="rounded-full hover:border-muted-foreground transition-colors aria-invalid:border-destructive"
                 placeholder="Any name of your choice to use when saving app state"
                 aria-invalid={Boolean(
                   createSnapshotFormErrors?.fieldErrors.name

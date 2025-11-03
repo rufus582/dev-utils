@@ -15,7 +15,7 @@ const HomeLayout = ({ showErrorLayout }: { showErrorLayout?: boolean }) => {
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }
-      className="max-h-[100vh] max-w-[100vw]"
+      className="max-h-screen max-w-[100vw]"
       defaultOpen={sidebarStateCookie === "true"}
     >
       <AppSidebar />

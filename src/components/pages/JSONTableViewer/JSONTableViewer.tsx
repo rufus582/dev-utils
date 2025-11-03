@@ -7,7 +7,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 import { Button } from "@/components/ui/custom-components/animated-button";
 import {
@@ -37,7 +37,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JSONTableViewerActions } from "@/store/redux/json-table-viewer-slice";
 
 const JSONTableViewer = () => {
-  const jsonTableViewerState = useAppSelector(state => state.jsonTableViewer);
+  const jsonTableViewerState = useAppSelector((state) => state.jsonTableViewer);
   const dispatch = useAppDispatch();
 
   const [isInputCollapsed, setisInputCollapsed] = useState(false);
@@ -263,7 +263,6 @@ const JSONTableViewer = () => {
                   className="w-full rounded-b-xl rounded-t-none"
                   onClick={handleCurlExecution}
                   size="lg"
-                  disabled={curlState.isFetching}
                   useDefaultInteractionAnimation={false}
                 >
                   Execute

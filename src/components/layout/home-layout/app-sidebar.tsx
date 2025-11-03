@@ -19,6 +19,9 @@ import {
 } from "@/routes/route-definitions";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { settingsOps } from "@/store/indexed-db/settings";
+import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>(-1);
@@ -29,7 +32,7 @@ const AppSidebar = () => {
     (def) => def.sidebarPlace === "footer"
   );
 
-  const shouldAnimate = import.meta.env.VITE_PAGE_TRANSITION_ANIMATIONS === "true";
+  const settings = useLiveQuery(settingsOps.get);
 
   const navigate = useNavigate();
   const { open } = useSidebar();
@@ -40,7 +43,9 @@ const AppSidebar = () => {
         ? -1
         : routeDefinition.definitionId
     );
-    navigate(routeDefinition.path ?? "/", { viewTransition: shouldAnimate });
+    navigate(routeDefinition.path ?? "/", {
+      viewTransition: settings?.pageTransition,
+    });
   };
 
   return (
@@ -66,18 +71,30 @@ const AppSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {sidebarContentDefinitions.map((contentItem) => (
-                <SidebarMenuItem key={contentItem.definitionId}>
-                  <SidebarMenuButton
-                    className="cursor-pointer"
-                    onClick={() => handleNavigation(contentItem)}
-                    isActive={activePathDefinition === contentItem.definitionId}
-                  >
-                    <>
-                      {contentItem.icon}
-                      <span>{contentItem.displayable}</span>
-                    </>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Tooltip
+                  hidden={open}
+                  key={contentItem.definitionId}
+                  content={contentItem.displayable}
+                  asChild
+                  delayDuration={0}
+                  side="right"
+                  variant="secondary"
+                >
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      className="cursor-pointer"
+                      onClick={() => handleNavigation(contentItem)}
+                      isActive={
+                        activePathDefinition === contentItem.definitionId
+                      }
+                    >
+                      <>
+                        {contentItem.icon}
+                        <span>{contentItem.displayable}</span>
+                      </>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </Tooltip>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -86,31 +103,41 @@ const AppSidebar = () => {
       <SidebarFooter>
         <SidebarMenu className="overflow-hidden rounded-xl">
           {sidebarFooterDefinition && (
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                className="hover:font-semibold rounded-xl cursor-pointer"
-                size={open ? "lg" : "default"}
-                isActive={
-                  activePathDefinition === sidebarFooterDefinition.definitionId
-                }
-                onClick={() => handleNavigation(sidebarFooterDefinition)}
-              >
-                <>
-                  {sidebarFooterDefinition.icon}
-                  <span className="transition-all delay-100 duration-150">
-                    {sidebarFooterDefinition.displayable}
-                  </span>
-                </>
-              </SidebarMenuButton>
-              <SidebarMenuAction asChild>
-                {sidebarFooterDefinition.actionElement?.({
-                  definition: sidebarFooterDefinition,
-                  isActive:
+            <Tooltip
+              hidden={open}
+              content={sidebarFooterDefinition.displayable}
+              asChild
+              delayDuration={0}
+              side="right"
+              variant="secondary"
+            >
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  className="hover:font-semibold rounded-xl cursor-pointer"
+                  size={open ? "lg" : "default"}
+                  isActive={
                     activePathDefinition ===
-                    sidebarFooterDefinition.definitionId,
-                })}
-              </SidebarMenuAction>
-            </SidebarMenuItem>
+                    sidebarFooterDefinition.definitionId
+                  }
+                  onClick={() => handleNavigation(sidebarFooterDefinition)}
+                >
+                  <>
+                    {sidebarFooterDefinition.icon}
+                    <span className="transition-all delay-100 duration-150">
+                      {sidebarFooterDefinition.displayable}
+                    </span>
+                  </>
+                </SidebarMenuButton>
+                <SidebarMenuAction asChild>
+                  {sidebarFooterDefinition.actionElement?.({
+                    definition: sidebarFooterDefinition,
+                    isActive:
+                      activePathDefinition ===
+                      sidebarFooterDefinition.definitionId,
+                  })}
+                </SidebarMenuAction>
+              </SidebarMenuItem>
+            </Tooltip>
           )}
         </SidebarMenu>
       </SidebarFooter>

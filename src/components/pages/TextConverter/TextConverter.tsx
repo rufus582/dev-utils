@@ -1,7 +1,7 @@
 import { getTextFormat } from "@/lib/text-formats";
 import TextFormatSelect from "./TextFormatSelect";
 import CodeEditor from "@/components/ui/code/code-editor";
-import Header from "@/components/pages/page-header";
+import Header from "@/components/layout/header/page-header";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import {
   TextConverterActions,
