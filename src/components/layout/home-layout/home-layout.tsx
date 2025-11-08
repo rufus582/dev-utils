@@ -21,7 +21,7 @@ const HomeLayout = ({ showErrorLayout }: { showErrorLayout?: boolean }) => {
     >
       <AppSidebar />
       <main className="bg-background relative w-full overflow-scroll m-2 ml-0">
-        <DevUtilsCommandPrompt />
+        <DevUtilsCommandPrompt setupGlobalShortcut />
         {showErrorLayout ? <AppError /> : <Outlet />}
       </main>
     </SidebarProvider>

@@ -1,14 +1,13 @@
 import Error from "@/components/ui/custom-components/error";
-import { BanIcon, BugIcon, CircleXIcon, HomeIcon } from "lucide-react";
-import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
+import { BanIcon, BugIcon, CircleXIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyDescription } from "@/components/ui/empty";
 import { openLinkInNewTab } from "@/lib/utils";
-import { isRouteErrorResponse, useNavigate, useRouteError } from "react-router";
+import { isRouteErrorResponse, useRouteError } from "react-router";
 import Header from "@/components/layout/header/page-header";
+import DevUtilsCommandPrompt from "./command-prompt/command";
 
 const AppError = () => {
-  const navigate = useNavigate();
   const appError = useRouteError();
   const isRouteError = isRouteErrorResponse(appError);
 
@@ -27,19 +26,11 @@ const AppError = () => {
         message={!isRouteError ? "An unknown error has occurred" : undefined}
         icon={errorIcon}
       >
-        <AnimatedButton
-          variant="outline"
-          className="rounded-full text-primary/90 hover:text-primary"
-          buttonIcon={<HomeIcon />}
-          loaderIcon={null}
-          errorIcon={null}
-          successIcon={null}
-          whileTap={{ scale: 0.9 }}
-          useDefaultInteractionAnimation
-          onClick={() => Boolean(navigate("/"))}
-        >
-          Go to Home
-        </AnimatedButton>
+        <DevUtilsCommandPrompt
+          showSearchBar
+          className="w-3/4"
+          searchBarPlaceholder="Try searching for pages..."
+        />
         <EmptyDescription>
           Found a bug?{" "}
           <Button

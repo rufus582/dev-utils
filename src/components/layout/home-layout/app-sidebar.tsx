@@ -22,6 +22,8 @@ import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { settingsOps } from "@/store/indexed-db/settings";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
+import DevUtilsCommandPrompt from "./command-prompt/command";
+import { AnimatePresence, motion } from "motion/react";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>(-1);
@@ -66,7 +68,38 @@ const AppSidebar = () => {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
+        <SidebarMenu className="px-2">
+          <SidebarMenuItem>
+            <AnimatePresence initial={false}>
+              {open && (
+                <motion.div
+                  initial={{
+                    scaleY: 0,
+                    height: 0,
+                    opacity: 0,
+                  }}
+                  animate={{
+                    scaleY: 1,
+                    height: "2.5rem",
+                    opacity: 1,
+                  }}
+                  exit={{
+                    scaleY: 0,
+                    height: 0,
+                    opacity: 0,
+                  }}
+                  transition={{
+                    type: "spring",
+                    damping: 20,
+                  }}
+                >
+                  <DevUtilsCommandPrompt showSearchBar className="h-10" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <SidebarGroup className="-mt-2">
           <SidebarGroupLabel>Utils</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
