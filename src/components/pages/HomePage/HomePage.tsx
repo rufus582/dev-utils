@@ -6,6 +6,7 @@ import LinkedInLogo from "@/components/icons/linkedin-logo";
 import { openLinkInNewTab } from "@/lib/utils";
 import type React from "react";
 import { ButtonGroup } from "@/components/ui/button-group";
+import { Kbd } from "@/components/ui/kbd";
 
 interface ProfileLinkProps {
   link: string;
@@ -41,9 +42,14 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
         />
         <h2 className="font-bold text-6xl text-muted-foreground">Dev-Utils.</h2>
         <p className="mt-2 text-muted-foreground w-[75%] mx-auto">
-          {isMobile
-            ? "This app is designed for desktop use only. Please access it from a laptop or desktop device."
-            : "Select one of the items in the sidebar to begin!"}
+          {isMobile ? (
+            "This app is designed for desktop use only. Please access it from a laptop or desktop device."
+          ) : (
+            <>
+              Select one of the items in the sidebar or press <Kbd>⌘ + K</Kbd> to
+              begin!
+            </>
+          )}
         </p>
         <ButtonGroup className="mt-4 mx-auto">
           {links.map((linkItem) => (

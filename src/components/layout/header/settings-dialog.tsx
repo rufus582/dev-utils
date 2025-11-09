@@ -41,7 +41,9 @@ type SettingsFormType = z.infer<typeof SettingsFormFields>;
 type SettingsFormErrors = z.core.$ZodFlattenedError<SettingsFormType>;
 
 interface ISettingsDialogProps {
-  trigger: ReactNode;
+  trigger?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 const SettingsSkeleton = ({ fieldsCount = 2 }: { fieldsCount?: number }) => {
@@ -60,10 +62,14 @@ const SettingsSkeleton = ({ fieldsCount = 2 }: { fieldsCount?: number }) => {
   );
 };
 
-const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
+const SettingsDialog = ({
+  trigger,
+  open,
+  onOpenChange,
+}: ISettingsDialogProps) => {
   const settings = useLiveQuery(settingsOps.get);
 
-  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(open || false);
   const [formErrors, setFormErrors] = useState<SettingsFormErrors>();
   const formRef = useRef<HTMLFormElement>(null);
   const handleSaveSettings = async (): Promise<boolean> => {
@@ -84,6 +90,7 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
 
       toast.success(`Successfully updated settings.`);
       setIsFormOpen(false);
+      onOpenChange?.(false);
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) setFormErrors(z.flattenError(error));
@@ -95,11 +102,12 @@ const SettingsDialog = ({ trigger }: ISettingsDialogProps) => {
 
   const onFormOpenChange = (open: boolean) => {
     setIsFormOpen(open);
+    onOpenChange?.(open);
     setFormErrors(undefined);
   };
 
   return (
-    <Dialog open={isFormOpen} onOpenChange={onFormOpenChange}>
+    <Dialog open={open || isFormOpen} onOpenChange={onFormOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="rounded-3xl" bgBlur>
         <DialogHeader>

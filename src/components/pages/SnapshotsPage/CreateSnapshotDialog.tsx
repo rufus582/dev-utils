@@ -32,14 +32,20 @@ type CreateSnapshotFormErrors =
   z.core.$ZodFlattenedError<CreateSnapshotFormType>;
 
 interface ICreateSnapshotDialogProps {
-  trigger: ReactNode;
+  trigger?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const CreateSnapshotDialog = ({ trigger }: ICreateSnapshotDialogProps) => {
+const CreateSnapshotDialog = ({
+  trigger,
+  open,
+  onOpenChange,
+}: ICreateSnapshotDialogProps) => {
   const store = useStore<AppStateType>();
   const currentAppState = store.getState();
 
-  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(open || false);
   const [createSnapshotFormErrors, setCreateSnapshotFormErrors] =
     useState<CreateSnapshotFormErrors>();
   const createSnapshotFormRef = useRef<HTMLFormElement>(null);
@@ -54,6 +60,7 @@ const CreateSnapshotDialog = ({ trigger }: ICreateSnapshotDialogProps) => {
 
       toast.success(`Successfully saved current app state.`);
       setIsFormOpen(false);
+      onOpenChange?.(false);
       return true;
     } catch (error) {
       if (error instanceof z.ZodError)
@@ -66,11 +73,12 @@ const CreateSnapshotDialog = ({ trigger }: ICreateSnapshotDialogProps) => {
 
   const onFormOpenChange = (open: boolean) => {
     setIsFormOpen(open);
+    onOpenChange?.(open);
     setCreateSnapshotFormErrors(undefined);
   };
 
   return (
-    <Dialog open={isFormOpen} onOpenChange={onFormOpenChange}>
+    <Dialog open={open || isFormOpen} onOpenChange={onFormOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent bgBlur>
         <DialogHeader>
