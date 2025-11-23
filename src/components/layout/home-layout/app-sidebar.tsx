@@ -1,4 +1,4 @@
-import { CodeSquareIcon } from "lucide-react";
+import { ChevronDown, CodeSquareIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +24,13 @@ import { settingsOps } from "@/store/indexed-db/settings";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import DevUtilsCommandPrompt from "./command-prompt/command";
 import { AnimatePresence, motion } from "motion/react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+
+const CATEGORY_UNCATEGORISED = "Uncategorised";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>(-1);
@@ -34,10 +41,17 @@ const AppSidebar = () => {
     (def) => def.sidebarPlace === "footer"
   );
 
+  const sidebarContentCategories: string[] = [];
+  sidebarContentDefinitions.forEach((definition) => {
+    const category = definition.category ?? CATEGORY_UNCATEGORISED;
+    if (!sidebarContentCategories.includes(category))
+      sidebarContentCategories.push(category);
+  });
+
   const settings = useLiveQuery(settingsOps.get);
 
   const navigate = useNavigate();
-  const { open } = useSidebar();
+  const { open: sidebarOpen } = useSidebar();
 
   const handleNavigation = (routeDefinition: Partial<RouteDefinition>) => {
     setActivePathDefinition(
@@ -71,7 +85,7 @@ const AppSidebar = () => {
         <SidebarMenu className="px-2">
           <SidebarMenuItem>
             <AnimatePresence initial={false}>
-              {open && (
+              {sidebarOpen && (
                 <motion.div
                   initial={{
                     scaleY: 0,
@@ -99,45 +113,92 @@ const AppSidebar = () => {
             </AnimatePresence>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SidebarGroup className="-mt-2">
-          <SidebarGroupLabel>Utils</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {sidebarContentDefinitions.map((contentItem) => (
-                <Tooltip
-                  hidden={open}
-                  key={contentItem.definitionId}
-                  content={contentItem.displayable}
-                  asChild
-                  delayDuration={0}
-                  side="right"
-                  variant="secondary"
-                >
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      className="cursor-pointer"
-                      onClick={() => handleNavigation(contentItem)}
-                      isActive={
-                        activePathDefinition === contentItem.definitionId
-                      }
+        {sidebarContentCategories.sort().map((category) => {
+          const categoryDefinitions = sidebarContentDefinitions.filter(
+            (definition) =>
+              (category === CATEGORY_UNCATEGORISED && !definition.category) ||
+              category === definition.category
+          );
+          return (
+            <Collapsible defaultOpen className="group/collapsible">
+              <SidebarGroup className="p-0 px-2">
+                <AnimatePresence initial={false}>
+                  {sidebarOpen && (
+                    <motion.div
+                      initial={{
+                        scaleY: 0,
+                        height: 0,
+                        opacity: 0,
+                      }}
+                      animate={{
+                        scaleY: 1,
+                        height: "2rem",
+                        opacity: 1,
+                      }}
+                      exit={{
+                        scaleY: 0,
+                        height: 0,
+                        opacity: 0,
+                        marginBottom: 0,
+                      }}
+                      transition={{
+                        type: "spring",
+                        damping: 20,
+                      }}
+                      className="group-data-[state=open]/collapsible:mb-2"
                     >
-                      <>
-                        {contentItem.icon}
-                        <span>{contentItem.displayable}</span>
-                      </>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </Tooltip>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                      <SidebarGroupLabel asChild>
+                        <CollapsibleTrigger className="w-full flex hover:bg-muted cursor-pointer">
+                          {category}
+                          <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180 duration-300" />
+                        </CollapsibleTrigger>
+                      </SidebarGroupLabel>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <CollapsibleContent>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {categoryDefinitions.map((contentItem) => (
+                        <Tooltip
+                          hidden={sidebarOpen}
+                          key={contentItem.definitionId}
+                          content={contentItem.displayable}
+                          asChild
+                          delayDuration={0}
+                          side="right"
+                          variant="secondary"
+                        >
+                          <SidebarMenuItem>
+                            <SidebarMenuButton
+                              className="cursor-pointer"
+                              onClick={() => handleNavigation(contentItem)}
+                              isActive={
+                                activePathDefinition ===
+                                contentItem.definitionId
+                              }
+                            >
+                              <>
+                                {contentItem.icon}
+                                <span>{contentItem.displayable}</span>
+                              </>
+                            </SidebarMenuButton>
+                          </SidebarMenuItem>
+                        </Tooltip>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </CollapsibleContent>
+              </SidebarGroup>
+            </Collapsible>
+          );
+        })}
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu className="overflow-hidden rounded-xl">
           {sidebarFooterDefinition && (
             <Tooltip
-              hidden={open}
+              hidden={sidebarOpen}
               content={sidebarFooterDefinition.displayable}
               asChild
               delayDuration={0}
@@ -147,7 +208,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   className="hover:font-semibold rounded-xl cursor-pointer"
-                  size={open ? "lg" : "default"}
+                  size={sidebarOpen ? "lg" : "default"}
                   isActive={
                     activePathDefinition ===
                     sidebarFooterDefinition.definitionId
