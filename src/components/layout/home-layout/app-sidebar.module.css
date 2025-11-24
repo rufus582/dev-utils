@@ -1,0 +1,43 @@
+.CollapsibleContent {
+  --animation-duration: 150ms;
+  --margin-top: 0.5rem;
+  overflow: hidden;
+  margin-top: var(--margin-top);
+  opacity: 1;
+}
+
+.CollapsibleContent[data-state="open"] {
+  animation: slideDown var(--animation-duration) ease-out;
+}
+
+.CollapsibleContent[data-state="closed"] {
+  animation: slideUp var(--animation-duration) ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    height: 0;
+    margin-top: 0;
+    opacity: 0;
+  }
+
+  to {
+    height: var(--radix-collapsible-content-height);
+    margin-top: var(--margin-top);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-collapsible-content-height);
+    margin-top: var(--margin-top);
+    opacity: 1;
+  }
+
+  to {
+    height: 0;
+    margin-top: 0;
+    opacity: 0;
+  }
+}

@@ -29,6 +29,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import sidebarStyles from "./app-sidebar.module.css"
 
 const CATEGORY_UNCATEGORISED = "Uncategorised";
 
@@ -120,7 +121,11 @@ const AppSidebar = () => {
               category === definition.category
           );
           return (
-            <Collapsible defaultOpen className="group/collapsible">
+            <Collapsible
+              key={category}
+              defaultOpen
+              className="group/collapsible"
+            >
               <SidebarGroup className="p-0 px-2">
                 <AnimatePresence initial={false}>
                   {sidebarOpen && (
@@ -145,7 +150,6 @@ const AppSidebar = () => {
                         type: "spring",
                         damping: 20,
                       }}
-                      className="group-data-[state=open]/collapsible:mb-2"
                     >
                       <SidebarGroupLabel asChild>
                         <CollapsibleTrigger className="w-full flex hover:bg-muted cursor-pointer">
@@ -156,7 +160,7 @@ const AppSidebar = () => {
                     </motion.div>
                   )}
                 </AnimatePresence>
-                <CollapsibleContent>
+                <CollapsibleContent className={sidebarStyles.CollapsibleContent}>
                   <SidebarGroupContent>
                     <SidebarMenu>
                       {categoryDefinitions.map((contentItem) => (
