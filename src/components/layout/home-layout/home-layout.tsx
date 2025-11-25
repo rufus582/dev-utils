@@ -1,6 +1,6 @@
 import { Outlet } from "react-router";
 import { SidebarProvider } from "../../ui/sidebar";
-import AppSidebar from "./app-sidebar";
+import AppSidebar from "./app-sidebar/app-sidebar";
 import Cookies from "js-cookie";
 import AppError from "./app-error";
 import DevUtilsCommandPrompt from "@/components/layout/home-layout/command-prompt/command";
