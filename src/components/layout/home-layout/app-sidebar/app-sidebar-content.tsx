@@ -58,7 +58,7 @@ const AppSidebarContent = ({
     if (!sidebarOpen)
       setTimeout(() => {
         setSidebarContentState(initialSidebarContentState);
-      }, 1000);
+      }, 500);
   });
   useEffect(openAllCategories, [openAllCategories, sidebarOpen]);
 
@@ -118,7 +118,10 @@ const AppSidebarContent = ({
                   </motion.div>
                 )}
               </AnimatePresence>
-              <CollapsibleContent className={sidebarStyles.CollapsibleContent}>
+              <CollapsibleContent
+                className={sidebarStyles.CollapsibleContent}
+                data-sidebar-state={sidebarOpen ? "expanded" : "collapsed"}
+              >
                 <SidebarGroupContent>
                   <SidebarMenu>
                     {categoryDefinitions.map((contentItem) => (

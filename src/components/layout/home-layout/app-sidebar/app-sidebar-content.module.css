@@ -1,6 +1,11 @@
 .CollapsibleContent {
   --animation-duration: 150ms;
   --margin-top: 0.5rem;
+
+  &[data-sidebar-state="collapsed"] {
+    --animation-duration: 300ms
+  }
+
   overflow: hidden;
   margin-top: var(--margin-top);
   opacity: 1;
