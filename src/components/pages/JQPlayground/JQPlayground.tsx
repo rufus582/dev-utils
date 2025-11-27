@@ -1,5 +1,5 @@
 import CodeEditor from "@/components/ui/code/code-editor";
-import * as jq from "jq-wasm";
+import JQ from "jq-web";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -9,17 +9,10 @@ import Header from "@/components/layout/header/page-header";
 import JQLogo from "@/components/icons/jq-logo";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JQActions } from "@/store/redux/jq-slice";
-import { useEffect } from "react";
 
 export default function JQPlayground() {
-  const jqDataState = useAppSelector((state) => state.jq);
+  const jqDataState = useAppSelector(state => state.jq);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    jq.version().then((version) =>
-      console.log(`Using JQ Version: '${version}'`)
-    );
-  }, []);
 
   const handleCodeChanged = async (
     jqFilterVal?: string,
@@ -35,11 +28,17 @@ export default function JQPlayground() {
     let rawResult = "";
 
     try {
-      const result = await jq.raw(jsonStr, jqFilter);
-      rawResult = result.stderr ? result.stderr : result.stdout;
-    } catch (error) {
-      console.error(error);
-      rawResult = "Error processing JQ query";
+      const jq = await JQ;
+      rawResult = jq.raw(jsonStr, jqFilter) as string;
+    } catch (error: unknown) {
+      if (error && typeof error === "object") {
+        const err = error as { stderr?: string; message?: string };
+        rawResult = `${
+          err.stderr ?? err.message ?? "Error processing JQ query"
+        }`;
+      } else {
+        rawResult = "Error processing JQ query";
+      }
     }
 
     dispatch(JQActions.setResult(rawResult ?? ""));
