@@ -65,7 +65,7 @@ const AppSidebar = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="group-data-[state=collapsed]:gap-0">
         <SidebarMenu className="px-2">
           <SidebarMenuItem>
             <AnimatePresence initial={false}>
