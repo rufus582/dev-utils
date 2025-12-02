@@ -17,7 +17,9 @@ const HomeLayout = ({ showErrorLayout }: { showErrorLayout?: boolean }) => {
         } as React.CSSProperties
       }
       className="max-h-screen max-w-[100vw]"
-      defaultOpen={sidebarStateCookie === "true"}
+      defaultOpen={
+        sidebarStateCookie === "true" || sidebarStateCookie === undefined
+      }
     >
       <AppSidebar />
       <main className="bg-background relative w-full overflow-scroll m-2 ml-0">
