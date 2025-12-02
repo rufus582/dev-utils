@@ -27,7 +27,8 @@ export type RouteDefinition = RouteObject & {
   element: React.ReactNode;
   displayable: string;
   icon: React.ReactNode;
-  keywords?: string[],
+  category?: string;
+  keywords?: string[];
   children?: RouteDefinition[];
   sidebarPlace: "header" | "content" | "footer";
   actionElement?: (
@@ -43,7 +44,8 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <WholeWord />,
     displayable: "Text Converter",
     sidebarPlace: "content",
-    keywords: ["base64", "json", "yaml", "toml"]
+    keywords: ["base64", "json", "yaml", "toml"],
+    category: "JSON",
   },
   {
     definitionId: 2,
@@ -52,6 +54,7 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <JQLogo />,
     displayable: "JQ Playground",
     sidebarPlace: "content",
+    category: "Playground",
   },
   {
     definitionId: 3,
@@ -64,6 +67,7 @@ export const routeDefinitions: RouteDefinition[] = [
     ),
     displayable: "JMESPath Playground",
     sidebarPlace: "content",
+    category: "Playground",
   },
   {
     definitionId: 4,
@@ -72,7 +76,8 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <Grid2x2 />,
     displayable: "JSON Table Viewer",
     sidebarPlace: "content",
-    keywords: ["csv", "parquet"]
+    keywords: ["csv", "parquet"],
+    category: "JSON",
   },
   {
     definitionId: 5,
@@ -81,6 +86,7 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <Database />,
     displayable: "SQL Playground",
     sidebarPlace: "content",
+    category: "Playground",
   },
   {
     definitionId: 6,
@@ -89,6 +95,7 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <CELLogo />,
     displayable: "CEL Playground",
     sidebarPlace: "content",
+    category: "Playground",
   },
   {
     definitionId: 7,
@@ -97,6 +104,7 @@ export const routeDefinitions: RouteDefinition[] = [
     icon: <FileJson />,
     displayable: "JSONPath Playground",
     sidebarPlace: "content",
+    category: "Playground",
   },
   {
     definitionId: 8,

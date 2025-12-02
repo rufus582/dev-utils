@@ -3,16 +3,13 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "../../ui/sidebar";
+} from "../../../ui/sidebar";
 import {
   routeDefinitions,
   type RouteDefinition,
@@ -22,8 +19,9 @@ import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { settingsOps } from "@/store/indexed-db/settings";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
-import DevUtilsCommandPrompt from "./command-prompt/command";
+import DevUtilsCommandPrompt from "../command-prompt/command";
 import { AnimatePresence, motion } from "motion/react";
+import AppSidebarContent from "./app-sidebar-content";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>(-1);
@@ -37,7 +35,7 @@ const AppSidebar = () => {
   const settings = useLiveQuery(settingsOps.get);
 
   const navigate = useNavigate();
-  const { open } = useSidebar();
+  const { open: sidebarOpen } = useSidebar();
 
   const handleNavigation = (routeDefinition: Partial<RouteDefinition>) => {
     setActivePathDefinition(
@@ -67,11 +65,11 @@ const AppSidebar = () => {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="group-data-[state=collapsed]:gap-0">
         <SidebarMenu className="px-2">
           <SidebarMenuItem>
             <AnimatePresence initial={false}>
-              {open && (
+              {sidebarOpen && (
                 <motion.div
                   initial={{
                     scaleY: 0,
@@ -99,45 +97,17 @@ const AppSidebar = () => {
             </AnimatePresence>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SidebarGroup className="-mt-2">
-          <SidebarGroupLabel>Utils</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {sidebarContentDefinitions.map((contentItem) => (
-                <Tooltip
-                  hidden={open}
-                  key={contentItem.definitionId}
-                  content={contentItem.displayable}
-                  asChild
-                  delayDuration={0}
-                  side="right"
-                  variant="secondary"
-                >
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      className="cursor-pointer"
-                      onClick={() => handleNavigation(contentItem)}
-                      isActive={
-                        activePathDefinition === contentItem.definitionId
-                      }
-                    >
-                      <>
-                        {contentItem.icon}
-                        <span>{contentItem.displayable}</span>
-                      </>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </Tooltip>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <AppSidebarContent
+          navigate={handleNavigation}
+          activePathDefinition={activePathDefinition}
+          sidebarContentDefinitions={sidebarContentDefinitions}
+        />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu className="overflow-hidden rounded-xl">
           {sidebarFooterDefinition && (
             <Tooltip
-              hidden={open}
+              hidden={sidebarOpen}
               content={sidebarFooterDefinition.displayable}
               asChild
               delayDuration={0}
@@ -147,7 +117,7 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   className="hover:font-semibold rounded-xl cursor-pointer"
-                  size={open ? "lg" : "default"}
+                  size={sidebarOpen ? "lg" : "default"}
                   isActive={
                     activePathDefinition ===
                     sidebarFooterDefinition.definitionId
