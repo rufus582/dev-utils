@@ -1,4 +1,5 @@
 import CodeEditor from "@/components/ui/code/code-editor";
+import JQ from "jq-web";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -8,26 +9,46 @@ import Header from "@/components/layout/header/page-header";
 import JQLogo from "@/components/icons/jq-logo";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JQActions } from "@/store/redux/jq-slice";
-import { useJQ } from "@/hooks/use-jq";
 
 export default function JQPlayground() {
-  const jqDataState = useAppSelector((state) => state.jq);
+  const jqDataState = useAppSelector(state => state.jq);
   const dispatch = useAppDispatch();
 
-  const { setFilter, setJSONStr } = useJQ({
-    logJqVersion: true,
-    invokeOnChange: true,
-    onChange: (state) => {
-      dispatch(JQActions.setFilter(state.filter));
-      dispatch(JQActions.setJsonStr(state.jsonStr));
-      dispatch(JQActions.setResult(state.result));
-    },
-    initial: jqDataState,
-  });
+  const handleCodeChanged = async (
+    jqFilterVal?: string,
+    jsonStrVal?: string
+  ) => {
+    const jqFilter =
+      jqFilterVal === undefined ? jqDataState.filter : jqFilterVal;
+    const jsonStr = jsonStrVal === undefined ? jqDataState.jsonStr : jsonStrVal;
+
+    dispatch(JQActions.setFilter(jqFilter));
+    dispatch(JQActions.setJsonStr(jsonStr));
+
+    let rawResult = "";
+
+    try {
+      const jq = await JQ;
+      rawResult = jq.raw(jsonStr, jqFilter) as string;
+    } catch (error: unknown) {
+      if (error && typeof error === "object") {
+        const err = error as { stderr?: string; message?: string };
+        rawResult = `${
+          err.stderr ?? err.message ?? "Error processing JQ query"
+        }`;
+      } else {
+        rawResult = "Error processing JQ query";
+      }
+    }
+
+    dispatch(JQActions.setResult(rawResult ?? ""));
+  };
 
   const onOpenJSONFile = (files: FileList | null) => {
     if (files && files.length > 0) {
-      files[0].text().then(setJSONStr);
+      files[0]
+        .text()
+        .then((fileContent) => handleCodeChanged(undefined, fileContent));
     }
   };
 
@@ -48,7 +69,7 @@ export default function JQPlayground() {
         <CodeEditor
           className="rounded-l-xl rounded-r-md"
           value={jqDataState.filter}
-          onChange={setFilter}
+          onChange={(jqFilter) => handleCodeChanged(jqFilter)}
           title="JQ"
           copyButton
         />
@@ -59,7 +80,7 @@ export default function JQPlayground() {
               value={jqDataState.jsonStr}
               title="Input JSON"
               language="json"
-              onChange={setJSONStr}
+              onChange={(jsonStr) => handleCodeChanged(undefined, jsonStr)}
               copyButton
               fileButton={{
                 enabled: true,
