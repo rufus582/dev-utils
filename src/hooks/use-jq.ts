@@ -1,14 +1,10 @@
 import * as jq from "@/lib/jq/jq";
 import jqWorkerOps from "@/lib/jq/jq.worker.helper";
-import jqWorkerUrl from "@/lib/jq/jq.worker?url";
+import JQWorker from "@/lib/jq/jq.worker?worker";
 import { useCallback, useEffect, useEffectEvent } from "react";
 import { useImmer } from "use-immer";
 
-const jqWorker =
-  Worker !== undefined &&
-  new Worker(new URL(jqWorkerUrl, import.meta.url), {
-    type: "module",
-  });
+const jqWorker = Worker !== undefined ? new JQWorker() : null;
 
 type JQDataStateType = {
   filter: string;

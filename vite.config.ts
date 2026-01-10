@@ -12,6 +12,10 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
+          src: "src/lib/jq/jq.wasm",
+          dest: "./",
+        },
+        {
           src: "node_modules/sql.js/dist/sql-wasm.wasm",
           dest: "./",
         },
