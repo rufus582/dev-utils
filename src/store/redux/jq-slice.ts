@@ -7,7 +7,7 @@ type JQDataStateType = {
 };
 
 const initialState: JQDataStateType = {
-  filter: "",
+  filter: ".",
   result: "",
   jsonStr: "",
 };
