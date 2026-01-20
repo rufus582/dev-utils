@@ -58,8 +58,7 @@ const useJQ = ({
 
   useEffect(() => {
     if (logJqVersion)
-      if (jqWorker) jqWorkerOps.version(jqWorker, console.log);
-      else jq.version().then(console.log);
+      jq.version().then(console.log);
   }, [logJqVersion]);
 
   useEffect(() => {
