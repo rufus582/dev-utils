@@ -6,6 +6,7 @@ interface TiltContainerProps {
   rotateX?: number;
   rotateY?: number;
   rotate?: number;
+  className?: string;
   children: React.ReactNode;
   springOptions?: SpringOptions;
 }
@@ -20,12 +21,12 @@ const TiltContainer = ({ springOptions, ...props }: TiltContainerProps) => {
   const rotateX = useTransform(
     y,
     [0, window.innerHeight],
-    [rotateXAngle, "-" + rotateXAngle]
+    [rotateXAngle, "-" + rotateXAngle],
   );
   const rotateY = useTransform(
     x,
     [0, window.innerWidth],
-    ["-" + rotateYAngle, rotateYAngle]
+    ["-" + rotateYAngle, rotateYAngle],
   );
 
   useEffect(() => {
@@ -36,7 +37,10 @@ const TiltContainer = ({ springOptions, ...props }: TiltContainerProps) => {
   }, [handleMouseMove]);
 
   return (
-    <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}>
+    <motion.div
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      className={props.className}
+    >
       {props.children}
     </motion.div>
   );
