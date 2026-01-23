@@ -35,15 +35,15 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
   return (
     <div className="h-full w-full flex flex-col">
       {!isMobile && <Header />}
-      <div className="m-auto text-center w-full">
-        <TiltContainer rotate={25} className=" perspective-midrange">
+      <div className="m-auto text-center w-full overflow-x-clip">
+        <TiltContainer rotate={25} className="perspective-midrange">
           <div className="w-lg h-128 p-8 bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[130px] shadow-2xl translate-z-14 transform-3d">
             <AppLogo className="w-full h-full translate-z-5 drop-shadow-2xl drop-shadow-black/40" />
           </div>
-          <h2 className="font-bold text-8xl text-muted-foreground translate-z-14">
+          <h2 className="font-bold text-8xl text-muted-foreground translate-z-14 select-none pointer-events-none">
             Dev-Utils.
           </h2>
-          <p className="mt-2 text-muted-foreground w-[75%] mx-auto translate-z-14">
+          <p className="mt-2 text-muted-foreground w-[75%] mx-auto translate-z-14 select-none pointer-events-none">
             {isMobile ? (
               "This app is designed for desktop use only. Please access it from a laptop or desktop device."
             ) : (
@@ -64,7 +64,7 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
                 <Button
                   key={linkItem.text}
                   variant="outline"
-                  className="fill-foreground rounded-3xl hover:translate-z-5 transform-3d transition-all duration-300 ease-in-out"
+                  className="fill-foreground rounded-3xl hover:translate-z-5 transform-3d transition-all duration-300 ease-in-out select-none"
                   size="lg"
                   onClick={() =>
                     openLinkInNewTab(linkItem.link, linkItem.isWidelyAvailable)
