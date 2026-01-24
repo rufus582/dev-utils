@@ -44,4 +44,5 @@ export default defineConfig({
   server: {
     host: true,
   },
+  envPrefix: ["VITE_", "DU_", "DEVUTILS_"],
 });

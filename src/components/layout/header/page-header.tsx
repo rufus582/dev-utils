@@ -8,6 +8,8 @@ import SidebarToggleIcon from "@/components/icons/sidebar-toggle-icon";
 import SettingsDialog from "@/components/layout/header/settings-dialog";
 import { Button } from "@/components/ui/button";
 import { SettingsIcon } from "lucide-react";
+import { useContext } from "react";
+import { PWAProviderContext } from "@/store/pwa-provider";
 
 const Header = ({
   title,
@@ -19,10 +21,12 @@ const Header = ({
   const location = useLocation();
 
   const routeDefinition = routeDefinitions.find(
-    (route) => route.path === location.pathname
+    (route) => route.path === location.pathname,
   );
 
   const { toggleSidebar, open } = useSidebar();
+
+  const { needRefresh } = useContext(PWAProviderContext);
 
   return (
     <>
@@ -44,9 +48,14 @@ const Header = ({
         </span>
         <SettingsDialog
           trigger={
-            <Button size="icon" variant="outline" className="my-auto mr-2">
-              <SettingsIcon strokeWidth="2" />
-            </Button>
+            <div className="relative">
+              {needRefresh && (
+                <div className="absolute -top-1 right-1 w-2 h-2 rounded-full bg-secondary-foreground" />
+              )}
+              <Button size="icon" variant="outline" className="my-auto mr-2">
+                <SettingsIcon strokeWidth="2" />
+              </Button>
+            </div>
           }
         />
       </div>

@@ -8,9 +8,8 @@ const AppLogo = ({ className }: { className?: string }) => {
       height="24"
       viewBox="0 0 24 24"
       fill="none"
-      // stroke-width="2.5"
-      stroke-linecap="round"
-      stroke-linejoin="round"
+      strokeLinecap="round"
+      strokeLinejoin="round"
       className={cn(
         "stroke-[#733e0a] stroke-[2.5]",
         className,

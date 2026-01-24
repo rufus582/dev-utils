@@ -17,7 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useRef, useState, type ReactNode } from "react";
+import { useContext, useRef, useState, type ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -38,7 +38,7 @@ import { cn, sleep } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { useRegisterSW } from "virtual:pwa-register/react";
+import { PWAProviderContext } from "@/store/pwa-provider";
 
 const SettingsFormFields = z.strictObject({
   theme: z.literal(["system", "light", "dark"]),
@@ -75,17 +75,7 @@ const SettingsDialog = ({
   open,
   onOpenChange,
 }: ISettingsDialogProps) => {
-  const {
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker,
-  } = useRegisterSW({
-    onRegistered(r) {
-      console.log("SW Registered: " + r);
-    },
-    onRegisterError(error) {
-      console.log("SW registration error", error);
-    },
-  });
+  const { needRefresh, updateServiceWorker } = useContext(PWAProviderContext);
 
   const settings = useLiveQuery(settingsOps.get);
 
@@ -156,10 +146,7 @@ const SettingsDialog = ({
                     <Button
                       variant="secondary"
                       className="rounded-full my-auto"
-                      onClick={() => {
-                        updateServiceWorker(true);
-                        setNeedRefresh(false);
-                      }}
+                      onClick={updateServiceWorker}
                     >
                       Update
                     </Button>
@@ -181,7 +168,7 @@ const SettingsDialog = ({
                       id="theme"
                       name="theme"
                       className={cn(
-                        "my-auto max-w-[120px] rounded-full transition-all border-0 dark:bg-transparent",
+                        "my-auto max-w-30 rounded-full transition-all border-0 dark:bg-transparent",
                         "dark:data-[state=open]:bg-input/50 [:hover,[data-state=open]]:bg-input",
                         "[&>svg]:bg-input [&:is([data-state=open],_:hover)>svg]:bg-accent-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1",
                       )}
