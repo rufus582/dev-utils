@@ -9,6 +9,7 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   readonly DEVUTILS_SW_REFRESH_INTERVAL_MS: string
+  readonly DEVUTILS_SW_UPDATE_ON_LOAD_WINDOW_MS: string
 }
 
 interface ImportMeta {

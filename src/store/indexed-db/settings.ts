@@ -4,6 +4,7 @@ import { db } from ".";
 interface ISettings {
   id: number;
   pageTransition: boolean;
+  automaticUpdates: boolean;
   theme: "light" | "dark" | "system";
 }
 
@@ -16,6 +17,7 @@ type SettingsTableInsertType = InsertType<ISettings, "id">;
 const defaultSettings: SettingsTableInsertType = {
   pageTransition: false,
   theme: "system",
+  automaticUpdates: true,
 };
 
 const updateSettings = async (

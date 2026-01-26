@@ -1,8 +1,16 @@
-import { createContext } from "react";
+import { useTimeout } from "@/hooks/use-timeout";
+import { createContext, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
+import { settingsOps } from "./indexed-db/settings";
 
 const SW_REFRESH_INTERVAL_MS = parseInt(
   import.meta.env.DEVUTILS_SW_REFRESH_INTERVAL_MS || "600000",
+  10,
+);
+
+const SW_UPDATE_WINDOW_MS = parseInt(
+  import.meta.env.DEVUTILS_SW_UPDATE_ON_LOAD_WINDOW_MS || "10000",
   10,
 );
 
@@ -18,7 +26,26 @@ const initialState: PWAProviderProps = {
 
 const PWAProviderContext = createContext<PWAProviderProps>(initialState);
 
+const AutoUpdatePWAToast = ({
+  initialSeconds,
+  onComplete,
+}: {
+  initialSeconds: number;
+  onComplete: () => void;
+}) => {
+  const { remainingSeconds } = useTimeout({
+    initialTimeout: initialSeconds,
+    onTimeout: onComplete,
+  });
+
+  return (
+    <div>New content available. Updating in {remainingSeconds} seconds...</div>
+  );
+};
+
 function PWAProvider({ children }: { children: React.ReactNode }) {
+  const canUpdatePWA = useRef(true);
+
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker: updatePWAServiceWorker,
@@ -31,6 +58,36 @@ function PWAProvider({ children }: { children: React.ReactNode }) {
     onRegisterError(error) {
       console.log("SW registration error", error);
     },
+    onNeedRefresh() {
+      if (canUpdatePWA.current) {
+        const toastId = toast.loading(
+          <AutoUpdatePWAToast
+            initialSeconds={5}
+            onComplete={() => {
+              updateServiceWorker();
+              canUpdatePWA.current = false;
+              toast.dismiss(toastId);
+            }}
+          />,
+        );
+      }
+    },
+  });
+
+  useEffect(() => {
+    const handleLoad = async () => {
+      const settings = await settingsOps.get();
+      if (settings.automaticUpdates) {
+        canUpdatePWA.current = true;
+        setTimeout(() => {
+          canUpdatePWA.current = false;
+        }, SW_UPDATE_WINDOW_MS);
+      } else canUpdatePWA.current = false;
+    };
+
+    window.addEventListener("load", handleLoad);
+
+    return () => window.removeEventListener("load", handleLoad);
   });
 
   const updateServiceWorker = () => {

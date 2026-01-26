@@ -43,6 +43,7 @@ import { PWAProviderContext } from "@/store/pwa-provider";
 const SettingsFormFields = z.strictObject({
   theme: z.literal(["system", "light", "dark"]),
   pageTransition: z.literal(["on", "off", undefined]),
+  automaticUpdates: z.literal(["on", "off", undefined]),
 });
 
 type SettingsFormType = z.infer<typeof SettingsFormFields>;
@@ -93,6 +94,7 @@ const SettingsDialog = ({
       await settingsOps.update({
         ...formResponse,
         pageTransition: formResponse.pageTransition === "on",
+        automaticUpdates: formResponse.automaticUpdates === "on",
       });
 
       // Delay to make theme transition less intrusive
@@ -228,9 +230,26 @@ const SettingsDialog = ({
                   />
                 </Field>
                 <Separator data-field-separator />
+                <Field
+                  data-invalid={Boolean(
+                    formErrors?.fieldErrors.automaticUpdates,
+                  )}
+                  className="col-span-5 flex flex-row"
+                >
+                  <FieldLabel htmlFor="automaticUpdates">
+                    Update to New Content on Reload
+                  </FieldLabel>
+                  <Switch
+                    id="automaticUpdates"
+                    name="automaticUpdates"
+                    className="max-w-8"
+                    defaultChecked={settings.automaticUpdates}
+                  />
+                </Field>
+                <Separator data-field-separator />
               </>
             ) : (
-              <SettingsSkeleton fieldsCount={2} />
+              <SettingsSkeleton fieldsCount={3} />
             )}
           </div>
           <DialogFooter className="*:w-[48%] sm:justify-between">
