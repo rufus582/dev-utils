@@ -33,11 +33,20 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
   ];
 
   return (
-    <div className="h-full w-full flex flex-col">
+    <div
+      className="h-full w-full flex flex-col"
+      style={{ scrollbarWidth: "none" }}
+    >
       {!isMobile && <Header />}
-      <div className="m-auto text-center w-full overflow-x-clip">
-        <TiltContainer rotate={25} className="perspective-midrange">
-          <div className="w-lg h-128 p-8 bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[130px] shadow-2xl translate-z-14 transform-3d">
+      <div
+        className="m-auto text-center h-3/4 w-full overflow-x-clip"
+        style={{ scrollbarWidth: "none" }}
+      >
+        <TiltContainer
+          rotate={25}
+          className="h-full m-auto flex flex-col perspective-midrange"
+        >
+          <div className="min-h-75 p-8 bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[25%] shadow-2xl translate-z-14 transform-3d flex-3 shrink grow">
             <AppLogo className="w-full h-full translate-z-5 drop-shadow-2xl drop-shadow-black/40" />
           </div>
           <h2 className="font-bold text-8xl text-muted-foreground translate-z-14 select-none pointer-events-none">
