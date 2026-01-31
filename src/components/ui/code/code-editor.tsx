@@ -8,12 +8,13 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { useTheme } from "@/store/theme-provider";
-import { copyToClipboard } from "@/lib/utils";
+import { cn, copyToClipboard } from "@/lib/utils";
 import useOpenFile, { type IUseOpenFileInputType } from "@/hooks/use-open-file";
 import { Tooltip } from "../custom-components/tooltip-wrapper";
 import type React from "react";
 import { Skeleton } from "../skeleton";
 import { Spinner } from "../spinner";
+import "./code-editor-overrides.css";
 
 export type CodeEditorRefType =
   React.RefObject<editor.IStandaloneCodeEditor | null>;
@@ -56,7 +57,7 @@ const CodeEditor = ({
   const { FileInputComponent, openFileDialog } = useOpenFile(
     fileButton ?? {
       onOpenFiles: () => undefined,
-    }
+    },
   );
 
   const handleCopyToClipboard = async () => {
@@ -82,9 +83,11 @@ const CodeEditor = ({
 
   return (
     <div
-      className={`${className ?? ""} ${
-        border ? "border border-border" : ""
-      } flex flex-col overflow-hidden`}
+      className={cn(
+        className ?? "",
+        border ? "border border-border" : "",
+        "flex flex-col overflow-hidden",
+      )}
     >
       <FileInputComponent />
       <div className="p-2 px-4 gap-4 flex bg-muted text-muted-foreground">
@@ -111,15 +114,14 @@ const CodeEditor = ({
             </Tooltip>
           )}
           <Button
-            className={
-              "rounded-full hover:bg-secondary bg-secondary text-secondary-foreground border-border border-2" +
-              " " +
-              (fileButton?.enabled && !copyButton
+            className={cn(
+              "rounded-full hover:bg-secondary bg-secondary text-secondary-foreground border-border border-2",
+              fileButton?.enabled && !copyButton
                 ? "hidden"
                 : !copyButton
-                ? "invisible"
-                : "")
-            }
+                  ? "invisible"
+                  : "",
+            )}
             size="sm"
             buttonIcon={<Clipboard />}
             loaderIcon={null}
@@ -134,7 +136,7 @@ const CodeEditor = ({
           </Button>
         </div>
       </div>
-      <div className="flex-1 relative">
+      <div className="flex-1 relative" style={{ containerType: "inline-size" }}>
         <Editor
           {...editorProps}
           options={{
