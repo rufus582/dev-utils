@@ -28,7 +28,7 @@ const DesktopLayout = ({ links }: HomePageLayoutProps) => {
       <h2 className="font-bold text-8xl text-muted-foreground translate-z-14 select-none pointer-events-none">
         Dev-Utils.
       </h2>
-      <p className="mt-2 text-muted-foreground w-[75%] mx-auto translate-z-14 select-none pointer-events-none">
+      <p className="mt-2 text-muted-foreground mx-auto translate-z-14 select-none pointer-events-none">
         Select one of the items in the sidebar or press <Kbd>⌘ + K</Kbd> to
         begin!
       </p>

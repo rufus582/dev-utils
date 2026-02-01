@@ -44,7 +44,7 @@ const AutoUpdatePWAToast = ({
 };
 
 function PWAProvider({ children }: { children: React.ReactNode }) {
-  const canUpdatePWA = useRef(true);
+  const canUpdatePWA = useRef(false);
 
   const {
     needRefresh: [needRefresh, setNeedRefresh],
