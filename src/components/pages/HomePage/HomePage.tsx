@@ -36,7 +36,7 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
     >
       {!isMobile && <Header />}
       <div
-        className="m-auto text-center h-3/4 w-full flex overflow-x-clip"
+        className="m-auto text-center w-full flex overflow-x-clip"
         style={{ scrollbarWidth: "none" }}
       >
         <HomeLayout links={links} />
