@@ -1,17 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
-  getSystemTheme,
-  getSystemThemeChangeEventHandler,
-} from "@/lib/theme-utils";
-import {
   createContext,
-  useCallback,
   useContext,
   useEffect,
-  useState,
 } from "react";
 import { settingsOps } from "./indexed-db/settings";
 import { useLiveQuery } from "dexie-react-hooks";
+import { useSystemTheme } from "@/hooks/use-system-theme";
 
 type Theme = "dark" | "light" | "system";
 type ResolvedTheme = "dark" | "light";
@@ -40,6 +35,10 @@ const setGlobalTheme = (theme: ResolvedTheme) => {
   root.classList.add(theme);
 };
 
+const getResolvedTheme = (theme: Theme, systemTheme: ResolvedTheme) => {
+  return theme === "system" ? systemTheme : (theme as ResolvedTheme);
+};
+
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
@@ -49,59 +48,27 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const settings = useLiveQuery(settingsOps.get);
-  const initTheme =
+
+  const theme =
     settings?.theme ||
     (localStorage.getItem(storageKey) as Theme) ||
     defaultTheme;
-  const [theme, setThemeState] = useState<Theme>(initTheme);
 
-  const setTheme = useCallback(
-    async (theme: Theme) => {
-      if (theme) {
-        localStorage.setItem(storageKey, theme);
-        await settingsOps.update({ theme });
-        setThemeState(theme);
-      }
-    },
-    [storageKey]
-  );
-
-  const systemTheme = getSystemTheme();
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>(
-    initTheme !== "system" ? initTheme : systemTheme.theme
-  );
-
-  const setSystemTheme = (newSystemTheme: ResolvedTheme) => {
-    setGlobalTheme(newSystemTheme);
-    setResolvedTheme(newSystemTheme);
+  const setTheme = async (theme: Theme) => {
+    if (theme) {
+      localStorage.setItem(storageKey, theme);
+      await settingsOps.update({ theme });
+    }
   };
 
-  const onThemeChange = useCallback(
-    (ev: MediaQueryListEvent) =>
-      getSystemThemeChangeEventHandler(setSystemTheme)(ev),
-    []
-  );
+  const systemTheme = useSystemTheme();
 
   useEffect(() => {
-    if (settings?.theme) setTheme(settings?.theme);
-  }, [settings, setTheme]);
-
-  useEffect(() => {
-    const systemTheme = getSystemTheme();
-
-    if (theme === "system") {
-      systemTheme.listener.addEventListener("change", onThemeChange);
-      setSystemTheme(systemTheme.theme);
-    } else {
-      setSystemTheme(theme);
-    }
-
-    return () =>
-      systemTheme.listener.removeEventListener("change", onThemeChange);
-  }, [theme, onThemeChange]);
+    setGlobalTheme(getResolvedTheme(theme, systemTheme));
+  }, [theme, systemTheme]);
 
   const value: ThemeProviderState = {
-    theme: resolvedTheme,
+    theme: getResolvedTheme(theme, systemTheme),
     setTheme,
     isSystemTheme: theme === "system",
   };

@@ -1,4 +1,10 @@
-import { MoonIcon, SaveIcon, SunIcon, SunMoonIcon } from "lucide-react";
+import {
+  DownloadIcon,
+  MoonIcon,
+  SaveIcon,
+  SunIcon,
+  SunMoonIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
 import {
@@ -11,7 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useRef, useState, type ReactNode } from "react";
+import { useContext, useRef, useState, type ReactNode } from "react";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -31,6 +37,8 @@ import { settingsOps } from "@/store/indexed-db/settings";
 import { cn, sleep } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { PWAProviderContext } from "@/store/pwa-provider";
 
 const SettingsFormFields = z.strictObject({
   theme: z.literal(["system", "light", "dark"]),
@@ -67,6 +75,8 @@ const SettingsDialog = ({
   open,
   onOpenChange,
 }: ISettingsDialogProps) => {
+  const { needRefresh, updateServiceWorker } = useContext(PWAProviderContext);
+
   const settings = useLiveQuery(settingsOps.get);
 
   const [isFormOpen, setIsFormOpen] = useState<boolean>(open || false);
@@ -77,7 +87,7 @@ const SettingsDialog = ({
       const formData = new FormData(formRef.current ?? undefined);
       console.log(Object.fromEntries(formData.entries()));
       const formResponse = SettingsFormFields.parse(
-        Object.fromEntries(formData.entries())
+        Object.fromEntries(formData.entries()),
       );
 
       await settingsOps.update({
@@ -121,13 +131,30 @@ const SettingsDialog = ({
           }}
         >
           <div className="grid grid-cols-5 gap-0 **:data-field-separator:col-span-5 **:data-field-separator:my-4">
-            {/* <Alert className="col-span-5 rounded-xl">
-              <InfoIcon />
-              <AlertDescription>
-                Data from SQL Playground cannot be saved!
-              </AlertDescription>
-            </Alert>
-            <Separator className="col-span-5" /> */}
+            {needRefresh && (
+              <>
+                <Alert className="col-span-5 rounded-xl">
+                  <DownloadIcon />
+                  <div className="flex">
+                    <div>
+                      <AlertTitle>New content available!</AlertTitle>
+                      <AlertDescription>
+                        Please save your work and click the update button when
+                        ready.
+                      </AlertDescription>
+                    </div>
+                    <Button
+                      variant="secondary"
+                      className="rounded-full my-auto"
+                      onClick={updateServiceWorker}
+                    >
+                      Update
+                    </Button>
+                  </div>
+                </Alert>
+                <Separator data-field-separator />
+              </>
+            )}
 
             {settings ? (
               <>
@@ -141,9 +168,9 @@ const SettingsDialog = ({
                       id="theme"
                       name="theme"
                       className={cn(
-                        "my-auto max-w-[120px] rounded-full transition-all border-0 dark:bg-transparent",
+                        "my-auto max-w-30 rounded-full transition-all border-0 dark:bg-transparent",
                         "dark:data-[state=open]:bg-input/50 [:hover,[data-state=open]]:bg-input",
-                        "[&>svg]:bg-input [&:is([data-state=open],_:hover)>svg]:bg-accent-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1"
+                        "[&>svg]:bg-input [&:is([data-state=open],_:hover)>svg]:bg-accent-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1",
                       )}
                       size="sm"
                     >
@@ -203,7 +230,7 @@ const SettingsDialog = ({
                 <Separator data-field-separator />
               </>
             ) : (
-              <SettingsSkeleton fieldsCount={2} />
+              <SettingsSkeleton fieldsCount={3} />
             )}
           </div>
           <DialogFooter className="*:w-[48%] sm:justify-between">

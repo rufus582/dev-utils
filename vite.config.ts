@@ -1,5 +1,6 @@
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
+import { VitePWA } from "vite-plugin-pwa";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -12,7 +13,7 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: "node_modules/jq-web/jq.wasm",
+          src: "src/lib/jq/jq.wasm",
           dest: "./",
         },
         {
@@ -20,6 +21,16 @@ export default defineConfig({
           dest: "./",
         },
       ],
+    }),
+    VitePWA({
+      registerType: "prompt",
+      manifest: false,
+      workbox: {
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+      },
+      devOptions: {
+        enabled: false,
+      },
     }),
   ],
   define: {
@@ -33,4 +44,5 @@ export default defineConfig({
   server: {
     host: true,
   },
+  envPrefix: ["VITE_", "DU_", "DEVUTILS_"],
 });

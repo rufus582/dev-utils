@@ -69,7 +69,7 @@ const ImportTableFormFields = z.strictObject({
     .string()
     .regex(
       /^[^0-9][a-zA-z_0-9]*$/,
-      "Table name cannot be empty, must start with an alphabet and can contain only alphanumeric or underscore(_) characters."
+      "Table name cannot be empty, must start with an alphabet and can contain only alphanumeric or underscore(_) characters.",
     ),
   file: z
     .file()
@@ -111,7 +111,7 @@ const SQLPlayground = () => {
   useEffect(() => {
     if (sqlDataState.resultData.length > 0)
       resultViewerRef.current?.setSelectedTabValue(
-        sqlDataState.resultData[0]?.value
+        sqlDataState.resultData[0]?.value,
       );
   }, [sqlDataState.resultData]);
 
@@ -124,7 +124,7 @@ const SQLPlayground = () => {
       const formData = new FormData(importTableFormRef.current ?? undefined);
       const formResponse = ImportTableFormFields.parse(
         Object.fromEntries(formData.entries()),
-        {}
+        {},
       );
 
       const fileExtension = _.toPath(formResponse.file.name).pop();
@@ -132,11 +132,11 @@ const SQLPlayground = () => {
       const fileFormat = TextFormatsList.find(
         (format) =>
           format.mimeType === formResponse.file.type ||
-          (fileExtension && format.extensions.includes(fileExtension))
+          (fileExtension && format.extensions.includes(fileExtension)),
       );
       if (!fileFormat || fileFormat === undefined) {
         throw new Error(
-          "Unsupported file format. Supported formats are: JSON, CSV, PARQUET"
+          "Unsupported file format. Supported formats are: JSON, CSV, PARQUET",
         );
       }
 
@@ -151,14 +151,14 @@ const SQLPlayground = () => {
 
       const tableQueryData = generateTableQueryFromJsonArray(
         parsedData,
-        formResponse.tableName
+        formResponse.tableName,
       );
 
       await Promise.resolve(
-        sqlDataState.db?.run(tableQueryData.createTableQuery)
+        sqlDataState.db?.run(tableQueryData.createTableQuery),
       );
       tableQueryData.insertQueries.forEach(
-        async (query) => await Promise.resolve(sqlDataState.db?.run(query))
+        async (query) => await Promise.resolve(sqlDataState.db?.run(query)),
       );
 
       toast.success(`Successfully imported table: ${formResponse.tableName}`);
@@ -201,7 +201,7 @@ const SQLPlayground = () => {
               value: `${index + 1}`,
               content: resultRecords,
             };
-          }
+          },
         );
 
         setSQLDataState((state) => {
@@ -256,7 +256,7 @@ const SQLPlayground = () => {
                 Import Table
               </Button>
             </DialogTrigger>
-            <DialogContent bgBlur>
+            <DialogContent className="rounded-3xl" bgBlur>
               <DialogHeader>
                 <DialogTitle>Import Table</DialogTitle>
                 <DialogDescription>
@@ -272,7 +272,7 @@ const SQLPlayground = () => {
                 <FieldSet>
                   <Field
                     data-invalid={Boolean(
-                      importTableFormErrors?.fieldErrors.tableName
+                      importTableFormErrors?.fieldErrors.tableName,
                     )}
                   >
                     <FieldLabel htmlFor="tableName">Table Name</FieldLabel>
@@ -283,7 +283,7 @@ const SQLPlayground = () => {
                       className="rounded-full hover:border-muted-foreground transition-colors aria-invalid:border-destructive"
                       placeholder="Example: users"
                       aria-invalid={Boolean(
-                        importTableFormErrors?.fieldErrors.tableName
+                        importTableFormErrors?.fieldErrors.tableName,
                       )}
                       onChange={() => setImportTableFormErrors(undefined)}
                     />
@@ -300,7 +300,7 @@ const SQLPlayground = () => {
                             errors={importTableFormErrors.fieldErrors.tableName.map(
                               (err) => ({
                                 message: err,
-                              })
+                              }),
                             )}
                           />
                         </motion.div>
@@ -309,7 +309,7 @@ const SQLPlayground = () => {
                   </Field>
                   <Field
                     data-invalid={Boolean(
-                      importTableFormErrors?.fieldErrors.file
+                      importTableFormErrors?.fieldErrors.file,
                     )}
                   >
                     <FieldLabel htmlFor="fileInput">Open File</FieldLabel>
@@ -321,7 +321,7 @@ const SQLPlayground = () => {
                       className="file:text-secondary-foreground file:bg-secondary file:border-border file:border file:px-2 file:h-full file:rounded-full hover:file:bg-secondary/60 hover:border-muted-foreground rounded-full px-1 cursor-pointer file:cursor-pointer col-span-4 transition-colors"
                       onChange={() => setImportTableFormErrors(undefined)}
                       aria-invalid={Boolean(
-                        importTableFormErrors?.fieldErrors.file
+                        importTableFormErrors?.fieldErrors.file,
                       )}
                     />
                     <AnimatePresence>
@@ -336,7 +336,7 @@ const SQLPlayground = () => {
                             errors={importTableFormErrors.fieldErrors.file.map(
                               (err) => ({
                                 message: err,
-                              })
+                              }),
                             )}
                           />
                         </motion.div>
@@ -359,7 +359,7 @@ const SQLPlayground = () => {
                   </Field>
                   <Separator className="mb-4" />
                 </FieldSet>
-                <DialogFooter>
+                <DialogFooter className="*:w-[48%] sm:justify-between">
                   <DialogClose asChild>
                     <NormalButton
                       variant="outline"

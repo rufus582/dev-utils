@@ -1,0 +1,13 @@
+div.editor-widget.find-widget {
+  right: 50px !important;
+}
+
+@container (width <= 600px) {
+  div.editor-widget.find-widget {
+    right: 28px !important;
+  }
+
+  div.context-view.monaco-component {
+    display: none !important;
+  }
+}

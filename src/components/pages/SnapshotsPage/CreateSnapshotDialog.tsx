@@ -53,7 +53,7 @@ const CreateSnapshotDialog = ({
     try {
       const formData = new FormData(createSnapshotFormRef.current ?? undefined);
       const formResponse = CreateSnapshotFormFields.parse(
-        Object.fromEntries(formData.entries())
+        Object.fromEntries(formData.entries()),
       );
 
       await snapshotOps.create(currentAppState, formResponse.name);
@@ -80,7 +80,7 @@ const CreateSnapshotDialog = ({
   return (
     <Dialog open={open || isFormOpen} onOpenChange={onFormOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent bgBlur>
+      <DialogContent className="rounded-3xl" bgBlur>
         <DialogHeader>
           <DialogTitle>Create Snapshot</DialogTitle>
           <DialogDescription>
@@ -114,7 +114,7 @@ const CreateSnapshotDialog = ({
                 className="rounded-full hover:border-muted-foreground transition-colors aria-invalid:border-destructive"
                 placeholder="Any name of your choice to use when saving app state"
                 aria-invalid={Boolean(
-                  createSnapshotFormErrors?.fieldErrors.name
+                  createSnapshotFormErrors?.fieldErrors.name,
                 )}
                 onChange={() => setCreateSnapshotFormErrors(undefined)}
               />
@@ -130,7 +130,7 @@ const CreateSnapshotDialog = ({
                       errors={createSnapshotFormErrors.fieldErrors.name.map(
                         (val) => ({
                           message: val,
-                        })
+                        }),
                       )}
                     />
                   </motion.div>
@@ -138,7 +138,7 @@ const CreateSnapshotDialog = ({
               </AnimatePresence>
             </Field>
           </div>
-          <DialogFooter className="mt-4">
+          <DialogFooter className="mt-5 *:w-[48%] sm:justify-between">
             <DialogClose asChild>
               <Button variant="outline" className="rounded-full" type="button">
                 Cancel

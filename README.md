@@ -10,7 +10,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/rufus582/dev-utils">
-    <img src="public/logo-dark.svg" alt="Logo" width="80" height="80">
+    <img src="public/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Dev-Utils.</h3>
