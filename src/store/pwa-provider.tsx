@@ -2,7 +2,6 @@ import { useTimeout } from "@/hooks/use-timeout";
 import { createContext, useEffect, useRef } from "react";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
-import { settingsOps } from "./indexed-db/settings";
 
 const SW_REFRESH_INTERVAL_MS = parseInt(
   import.meta.env.DEVUTILS_SW_REFRESH_INTERVAL_MS || "600000",
@@ -76,13 +75,10 @@ function PWAProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const handleLoad = async () => {
-      const settings = await settingsOps.get();
-      if (settings.automaticUpdates) {
-        canUpdatePWA.current = true;
-        setTimeout(() => {
-          canUpdatePWA.current = false;
-        }, SW_UPDATE_WINDOW_MS);
-      } else canUpdatePWA.current = false;
+      canUpdatePWA.current = true;
+      setTimeout(() => {
+        canUpdatePWA.current = false;
+      }, SW_UPDATE_WINDOW_MS);
     };
 
     window.addEventListener("load", handleLoad);
