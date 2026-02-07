@@ -68,7 +68,7 @@ export function generateTableQueryFromJsonArray(
   };
 }
 
-export function convertSqlResultToRecords(result: QueryExecResult): JSONObject {
+export function convertSqlResultToRecords(result: QueryExecResult): JSONObject[] {
   const columns = Object.fromEntries(result.columns.entries());
   const records = result.values.map((row) => {
     let rowObject: JSONObject = {};
