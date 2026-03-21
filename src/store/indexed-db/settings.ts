@@ -1,17 +1,20 @@
 import { type EntityTable, type InsertType, type UpdateSpec } from "dexie";
 import { db } from ".";
+import z from "zod";
 
-interface ISettings {
-  id: number;
-  pageTransition: boolean;
-  theme: "light" | "dark" | "system";
-}
+export const settingsSchema = z.object({
+  id: z.number(),
+  pageTransition: z.boolean().optional(),
+  theme: z.literal(["light", "dark", "system"])
+})
+
+type SettingsType = z.output<typeof settingsSchema>
 
 type SettingsTableType = {
-  settings: EntityTable<ISettings, "id">;
+  settings: EntityTable<SettingsType, "id">;
 };
 
-type SettingsTableInsertType = InsertType<ISettings, "id">;
+type SettingsTableInsertType = InsertType<SettingsType, "id">;
 
 const defaultSettings: SettingsTableInsertType = {
   pageTransition: false,
@@ -49,5 +52,5 @@ const settingsOps = {
   update: updateSettings,
 };
 
-export type { ISettings, SettingsTableType };
+export type { SettingsType, SettingsTableType };
 export { settingsOps };

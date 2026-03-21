@@ -1,7 +1,7 @@
 import { ArchiveIcon, SaveIcon, XIcon } from "lucide-react";
 import Header from "@/components/layout/header/page-header";
 import { useLiveQuery } from "dexie-react-hooks";
-import { snapshotOps, type ISnapshot } from "@/store/indexed-db/snapshots";
+import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
 import { DataTable } from "@/components/ui/data-table.tsx/data-table";
 import { columns } from "./SnapshotsTable/columns";
 import { useRef, useState } from "react";
@@ -33,7 +33,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 
-const defaultSnapshot: ISnapshot[] = [];
+const defaultSnapshot: SnapshotType[] = [];
 
 const NoSnapshots = () => {
   return (

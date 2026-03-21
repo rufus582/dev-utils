@@ -5,7 +5,7 @@ import {
 } from "@/components/ui/data-table.tsx/data-table-action-bar";
 import { Separator } from "@/components/ui/separator";
 import { useAppDispatch } from "@/hooks/hooks";
-import { snapshotOps, type ISnapshot } from "@/store/indexed-db/snapshots";
+import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
 import { RootActions } from "@/store/redux/root-reducer";
 import type { Table } from "@tanstack/react-table";
 import { ImportIcon, Trash2Icon } from "lucide-react";
@@ -13,7 +13,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { toast } from "sonner";
 
 interface ISelectedSnapshotsActionBarProps {
-  tableState: Table<ISnapshot>;
+  tableState: Table<SnapshotType>;
   resetSelectedRows: () => void;
 }
 

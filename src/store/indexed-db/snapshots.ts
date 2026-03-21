@@ -1,17 +1,26 @@
 import { type EntityTable } from "dexie";
 import type { AppStateType } from "../redux";
 import { db } from ".";
+import z from "zod";
+import { appStateSchema } from "../redux/root-reducer";
 
-interface ISnapshot {
-  id: number;
-  name: string;
-  state: AppStateType;
-  createdAt: Date;
-  updatedAt: Date;
+export const snapshotSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  state: appStateSchema,
+  createdAt: z.union([z.date(), z.string()]),
+  updatedAt: z.union([z.date(), z.string()]),
+});
+
+type SnapshotType = z.output<typeof snapshotSchema>
+
+interface IFailedSnapshot extends SnapshotType {
+  error?: string;
+  cause?: unknown;
 }
 
 type SnapshotTableType = {
-  snapshots: EntityTable<ISnapshot, "id">;
+  snapshots: EntityTable<SnapshotType, "id">;
 };
 
 const createSnapshot = async (state: AppStateType, name: string) => {
@@ -69,5 +78,5 @@ const snapshotOps = {
   deleteAll: deleteAllSnapshots,
 };
 
-export type { ISnapshot, SnapshotTableType };
+export type { SnapshotType, SnapshotTableType };
 export { snapshotOps };

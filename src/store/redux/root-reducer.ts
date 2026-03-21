@@ -1,10 +1,15 @@
 import { type PayloadAction, combineReducers } from "@reduxjs/toolkit";
-import jqReducer from "./jq-slice";
-import jmesPathReducer from "./jmespath-slice";
-import textConverterReducer from "./text-converter-slice";
-import jsonTableViewerReducer from "./json-table-viewer-slice";
-import celReducer from "./cel-slice";
-import jsonpathReducer from "./jsonpath-slice";
+import jqReducer, { jqDataStateSchema } from "./jq-slice";
+import jmesPathReducer, { jmesPathDataStateSchema } from "./jmespath-slice";
+import textConverterReducer, {
+  textConverterStateSchema,
+} from "./text-converter-slice";
+import jsonTableViewerReducer, {
+  jsonTableViewerStateSchema,
+} from "./json-table-viewer-slice";
+import celReducer, { celDataStateSchema } from "./cel-slice";
+import jsonpathReducer, { jsonPathDataStateSchema } from "./jsonpath-slice";
+import z from "zod";
 
 const RESET_STATE = "root/resetState";
 
@@ -19,9 +24,18 @@ const appReducer = combineReducers({
 
 export type AppStateType = ReturnType<typeof appReducer>;
 
+export const appStateSchema: z.ZodType<AppStateType> = z.object({
+  jq: jqDataStateSchema,
+  jmespath: jmesPathDataStateSchema,
+  textConverter: textConverterStateSchema,
+  jsonTableViewer: jsonTableViewerStateSchema,
+  cel: celDataStateSchema,
+  jsonpath: jsonPathDataStateSchema,
+});
+
 const rootReducer = (
   state: AppStateType | undefined,
-  action: PayloadAction<AppStateType>
+  action: PayloadAction<AppStateType>,
 ): AppStateType => {
   if (action.type === RESET_STATE) {
     return action.payload;
