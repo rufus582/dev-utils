@@ -21,6 +21,11 @@ const DesktopLayout = ({ links }: HomePageLayoutProps) => {
     <TiltContainer
       rotate={25}
       className="w-full flex flex-col perspective-midrange"
+      springOptions={{
+        damping: 20,
+        stiffness: 100,
+        mass: 1,
+      }}
     >
       <div className="translate-z-14 transform-3d">
         <div className="max-h-128 min-h-75 aspect-square p-8 bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[25%] shadow-2xl transform-3d flex-3 shrink grow">
