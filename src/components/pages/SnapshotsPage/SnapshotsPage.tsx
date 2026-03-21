@@ -1,4 +1,10 @@
-import { ArchiveIcon, SaveIcon, XIcon } from "lucide-react";
+import {
+  ArchiveIcon,
+  Download,
+  FileUpIcon,
+  SaveIcon,
+  XIcon,
+} from "lucide-react";
 import Header from "@/components/layout/header/page-header";
 import { useLiveQuery } from "dexie-react-hooks";
 import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
@@ -32,6 +38,10 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { ButtonGroup } from "@/components/ui/button-group";
+import { toast } from "sonner";
+import { TextFormats } from "@/lib/text-formats";
+import { ImportSnapshotsForm } from "./ImportSnapshotsForm";
 
 const defaultSnapshot: SnapshotType[] = [];
 
@@ -54,6 +64,21 @@ const SnapshotsPage = () => {
 
   const [showSearchInput, setShowSearchInput] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const exportAnchorRef = useRef<HTMLAnchorElement>(null);
+  const onExportClick = async () => {
+    if (exportAnchorRef.current && snapshots) {
+      const stringifiedSnapshots = await Promise.resolve(
+        TextFormats.JSON.unparse(snapshots),
+      );
+      exportAnchorRef.current.href = `data:text/json;charset=utf-8,${encodeURIComponent(stringifiedSnapshots)}`;
+      exportAnchorRef.current.click();
+
+      toast.success("Snapshots exported successfully");
+      return true;
+    }
+    return false;
+  };
 
   const [selectedRows, setSelectedRows] = useState<RowSelectionState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -129,20 +154,53 @@ const SnapshotsPage = () => {
             autoFocus
           />
         </InputButtonProvider>
-        <CreateSnapshotDialog
-          trigger={
+        <div className="flex gap-4">
+          <ButtonGroup className="">
+            <ImportSnapshotsForm
+              triggerElement={
+                <Button
+                  variant={"outline"}
+                  className="w-fit ml-auto rounded-full"
+                  buttonIcon={<FileUpIcon />}
+                  loaderIcon={null}
+                  errorIcon={null}
+                  successIcon={null}
+                  whileTap={{ scale: 0.97 }}
+                >
+                  Import
+                </Button>
+              }
+            />
             <Button
-              className="w-fit ml-auto rounded-full"
-              buttonIcon={<SaveIcon />}
-              loaderIcon={null}
-              errorIcon={null}
-              successIcon={null}
-              useDefaultInteractionAnimation
+              variant={"outline"}
+              className="w-fit ml-auto rounded-full border!"
+              buttonIcon={<Download />}
+              onClick={onExportClick}
+              whileTap={{ scale: 0.97 }}
             >
-              Create Snapshot
+              <a
+                ref={exportAnchorRef}
+                download="DevUtilsBackup.dvubak"
+                className="hidden"
+              />
+              Export
             </Button>
-          }
-        />
+          </ButtonGroup>
+          <CreateSnapshotDialog
+            trigger={
+              <Button
+                className="w-fit ml-auto rounded-full"
+                buttonIcon={<SaveIcon />}
+                loaderIcon={null}
+                errorIcon={null}
+                successIcon={null}
+                useDefaultInteractionAnimation
+              >
+                Create Snapshot
+              </Button>
+            }
+          />
+        </div>
       </div>
       <DataTable
         viewTransitionName="code-view"

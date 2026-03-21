@@ -11,6 +11,7 @@
     "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/pwa-logo.svg"
   },
   "dependencies": {
+    "@arktype/regex": "^0.0.5",
     "@marcbachmann/cel-js": "^2.7.0",
     "@metrichor/jmespath": "^0.3.1",
     "@monaco-editor/react": "^4.7.0",
