@@ -1,10 +1,10 @@
 import { Checkbox } from "@/components/ui/checkbox";
-import { type ISnapshot } from "@/store/indexed-db/snapshots";
+import { type SnapshotType } from "@/store/indexed-db/snapshots";
 import { type ColumnDef } from "@tanstack/react-table";
 import SnapshotActionsCell from "./actions-dropdown";
 import { DataCell, HeaderCell } from "@/components/ui/data-table.tsx/data-table-cell";
 
-export const columns: ColumnDef<ISnapshot>[] = [
+export const columns: ColumnDef<SnapshotType>[] = [
   {
     id: "select",
     header: ({ table }) => (

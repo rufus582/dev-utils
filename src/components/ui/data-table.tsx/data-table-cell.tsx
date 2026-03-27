@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import type { ISnapshot } from "@/store/indexed-db/snapshots";
+import type { SnapshotType } from "@/store/indexed-db/snapshots";
 import type { HeaderContext } from "@tanstack/react-table";
 import { ChevronDown, ChevronsUpDown, ChevronUp } from "lucide-react";
 
 interface IHeaderCellProps {
   name: string;
-  headerCtx: HeaderContext<ISnapshot, unknown>;
+  headerCtx: HeaderContext<SnapshotType, unknown>;
   sorting?: boolean;
 }
 

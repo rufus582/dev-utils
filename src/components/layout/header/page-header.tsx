@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { SettingsIcon } from "lucide-react";
 import { useContext } from "react";
 import { PWAProviderContext } from "@/store/pwa-provider";
+import { AnimatePresence, motion } from "motion/react";
 
 const Header = ({
   title,
@@ -49,9 +50,17 @@ const Header = ({
         <SettingsDialog
           trigger={
             <div className="relative">
-              {needRefresh && (
-                <div className="absolute -top-1 right-1 w-2 h-2 rounded-full bg-secondary-foreground" />
-              )}
+              <AnimatePresence initial={false}>
+                {needRefresh && (
+                  <motion.div
+                    initial={{ scale: 0, x: "-50%", y: "50%" }}
+                    animate={{ scale: 1, x: 0, y: 0 }}
+                    exit={{ scale: 0, x: "-50%", y: "50%" }}
+                    transition={{ damping: 5 }}
+                    className="absolute -top-1 right-1 w-2 h-2 rounded-full bg-secondary-foreground"
+                  />
+                )}
+              </AnimatePresence>
               <Button size="icon" variant="outline" className="my-auto mr-2">
                 <SettingsIcon strokeWidth="2" />
               </Button>

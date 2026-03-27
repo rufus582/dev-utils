@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@arktype/regex':
+        specifier: ^0.0.5
+        version: 0.0.5
       '@marcbachmann/cel-js':
         specifier: ^2.7.0
         version: 2.7.0
@@ -239,6 +242,12 @@ packages:
     engines: {node: '>=10'}
     peerDependencies:
       ajv: '>=8'
+
+  '@ark/util@0.56.0':
+    resolution: {integrity: sha512-BghfRC8b9pNs3vBoDJhcta0/c1J1rsoS1+HgVUreMFPdhz/CRAKReAu57YEllNaSy98rWAdY1gE+gFup7OXpgA==}
+
+  '@arktype/regex@0.0.5':
+    resolution: {integrity: sha512-cQw8Y65RhLqKxhPzcQ67ycRt2QQ2zOYMV1I6DsmSDgxt/jKKCD0VtHz5BGGcSw7McS/LdUvd9veN6oLdpanXpw==}
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -2587,7 +2596,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
@@ -3839,6 +3848,12 @@ snapshots:
       json-schema: 0.4.0
       jsonpointer: 5.0.1
       leven: 3.1.0
+
+  '@ark/util@0.56.0': {}
+
+  '@arktype/regex@0.0.5':
+    dependencies:
+      '@ark/util': 0.56.0
 
   '@babel/code-frame@7.27.1':
     dependencies:

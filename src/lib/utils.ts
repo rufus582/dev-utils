@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
+import { regex } from "@arktype/regex";
+import _ from "lodash";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -12,7 +14,7 @@ export function getCurrentEnvironment(): EnvironmentType {
 }
 
 export const copyToClipboard = async (
-  value: string
+  value: string,
 ): Promise<string | undefined> => {
   try {
     if (!navigator.clipboard) {
@@ -47,7 +49,7 @@ export const getClipboardText = async () => {
 
 export const openLinkInNewTab = (
   link: string,
-  isWidelyAvailable: boolean = true
+  isWidelyAvailable: boolean = true,
 ) => {
   if (getCurrentEnvironment() !== "production" || isWidelyAvailable) {
     window.open(link);
@@ -57,3 +59,12 @@ export const openLinkInNewTab = (
 };
 
 export const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+export const incrementName = (name: string) => {
+  const match = regex("copy(?: (?<count>[\\d]*))?$").exec(name);
+  if (!match) return `${name} copy`;
+
+  const count = match.groups.count ?? "1"
+  const trimmedName = _.trimEnd(name, " " + count)
+  return `${trimmedName} ${Number(count) + 1}`;
+};

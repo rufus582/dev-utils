@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAppDispatch } from "@/hooks/hooks";
-import { snapshotOps, type ISnapshot } from "@/store/indexed-db/snapshots";
+import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
 import { RootActions } from "@/store/redux/root-reducer";
 import { ImportIcon, MoreHorizontal, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ const handleDeleteSnapshot = async (snapshotId: number) => {
   }
 };
 
-const SnapshotActionsCell = ({ snapshot }: { snapshot: ISnapshot }) => {
+const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
   const dispatch = useAppDispatch();
 
   const handleLoadSnapshot = async (snapshotId: number) => {

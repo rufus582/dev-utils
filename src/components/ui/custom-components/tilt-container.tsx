@@ -1,6 +1,5 @@
-import useMouseValue from "@/hooks/use-mouse-value";
-import { motion, useTransform, type SpringOptions } from "motion/react";
-import { useEffect } from "react";
+import { motion, type SpringOptions, useMotionValue, useSpring } from "motion/react";
+import { useEffect, useEffectEvent } from "react";
 
 interface TiltContainerProps {
   rotateX?: number;
@@ -12,29 +11,29 @@ interface TiltContainerProps {
 }
 
 const TiltContainer = ({ springOptions, ...props }: TiltContainerProps) => {
-  const { x, y, handleMouseMove } = useMouseValue({ springOptions });
+  const rotateXAngle = props.rotateX ?? props.rotate ?? 15;
+  const rotateYAngle = props.rotateY ?? props.rotate ?? 15;
 
-  const rotateXAngle = `${props.rotateX ?? props.rotate ?? 15}deg`;
-  const rotateYAngle = `${props.rotateY ?? props.rotate ?? 15}deg`;
+  const rotateX = useSpring(useMotionValue(0), springOptions);
+  const rotateY = useSpring(useMotionValue(0), springOptions);
 
-  // Transform mouse position into rotation degrees
-  const rotateX = useTransform(
-    y,
-    [0, window.innerHeight],
-    [rotateXAngle, "-" + rotateXAngle],
-  );
-  const rotateY = useTransform(
-    x,
-    [0, window.innerWidth],
-    ["-" + rotateYAngle, rotateYAngle],
-  );
+  const handleMouseMove = useEffectEvent((e: MouseEvent) => {
+    const offsetX = e.clientX - window.innerWidth / 2;
+    const offsetY = e.clientY - window.innerHeight / 2;
+
+    const rotationX = (offsetY / (window.innerHeight / 2)) * -rotateXAngle;
+    const rotationY = (offsetX / (window.innerWidth / 2)) * rotateYAngle;
+
+    rotateX.set(rotationX);
+    rotateY.set(rotationY);
+  });
 
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [handleMouseMove]);
+  }, []);
 
   return (
     <motion.div

@@ -1,10 +1,13 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import z from "zod";
 
-type CELDataStateType = {
-  expression: string;
-  result: string;
-  jsonStr: string;
-};
+export const celDataStateSchema = z.object({
+  expression: z.string(),
+  result: z.string(),
+  jsonStr: z.string(),
+});
+
+type CELDataStateType = z.output<typeof celDataStateSchema>;
 
 const initialState: CELDataStateType = {
   expression: "",
