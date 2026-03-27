@@ -42,7 +42,9 @@ import { ButtonGroup } from "@/components/ui/button-group";
 import { toast } from "sonner";
 import { TextFormats } from "@/lib/text-formats";
 import { ImportSnapshotsForm } from "./ImportSnapshotsForm";
+import { customAlphabet } from "nanoid"
 
+const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 5)
 const defaultSnapshot: SnapshotType[] = [];
 
 const NoSnapshots = () => {
@@ -68,9 +70,14 @@ const SnapshotsPage = () => {
   const exportAnchorRef = useRef<HTMLAnchorElement>(null);
   const onExportClick = async () => {
     if (exportAnchorRef.current && snapshots) {
+      if (!snapshots.length) {
+        toast.error("You haven't saved any snapshots yet!");
+        return false;
+      }
       const stringifiedSnapshots = await Promise.resolve(
         TextFormats.JSON.unparse(snapshots),
       );
+      exportAnchorRef.current.download = `DevUtilsBackup_${Intl.DateTimeFormat().format()}_${nanoid()}.dvubak`
       exportAnchorRef.current.href = `data:text/json;charset=utf-8,${encodeURIComponent(stringifiedSnapshots)}`;
       exportAnchorRef.current.click();
 
