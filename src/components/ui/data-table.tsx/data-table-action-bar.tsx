@@ -13,9 +13,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Kbd } from "../kbd";
 
-interface DataTableActionBarProps<TData>
-  extends React.ComponentProps<typeof motion.div> {
+interface DataTableActionBarProps<TData> extends React.ComponentProps<
+  typeof motion.div
+> {
   table: Table<TData>;
   visible?: boolean;
   container?: Element | DocumentFragment | null;
@@ -79,10 +81,12 @@ function DataTableActionBar<TData>({
   );
 }
 
-interface DataTableActionBarActionProps
-  extends React.ComponentProps<typeof Button> {
+interface DataTableActionBarActionProps extends React.ComponentProps<
+  typeof Button
+> {
   tooltip?: string;
   isPending?: boolean;
+  keyName?: string;
 }
 
 function DataTableActionBarAction({
@@ -92,11 +96,14 @@ function DataTableActionBarAction({
   disabled,
   className,
   children,
+  keyName,
   variant = "secondary",
   ...props
 }: DataTableActionBarActionProps) {
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const trigger = (
     <Button
+      ref={buttonRef}
       variant={variant}
       size={size}
       className={cn(
@@ -112,6 +119,19 @@ function DataTableActionBarAction({
     </Button>
   );
 
+  React.useEffect(() => {
+    if (!keyName || !buttonRef.current) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === keyName) {
+        buttonRef.current?.click();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [keyName]);
+
   if (!tooltip) return trigger;
 
   return (
@@ -119,9 +139,14 @@ function DataTableActionBarAction({
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent
         sideOffset={6}
-        className="border bg-accent font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
+        className="flex items-center gap-2 border  px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
       >
         <p>{tooltip}</p>
+        {keyName && (
+          <Kbd className="bg-muted! text-muted-foreground! font-mono">
+            {keyName}
+          </Kbd>
+        )}
       </TooltipContent>
     </Tooltip>
   );
@@ -163,11 +188,7 @@ function DataTableActionBarSelection<TData>({
           className="flex items-center gap-2 border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
         >
           <p>Clear selection</p>
-          <kbd className="select-none rounded border bg-background px-1.5 py-px font-mono font-normal text-[0.7rem] text-foreground shadow-xs">
-            <abbr title="Escape" className="no-underline">
-              Esc
-            </abbr>
-          </kbd>
+          <Kbd className="bg-muted! text-muted-foreground! font-mono">Esc</Kbd>
         </TooltipContent>
       </Tooltip>
     </div>

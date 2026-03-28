@@ -6,10 +6,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useAppDispatch } from "@/hooks/hooks";
 import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
-import { RootActions } from "@/store/redux/root-reducer";
+import { RootActions, type AppStateType } from "@/store/redux/root-reducer";
 import type { Table } from "@tanstack/react-table";
-import { ImportIcon, Trash2Icon } from "lucide-react";
+import { ArchiveRestoreIcon, PencilLineIcon, Trash2Icon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useStore } from "react-redux";
 import { toast } from "sonner";
 
 interface ISelectedSnapshotsActionBarProps {
@@ -21,13 +22,15 @@ const SelectedSnapshotsActionBar = ({
   tableState,
   resetSelectedRows,
 }: ISelectedSnapshotsActionBarProps) => {
+  const store = useStore<AppStateType>();
+  const appState = store.getState();
   const dispatch = useAppDispatch();
 
   const selectedRowData = tableState.getSelectedRowModel().rows;
 
   const handleDeleteSelected = async () => {
     const selectedRowIds: number[] = selectedRowData.map((row) =>
-      row.getValue("id")
+      row.getValue("id"),
     );
     try {
       await snapshotOps.deleteBulk(selectedRowIds);
@@ -52,7 +55,23 @@ const SelectedSnapshotsActionBar = ({
       }
 
       dispatch(RootActions.setAppState(snapshot.state));
-      toast.success("Successfully loaded snapshot.");
+      toast.success("Successfully restored snapshot.");
+    } catch (error) {
+      toast.error(`${error}`);
+    } finally {
+      resetSelectedRows();
+    }
+  };
+
+  const handleUpdateSnapshot = async () => {
+    try {
+      const snapshotId = selectedRowData.at(0)?.getValue("id");
+      if (snapshotId === undefined || typeof snapshotId !== "number") {
+        throw new Error("Selected snapshot is invalid.");
+      }
+
+      await snapshotOps.update(snapshotId, appState);
+      toast.success("Successfully updated snapshot.");
     } catch (error) {
       toast.error(`${error}`);
     } finally {
@@ -68,7 +87,7 @@ const SelectedSnapshotsActionBar = ({
         className="hidden data-[orientation=vertical]:h-5 sm:block"
       />
 
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {selectedRowData.length === 1 && (
           <motion.div
             initial={{ scale: 0, width: 0 }}
@@ -79,25 +98,30 @@ const SelectedSnapshotsActionBar = ({
           >
             <DataTableActionBarAction
               size="icon"
-              tooltip="Load Snapshot"
+              tooltip="Restore Snapshot"
               onClick={handleLoadSnapshot}
+              keyName="R"
             >
-              <ImportIcon />
+              <ArchiveRestoreIcon />
+            </DataTableActionBarAction>
+            <DataTableActionBarAction
+              size="icon"
+              tooltip="Update Snapshot"
+              onClick={handleUpdateSnapshot}
+              keyName="S"
+            >
+              <PencilLineIcon />
             </DataTableActionBarAction>
           </motion.div>
         )}
       </AnimatePresence>
-      <motion.div
-        layout
-        initial={{ scale: 0, width: 0 }}
-        animate={{ scale: 1, width: "auto" }}
-        transition={{ duration: 0.2 }}
-      >
+      <motion.div layout transition={{ duration: 0.2 }}>
         <DataTableActionBarAction
           variant="destructive"
           size="icon"
           tooltip="Delete selected"
           onClick={handleDeleteSelected}
+          keyName="D"
         >
           <Trash2Icon />
         </DataTableActionBarAction>

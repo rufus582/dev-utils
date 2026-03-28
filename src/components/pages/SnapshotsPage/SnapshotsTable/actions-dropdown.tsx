@@ -4,12 +4,20 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Kbd } from "@/components/ui/kbd";
 import { useAppDispatch } from "@/hooks/hooks";
 import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
-import { RootActions } from "@/store/redux/root-reducer";
-import { ImportIcon, MoreHorizontal, Trash2Icon } from "lucide-react";
+import { RootActions, type AppStateType } from "@/store/redux/root-reducer";
+import {
+  ArchiveRestoreIcon,
+  MoreHorizontal,
+  PencilLineIcon,
+  Trash2Icon,
+} from "lucide-react";
+import { useStore } from "react-redux";
 import { toast } from "sonner";
 
 const handleDeleteSnapshot = async (snapshotId: number) => {
@@ -21,7 +29,21 @@ const handleDeleteSnapshot = async (snapshotId: number) => {
   }
 };
 
+const handleUpdateSnapshot = async (
+  snapshotId: number,
+  state: AppStateType,
+) => {
+  try {
+    await snapshotOps.update(snapshotId, state);
+    toast.success("Successfully updated snapshot.");
+  } catch (error) {
+    toast.error(`${error}`);
+  }
+};
+
 const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
+  const store = useStore<AppStateType>();
+  const appState = store.getState();
   const dispatch = useAppDispatch();
 
   const handleLoadSnapshot = async (snapshotId: number) => {
@@ -32,7 +54,7 @@ const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
       }
 
       dispatch(RootActions.setAppState(snapshot.state));
-      toast.success("Successfully loaded snapshot.");
+      toast.success("Successfully restored snapshot.");
     } catch (error) {
       toast.error(`${error}`);
     }
@@ -46,16 +68,28 @@ const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
           <MoreHorizontal className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent
+        align="end"
+        className="*:*:data-[slot=kbd]:ml-auto *:*:data-[slot=kbd]:border *:*:data-[slot=kbd]:font-mono"
+      >
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem onClick={() => handleLoadSnapshot(snapshot.id)}>
-          <ImportIcon /> Load Snapshot
+          <ArchiveRestoreIcon /> Restore Snapshot <Kbd>R</Kbd>
         </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => handleUpdateSnapshot(snapshot.id, appState)}
+        >
+          <PencilLineIcon /> Update Snapshot <Kbd>S</Kbd>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
           onClick={() => handleDeleteSnapshot(snapshot.id)}
         >
-          <Trash2Icon /> Delete Snapshot
+          <Trash2Icon /> Delete Snapshot{" "}
+          <Kbd className="text-destructive/90 bg-destructive/10 border-destructive/20">
+            D
+          </Kbd>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
