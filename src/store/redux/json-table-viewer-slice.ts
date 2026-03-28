@@ -1,19 +1,22 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import z from "zod";
 
-export const jsonTableViewerStateSchema = z.object({
+const jsonTableViewerStateSchemaInit = z.object({
   jsonData: z.any(),
   jsonStr: z.string(),
-  curl: z.string().optional()
-})
+  curl: z.string().optional(),
+});
 
-type JSONTableViewerStateType = z.output<typeof jsonTableViewerStateSchema>
+type JSONTableViewerStateType = z.output<typeof jsonTableViewerStateSchemaInit>;
 
 const initialState: JSONTableViewerStateType = {
   jsonData: {},
   jsonStr: "",
   curl: "",
 };
+
+export const jsonTableViewerStateSchema =
+  jsonTableViewerStateSchemaInit.default(initialState);
 
 const jsonTableViewerSlice = createSlice({
   name: "jsonTableViewer",
