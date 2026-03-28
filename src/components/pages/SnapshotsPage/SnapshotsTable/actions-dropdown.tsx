@@ -17,6 +17,7 @@ import {
   PencilLineIcon,
   Trash2Icon,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { useStore } from "react-redux";
 import { toast } from "sonner";
 
@@ -60,6 +61,27 @@ const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
     }
   };
 
+  const restoreRef = useRef<HTMLDivElement>(null);
+  const updateRef = useRef<HTMLDivElement>(null);
+  const deleteRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "R" && restoreRef.current) {
+        restoreRef.current.click();
+      }
+      if (event.key === "S" && updateRef.current) {
+        updateRef.current.click();
+      }
+      if (event.key === "D" && deleteRef.current) {
+        deleteRef.current.click();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -73,16 +95,21 @@ const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
         className="*:*:data-[slot=kbd]:ml-auto *:*:data-[slot=kbd]:border *:*:data-[slot=kbd]:font-mono"
       >
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem onClick={() => handleLoadSnapshot(snapshot.id)}>
+        <DropdownMenuItem
+          ref={restoreRef}
+          onClick={() => handleLoadSnapshot(snapshot.id)}
+        >
           <ArchiveRestoreIcon /> Restore Snapshot <Kbd>R</Kbd>
         </DropdownMenuItem>
         <DropdownMenuItem
+          ref={updateRef}
           onClick={() => handleUpdateSnapshot(snapshot.id, appState)}
         >
           <PencilLineIcon /> Update Snapshot <Kbd>S</Kbd>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
+          ref={deleteRef}
           variant="destructive"
           onClick={() => handleDeleteSnapshot(snapshot.id)}
         >
