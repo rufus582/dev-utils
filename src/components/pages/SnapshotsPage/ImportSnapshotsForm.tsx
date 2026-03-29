@@ -101,9 +101,9 @@ const ImportSnapshotsForm = ({ triggerElement }: ImportSnapshotsFormProps) => {
       <DialogTrigger asChild>{triggerElement}</DialogTrigger>
       <DialogContent className="rounded-3xl" bgBlur>
         <DialogHeader>
-          <DialogTitle>Import Table</DialogTitle>
+          <DialogTitle>Import Snapshots</DialogTitle>
           <DialogDescription>
-            Create table with rows imported from a file.
+            Import backed up Snapshots from a different browser/device.
           </DialogDescription>
         </DialogHeader>
         <form
