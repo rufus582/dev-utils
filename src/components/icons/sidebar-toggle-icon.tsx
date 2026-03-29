@@ -1,4 +1,4 @@
-const SidebarToggleIcon = ({ isOpen }: { isOpen: boolean }) => {
+const SidebarToggleIcon = () => {
   return (
     <svg
       width={24}
@@ -7,7 +7,6 @@ const SidebarToggleIcon = ({ isOpen }: { isOpen: boolean }) => {
       fill="currentColor"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
-      className="group"
     >
       <rect
         id="rect2"
@@ -24,18 +23,11 @@ const SidebarToggleIcon = ({ isOpen }: { isOpen: boolean }) => {
       />
       <rect
         id="rect3"
-        width="7"
-        height="14"
         fill="currentColor"
         x="5"
         y="5"
-        rx="2"
-        ry="2"
-        className={`transition-transform duration-300 origin-[20%] ${
-          isOpen
-            ? "scale-x-100 group-hover:scale-x-[0.3]"
-            : "scale-x-[0.3] group-hover:scale-x-100"
-        }`}
+        data-slot="sidebar-state"
+        className={`transition-all duration-300 origin-[20%] w-1.75 h-3.5 [rx:2px]`}
       />
     </svg>
   );
