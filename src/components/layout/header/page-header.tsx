@@ -11,6 +11,7 @@ import { SettingsIcon } from "lucide-react";
 import { useContext } from "react";
 import { PWAProviderContext } from "@/store/pwa-provider";
 import { AnimatePresence, motion } from "motion/react";
+import { cn } from "@/lib/utils";
 
 const Header = ({
   title,
@@ -38,10 +39,15 @@ const Header = ({
           asChild
         >
           <button
-            className="p-2 cursor-pointer hover:bg-accent dark:hover:bg-accent/50 rounded-xl"
+            className={cn(
+              "p-2 cursor-pointer hover:bg-accent dark:hover:bg-accent/50 rounded-xl",
+              open
+                ? "*:*:data-[slot=sidebar-state]:w-1.75 hover:*:*:data-[slot=sidebar-state]:w-0.5 hover:*:*:data-[slot=sidebar-state]:[rx:1px]"
+                : "*:*:data-[slot=sidebar-state]:w-0.5 *:*:data-[slot=sidebar-state]:[rx:1px] hover:*:*:data-[slot=sidebar-state]:w-1.75 hover:*:*:data-[slot=sidebar-state]:[rx:2px]",
+            )}
             onClick={toggleSidebar}
           >
-            <SidebarToggleIcon isOpen={open} />
+            <SidebarToggleIcon />
           </button>
         </Tooltip>
         <span className="font-bold text-2xl text-primary">

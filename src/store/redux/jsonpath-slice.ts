@@ -1,19 +1,22 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { z } from "zod";
 
-export const jsonPathDataStateSchema = z.object({
+const jsonPathDataStateSchemaInit = z.object({
   expression: z.string(),
   result: z.string(),
   jsonStr: z.string(),
 });
 
-type JSONPathDataStateType = z.output<typeof jsonPathDataStateSchema>;
+type JSONPathDataStateType = z.output<typeof jsonPathDataStateSchemaInit>;
 
 const initialState: JSONPathDataStateType = {
   expression: "$",
   result: "",
   jsonStr: "",
 };
+
+export const jsonPathDataStateSchema =
+  jsonPathDataStateSchemaInit.default(initialState);
 
 const jsonpathSlice = createSlice({
   name: "jsonpath",

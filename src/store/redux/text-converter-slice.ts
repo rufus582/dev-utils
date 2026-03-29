@@ -1,14 +1,16 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import z from "zod";
 
-export const textConverterStateSchema = z.object({
+const textConverterStateSchemaInit = z.object({
   fromFormatName: z.string(),
   toConvert: z.string(),
   toFormatName: z.string(),
   converted: z.string(),
 });
 
-export type TextConverterStateType = z.output<typeof textConverterStateSchema>
+export type TextConverterStateType = z.output<
+  typeof textConverterStateSchemaInit
+>;
 
 const initialState: TextConverterStateType = {
   fromFormatName: "Base64",
@@ -16,6 +18,9 @@ const initialState: TextConverterStateType = {
   toFormatName: "JSON",
   converted: "",
 };
+
+export const textConverterStateSchema =
+  textConverterStateSchemaInit.default(initialState);
 
 const textConverterSlice = createSlice({
   name: "textConverter",

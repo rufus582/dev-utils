@@ -1,19 +1,21 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { z } from "zod";
 
-export const jqDataStateSchema = z.object({
+const jqDataStateSchemaInit = z.object({
   filter: z.string(),
   result: z.string(),
   jsonStr: z.string(),
 });
 
-type JQDataStateType = z.output<typeof jqDataStateSchema>;
+type JQDataStateType = z.output<typeof jqDataStateSchemaInit>;
 
 const initialState: JQDataStateType = {
   filter: ".",
   result: "",
   jsonStr: "",
 };
+
+export const jqDataStateSchema = jqDataStateSchemaInit.default(initialState);
 
 const jqSlice = createSlice({
   name: "jq",
