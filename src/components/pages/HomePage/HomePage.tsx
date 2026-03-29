@@ -1,8 +1,8 @@
 import Header from "@/components/layout/header/page-header";
 import GitHubLogo from "@/components/icons/github-logo";
-import LinkedInLogo from "@/components/icons/linkedin-logo";
 import type React from "react";
 import { DesktopLayout, MobileLayout } from "./HomePageLayout";
+import GoogleFontsInfoIcon from "@/components/icons/g-info-icon";
 
 interface ProfileLinkProps {
   link: string;
@@ -20,10 +20,10 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
       text: "Source Code",
     },
     {
-      link: "https://www.linkedin.com/in/rufus58/",
+      link: "https://rufus582.dev",
       isWidelyAvailable: true,
-      icon: <LinkedInLogo />,
-      text: "Developer's LinkedIn",
+      icon: <GoogleFontsInfoIcon />,
+      text: "About Developer",
     },
   ];
 
