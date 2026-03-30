@@ -56,8 +56,9 @@ const ExportSnapshotsAndRedirect = () => {
             Dev-Utils. is moving to a new URL!
           </p>,
           {
-            description:
-              "Clicking on the Migrate button will export your saved snapshots and redirect you to the new URL.",
+            description: snapshots.length
+              ? "Clicking on the Migrate button will export your saved snapshots and redirect you to the new URL."
+              : "Clicking on the Migrate button will redirect you to the new URL.",
             duration: 100 * 1000,
             action: (
               <Button
