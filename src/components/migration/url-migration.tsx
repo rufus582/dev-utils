@@ -118,6 +118,12 @@ const ImportSnapshotsBasedOnParams = () => {
           {
             description: "Update your bookmarks with this URL.",
             duration: 7000,
+            onAutoClose() {
+              setSearchParams("");
+            },
+            onDismiss() {
+              setSearchParams("");
+            },
           },
         );
       }
