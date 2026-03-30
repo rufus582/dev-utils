@@ -51,8 +51,9 @@ const ExportSnapshotsAndRedirect = () => {
     if (searchParams.get("oldUrlRedirect") === "true") return;
     if (!_.endsWith(window.location.host, "rufus582.dev") && snapshots) {
       const handleMigration = async () => {
-        await sleep(5000);
+        await sleep(4000);
         toast.dismiss();
+        await sleep(1000);
         const toastId = toast.info(
           <p className="select-none font-bold">
             Dev-Utils. is moving to a new URL!
@@ -114,7 +115,10 @@ const ImportSnapshotsBasedOnParams = () => {
         if (toastId.current) toast.dismiss(toastId.current);
         toast.success(
           <span className="font-bold">Migration completed successfully!</span>,
-          { description: "Update your bookmarks with this URL." },
+          {
+            description: "Update your bookmarks with this URL.",
+            duration: 7000,
+          },
         );
       }
     } else if (toastId.current) toast.dismiss(toastId.current);
