@@ -1,4 +1,4 @@
-import { getCurrentEnvironment, openLinkInNewTab } from "@/lib/utils";
+import { getCurrentEnvironment, openLinkInNewTab, sleep } from "@/lib/utils";
 import { snapshotOps } from "@/store/indexed-db/snapshots";
 import { useLiveQuery } from "dexie-react-hooks";
 import _ from "lodash";
@@ -49,30 +49,34 @@ const ExportSnapshotsAndRedirect = () => {
   useEffect(() => {
     if (searchParams.get("oldUrlRedirect") === "true") return;
     if (!_.endsWith(window.location.host, "rufus582.dev") && snapshots) {
-      const toastId = toast.info(
-        <p className="select-none font-bold">
-          Dev-Utils. is moving to a new URL!
-        </p>,
-        {
-          description:
-            "Clicking on the Migrate button will export your saved snapshots and redirect you to the new URL.",
-          duration: 100 * 1000,
-          action: (
-            <Button
-              variant="outline"
-              size="sm"
-              className="hover:text-current rounded-3xl"
-              onClick={async () => {
-                toast.dismiss(toastId);
-                if (snapshots.length) await onExportClick();
-                redirectToNewUrl(snapshots.length ? true : false);
-              }}
-            >
-              Migrate
-            </Button>
-          ),
-        },
-      );
+      const handleMigration = async () => {
+        await sleep(5000);
+        const toastId = toast.info(
+          <p className="select-none font-bold">
+            Dev-Utils. is moving to a new URL!
+          </p>,
+          {
+            description:
+              "Clicking on the Migrate button will export your saved snapshots and redirect you to the new URL.",
+            duration: 100 * 1000,
+            action: (
+              <Button
+                variant="outline"
+                size="sm"
+                className="hover:text-current rounded-3xl"
+                onClick={async () => {
+                  toast.dismiss(toastId);
+                  if (snapshots.length) await onExportClick();
+                  redirectToNewUrl(snapshots.length ? true : false);
+                }}
+              >
+                Migrate
+              </Button>
+            ),
+          },
+        );
+      };
+      handleMigration();
     }
   }, [snapshots, searchParams]);
 
@@ -104,6 +108,7 @@ const ImportSnapshotsBasedOnParams = () => {
           description:
             "One final step - open the file that was downloaded and click on the Import button to complete.",
           duration: 100 * 1000,
+          closeButton: false,
         },
       );
     } else if (toastId.current) toast.dismiss(toastId.current);
