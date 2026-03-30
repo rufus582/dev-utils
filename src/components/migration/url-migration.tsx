@@ -24,12 +24,13 @@ const ExportSnapshotsAndRedirect = () => {
   const [searchParams] = useSearchParams();
 
   const snapshots = useLiveQuery(snapshotOps.readAll);
-  const redirectToNewUrl = (redirectFlag?: boolean) => {
-    const queryParams = redirectFlag ? "?oldUrlRedirect=true" : "";
+  const redirectToNewUrl = (hasSnapshots?: boolean) => {
+    const queryParams = hasSnapshots ? "&importSnapshots=true" : "";
     openLinkInNewTab(
       getCurrentEnvironment() === "production"
-        ? "https://dev-utils.rufus582.dev" + queryParams
-        : "https://dev-utils-beta.rufus582.dev" + queryParams,
+        ? "https://dev-utils.rufus582.dev?oldUrlRedirect=true" + queryParams
+        : "https://dev-utils-beta.rufus582.dev?oldUrlRedirect=true" +
+            queryParams,
     );
   };
 
@@ -51,6 +52,7 @@ const ExportSnapshotsAndRedirect = () => {
     if (!_.endsWith(window.location.host, "rufus582.dev") && snapshots) {
       const handleMigration = async () => {
         await sleep(5000);
+        toast.dismiss();
         const toastId = toast.info(
           <p className="select-none font-bold">
             Dev-Utils. is moving to a new URL!
@@ -88,12 +90,6 @@ const ImportSnapshotsBasedOnParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const toastId = useRef<number | string>("");
 
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      setSearchParams("");
-    }
-  };
-
   useEffect(() => {
     if (!_.endsWith(window.location.host, "rufus582.dev")) setSearchParams("");
   }, [setSearchParams]);
@@ -103,15 +99,24 @@ const ImportSnapshotsBasedOnParams = () => {
       searchParams.get("oldUrlRedirect") === "true" &&
       _.endsWith(window.location.host, "rufus582.dev")
     ) {
-      toastId.current = toast.info(
-        <span className="font-bold">Migration almost complete!</span>,
-        {
-          description:
-            "One final step - open the file that was downloaded and click on the Import button to complete.",
-          duration: 100 * 1000,
-          closeButton: false,
-        },
-      );
+      if (searchParams.get("importSnapshots") === "true") {
+        toast.dismiss();
+        toastId.current = toast.info(
+          <span className="font-bold">Migration almost complete!</span>,
+          {
+            description:
+              "One final step - open the file that was downloaded and click on the Import button to complete.",
+            duration: 100 * 1000,
+            closeButton: false,
+          },
+        );
+      } else {
+        if (toastId.current) toast.dismiss(toastId.current);
+        toast.success(
+          <span className="font-bold">Migration completed successfully!</span>,
+          { description: "Update your bookmarks with this URL." },
+        );
+      }
     } else if (toastId.current) toast.dismiss(toastId.current);
   }, [searchParams]);
 
@@ -119,13 +124,16 @@ const ImportSnapshotsBasedOnParams = () => {
     <ImportSnapshotsForm
       open={
         searchParams.get("oldUrlRedirect") === "true" &&
+        searchParams.get("importSnapshots") === "true" &&
         _.endsWith(window.location.host, "rufus582.dev")
       }
-      onOpenChange={onOpenChange}
       interactionOutside={false}
       showCloseButton={false}
-      successMessage="Migration completed successfully!"
+      successMessage={() => {
+        setSearchParams("?oldUrlRedirect=true");
+      }}
       onCancel={() => {
+        setSearchParams("");
         toast.warning(
           <span className="font-bold">Migration was cancelled</span>,
           {

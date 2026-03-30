@@ -45,7 +45,7 @@ interface ImportSnapshotsFormProps {
   onOpenChange?: (open: boolean) => void;
   interactionOutside?: boolean;
   showCloseButton?: boolean;
-  successMessage?: string;
+  successMessage?: string | (() => void);
   onCancel?: () => void;
 }
 
@@ -87,7 +87,11 @@ const ImportSnapshotsForm = ({
         formResponse.overrideDuplicates === "on",
       );
 
-      toast.success(successMessage);
+      if (successMessage && typeof successMessage === "string")
+        toast.success(successMessage);
+      else if (successMessage && typeof successMessage === "function")
+        successMessage();
+
       setIsImportFormOpen(false);
       onOpenChange?.(false);
       return true;
