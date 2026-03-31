@@ -1,5 +1,5 @@
 import { Button as NormalButton } from "@/components/ui/button";
-import { Grid2x2Plus } from "lucide-react";
+import { FileUpIcon } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -33,18 +33,34 @@ const ImportSnapshotsFormFields = z.strictObject({
   overrideDuplicates: z.literal(["on", "off", undefined]),
 });
 
-const snapshotsFileSchema = z.array(snapshotSchema)
+const snapshotsFileSchema = z.array(snapshotSchema);
 
 type ImportSnapshotsFormType = z.infer<typeof ImportSnapshotsFormFields>;
 type ImportSnapshotsFormErrorType =
   z.core.$ZodFlattenedError<ImportSnapshotsFormType>;
 
 interface ImportSnapshotsFormProps {
-  triggerElement: React.ReactNode;
+  triggerElement?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  interactionOutside?: boolean;
+  showCloseButton?: boolean;
+  successMessage?: string | (() => void);
+  onCancel?: () => void;
 }
 
-const ImportSnapshotsForm = ({ triggerElement }: ImportSnapshotsFormProps) => {
-  const [isImportFormOpen, setIsImportFormOpen] = useState<boolean>(false);
+const ImportSnapshotsForm = ({
+  triggerElement,
+  open,
+  onOpenChange,
+  interactionOutside = true,
+  showCloseButton = true,
+  successMessage = "Successfully imported snapshots",
+  onCancel,
+}: ImportSnapshotsFormProps) => {
+  const [isImportFormOpen, setIsImportFormOpen] = useState<boolean>(
+    open || false,
+  );
   const [importSnapshotsFormErrors, setImportSnapshotsFormErrors] =
     useState<ImportSnapshotsFormErrorType>();
   const importSnapshotsFormRef = useRef<HTMLFormElement>(null);
@@ -61,24 +77,33 @@ const ImportSnapshotsForm = ({ triggerElement }: ImportSnapshotsFormProps) => {
       const fileContent = await formResponse.file.text();
       const parsedData = await TextFormats.JSON.parse(fileContent);
 
-      const importedSnapshots = snapshotsFileSchema.safeParse(parsedData)
+      const importedSnapshots = snapshotsFileSchema.safeParse(parsedData);
       if (!importedSnapshots.success) {
-        console.log(importedSnapshots.error)
-        throw new SyntaxError()
+        console.log(importedSnapshots.error);
+        throw new SyntaxError();
       }
-      await snapshotOps.createBulk(importedSnapshots.data, formResponse.overrideDuplicates === "on")
+      await snapshotOps.createBulk(
+        importedSnapshots.data,
+        formResponse.overrideDuplicates === "on",
+      );
 
-      toast.success(`Successfully imported snapshots`);
+      if (successMessage && typeof successMessage === "string")
+        toast.success(successMessage);
+      else if (successMessage && typeof successMessage === "function")
+        successMessage();
+
       setIsImportFormOpen(false);
+      onOpenChange?.(false);
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
         setImportSnapshotsFormErrors(z.flattenError(error));
-      }
-      else if (error instanceof SyntaxError)
+      } else if (error instanceof SyntaxError)
         setImportSnapshotsFormErrors({
           fieldErrors: {
-            file: ["The opened file cannot be imported, it is either damaged or corrupted."],
+            file: [
+              "The opened file cannot be imported, it is either damaged or corrupted.",
+            ],
           },
           formErrors: [],
         });
@@ -90,20 +115,28 @@ const ImportSnapshotsForm = ({ triggerElement }: ImportSnapshotsFormProps) => {
 
   const onImportSnapshotsFormOpenChange = (open: boolean) => {
     setIsImportFormOpen(open);
+    onOpenChange?.(open);
     setImportSnapshotsFormErrors(undefined);
   };
 
   return (
     <Dialog
-      open={isImportFormOpen}
+      open={open || isImportFormOpen}
       onOpenChange={onImportSnapshotsFormOpenChange}
     >
       <DialogTrigger asChild>{triggerElement}</DialogTrigger>
-      <DialogContent className="rounded-3xl" bgBlur>
+      <DialogContent
+        className="rounded-3xl"
+        bgBlur
+        onInteractOutside={(e) => {
+          if (!interactionOutside) e.preventDefault();
+        }}
+        showCloseButton={showCloseButton}
+      >
         <DialogHeader>
-          <DialogTitle>Import Table</DialogTitle>
+          <DialogTitle>Import Snapshots</DialogTitle>
           <DialogDescription>
-            Create table with rows imported from a file.
+            Import backed up Snapshots from a different browser/device.
           </DialogDescription>
         </DialogHeader>
         <form
@@ -193,18 +226,19 @@ const ImportSnapshotsForm = ({ triggerElement }: ImportSnapshotsFormProps) => {
                 variant="outline"
                 className="rounded-full"
                 type="button"
+                onClick={onCancel}
               >
                 Cancel
               </NormalButton>
             </DialogClose>
             <Button
               type="submit"
-              buttonIcon={<Grid2x2Plus />}
+              buttonIcon={<FileUpIcon />}
               className="rounded-full"
               onClick={onImportSnapshotsFormSubmit}
               useDefaultInteractionAnimation
             >
-              Start
+              Import
             </Button>
           </DialogFooter>
         </form>

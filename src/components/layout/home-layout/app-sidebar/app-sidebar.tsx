@@ -9,7 +9,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "../../../ui/sidebar";
+} from "@/components/ui/sidebar";
 import {
   routeDefinitions,
   type RouteDefinition,
@@ -22,14 +22,15 @@ import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import DevUtilsCommandPrompt from "../command-prompt/command";
 import { AnimatePresence, motion } from "motion/react";
 import AppSidebarContent from "./app-sidebar-content";
+import * as URLMigration from "@/components/migration/url-migration";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>(-1);
   const sidebarContentDefinitions = routeDefinitions.filter(
-    (def) => def.sidebarPlace === "content"
+    (def) => def.sidebarPlace === "content",
   );
   const sidebarFooterDefinition = routeDefinitions.find(
-    (def) => def.sidebarPlace === "footer"
+    (def) => def.sidebarPlace === "footer",
   );
 
   const settings = useLiveQuery(settingsOps.get);
@@ -41,7 +42,7 @@ const AppSidebar = () => {
     setActivePathDefinition(
       routeDefinition.definitionId === undefined
         ? -1
-        : routeDefinition.definitionId
+        : routeDefinition.definitionId,
     );
     navigate(routeDefinition.path ?? "/", {
       viewTransition: settings?.pageTransition,
@@ -50,6 +51,8 @@ const AppSidebar = () => {
 
   return (
     <Sidebar variant="floating" collapsible="icon">
+      <URLMigration.ExportSnapshotsAndRedirect />
+      <URLMigration.ImportSnapshotsBasedOnParams />
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils";
 
 const defaultInteractionAnimation: React.ComponentProps<typeof motion.button> =
   {
-    whileHover: { scale: 1.1 },
+    whileHover: { scale: 1.03 },
+    whileTap: { scale: 0.97 },
     transition: {
       type: "spring",
       bounce: 0.6,
@@ -44,7 +45,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 const Loader = () => {
@@ -151,7 +152,7 @@ function Button({
     errorBgColor?: string;
     errorBgColorClass?: string;
     onClick?: (
-      event: React.MouseEvent<HTMLButtonElement>
+      event: React.MouseEvent<HTMLButtonElement>,
     ) => boolean | Promise<boolean>;
     useDefaultInteractionAnimation?: boolean;
   }) {
@@ -170,7 +171,7 @@ function Button({
       },
       {
         duration: 0.2,
-      }
+      },
     );
     if (loaderIcon) {
       await animate(
@@ -180,7 +181,7 @@ function Button({
         },
         {
           duration: 0.2,
-        }
+        },
       );
     }
   };
@@ -198,7 +199,7 @@ function Button({
         },
         {
           duration: 0.2,
-        }
+        },
       );
     }
     if (successIcon) {
@@ -210,7 +211,7 @@ function Button({
           },
           {
             duration: 0.2,
-          }
+          },
         );
       }
       await animate(
@@ -220,7 +221,7 @@ function Button({
         },
         {
           duration: 0.2,
-        }
+        },
       );
       await animate(
         ".success",
@@ -230,7 +231,7 @@ function Button({
         {
           delay: 1,
           duration: 0.2,
-        }
+        },
       );
       if (successBgColor || successBgColorClass) {
         animate(
@@ -240,7 +241,7 @@ function Button({
           },
           {
             duration: 0.2,
-          }
+          },
         );
       }
     }
@@ -252,7 +253,7 @@ function Button({
       },
       {
         duration: 0.2,
-      }
+      },
     );
   };
 
@@ -269,7 +270,7 @@ function Button({
         },
         {
           duration: 0.2,
-        }
+        },
       );
     }
     if (errorIcon) {
@@ -281,7 +282,7 @@ function Button({
           },
           {
             duration: 0.2,
-          }
+          },
         );
       }
       await animate(
@@ -291,7 +292,7 @@ function Button({
         },
         {
           duration: 0.2,
-        }
+        },
       );
       await animate(
         ".error",
@@ -301,7 +302,7 @@ function Button({
         {
           delay: 1,
           duration: 0.2,
-        }
+        },
       );
       if (errorBgColor || errorBgColorClass) {
         animate(
@@ -311,7 +312,7 @@ function Button({
           },
           {
             duration: 0.2,
-          }
+          },
         );
       }
     }
@@ -323,7 +324,7 @@ function Button({
       },
       {
         duration: 0.2,
-      }
+      },
     );
   };
 
