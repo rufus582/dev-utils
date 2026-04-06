@@ -20,7 +20,7 @@ const DesktopLayout = ({ links }: HomePageLayoutProps) => {
   return (
     <TiltContainer
       rotate={25}
-      className="w-full flex flex-col perspective-midrange"
+      className="w-full flex flex-col perspective-midrange @container"
       springOptions={{
         damping: 20,
         stiffness: 100,
@@ -28,14 +28,14 @@ const DesktopLayout = ({ links }: HomePageLayoutProps) => {
       }}
     >
       <div className="translate-z-14 transform-3d">
-        <div className="max-h-128 min-h-75 aspect-square p-8 bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[25%] shadow-2xl transform-3d flex-3 shrink grow">
-          <AppLogo className="w-full h-full translate-z-5 drop-shadow-2xl drop-shadow-black/40" />
+        <div className="max-h-[45vh] min-h-30 aspect-square p-[max(12px,3.5cqh)] bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[25%] shadow-2xl transform-3d">
+          <AppLogo className="w-full h-full translate-z-5 drop-shadow-2xl drop-shadow-black/40 active:translate-z-3 transition" />
         </div>
       </div>
-      <h2 className="font-bold text-8xl text-muted-foreground translate-z-14 select-none pointer-events-none">
+      <h2 className="font-bold text-[max(30px,10cqh)] leading-none text-muted-foreground translate-z-14 select-none pointer-events-none">
         Dev-Utils.
       </h2>
-      <p className="mt-2 text-muted-foreground mx-auto translate-z-14 select-none pointer-events-none">
+      <p className="mt-2 text-[max(11px,1.6cqh)] leading-none text-muted-foreground mx-auto translate-z-14 select-none pointer-events-none">
         Select one of the items in the sidebar or press <Kbd>⌘ + K</Kbd> to
         begin!
       </p>
@@ -50,7 +50,10 @@ const DesktopLayout = ({ links }: HomePageLayoutProps) => {
             <Button
               key={linkItem.text}
               variant="outline"
-              className="fill-foreground rounded-3xl hover:translate-z-5 transform-3d transition-all duration-300 ease-in-out select-none"
+              className={cn(
+                "fill-foreground rounded-3xl hover:translate-z-5 transform-3d transition-all duration-300 ease-in-out select-none",
+                "h-[4.5cqh] min-h-8 min-w-30 text-[max(11px,1.5cqh)] [&>svg]:w-[max(11px,1.5cqh)]! [&>svg]:h-[max(11px,1.5cqh)]!",
+              )}
               size="lg"
               onClick={() =>
                 openLinkInNewTab(linkItem.link, linkItem.isWidelyAvailable)
