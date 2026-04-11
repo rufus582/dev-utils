@@ -3,6 +3,12 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion, useAnimate, type MotionStyle } from "motion/react";
+import { Icon } from "@/components/icons/huge-icon";
+import {
+  CancelCircleIcon,
+  LoadingIcon,
+  CheckmarkCircleIcon,
+} from "@/components/icons/ui";
 
 import { cn } from "@/lib/utils";
 
@@ -48,9 +54,12 @@ const buttonVariants = cva(
   },
 );
 
+const MotionIcon = motion.create(Icon);
+
 const Loader = () => {
   return (
-    <motion.svg
+    <MotionIcon
+      icon={LoadingIcon}
       initial={{
         scale: 1,
         width: "20px",
@@ -64,7 +73,7 @@ const Loader = () => {
         rotate: [0, 360],
       }}
       transition={{
-        duration: 0.3,
+        duration: 1.5,
         repeat: Infinity,
         ease: "linear",
       }}
@@ -74,53 +83,10 @@ const Loader = () => {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth={2.5}
       strokeLinecap="round"
       strokeLinejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 3a9 9 0 1 0 9 9" />
-    </motion.svg>
-  );
-};
-
-const CheckIcon = () => {
-  return (
-    <motion.svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-      <path d="M9 12l2 2l4 -4" />
-    </motion.svg>
-  );
-};
-
-const XIcon = () => {
-  return (
-    <motion.svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-      <path d="M10 10l4 4m0 -4l-4 4" />
-    </motion.svg>
+    />
   );
 };
 
@@ -132,8 +98,8 @@ function Button({
   onClick,
   disabled = undefined,
   loaderIcon = <Loader />,
-  successIcon = <CheckIcon />,
-  errorIcon = <XIcon />,
+  successIcon = <MotionIcon icon={CheckmarkCircleIcon} />,
+  errorIcon = <MotionIcon icon={CancelCircleIcon} />,
   useDefaultInteractionAnimation,
   successBgColor,
   successBgColorClass,

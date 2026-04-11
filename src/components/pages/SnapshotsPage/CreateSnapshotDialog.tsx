@@ -1,4 +1,5 @@
-import { InfoIcon, SaveIcon } from "lucide-react";
+import { Icon } from "@/components/icons/huge-icon";
+import { SaveIcon, InformationCircleIcon } from "@/components/icons/pages";
 import { Button } from "@/components/ui/button";
 import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
 import {
@@ -95,7 +96,7 @@ const CreateSnapshotDialog = ({
         >
           <div className="grid grid-cols-5 gap-4">
             <Alert className="col-span-5 rounded-xl">
-              <InfoIcon />
+              <Icon icon={InformationCircleIcon} />
               <AlertDescription>
                 Data from SQL Playground cannot be saved!
               </AlertDescription>
@@ -146,7 +147,7 @@ const CreateSnapshotDialog = ({
             </DialogClose>
             <AnimatedButton
               type="submit"
-              buttonIcon={<SaveIcon />}
+              buttonIcon={<Icon icon={SaveIcon} />}
               className="rounded-full"
               onClick={handleSaveSnapshot}
               useDefaultInteractionAnimation

@@ -1,5 +1,7 @@
 import { Button as NormalButton } from "@/components/ui/button";
-import { Grid2x2Plus } from "lucide-react";
+import { Icon } from "@/components/icons/huge-icon";
+import { DatabaseAddIcon } from "@/components/icons/pages";
+import { TableIcon } from "@/components/icons/routes";
 import {
   Dialog,
   DialogClose,
@@ -116,7 +118,7 @@ const ImportTableForm = ({ db }: ImportTableFormProps) => {
         <Button
           variant="outline"
           loaderIcon={null}
-          buttonIcon={<Grid2x2Plus />}
+          buttonIcon={<Icon icon={DatabaseAddIcon} />}
           successIcon={null}
           errorIcon={null}
           className="w-fit rounded-full mb-4 ml-2"
@@ -236,7 +238,7 @@ const ImportTableForm = ({ db }: ImportTableFormProps) => {
             </DialogClose>
             <Button
               type="submit"
-              buttonIcon={<Grid2x2Plus />}
+              buttonIcon={<Icon icon={TableIcon} strokeWidth={1.5} />}
               className="rounded-full"
               onClick={onImportTableFormSubmit}
               useDefaultInteractionAnimation

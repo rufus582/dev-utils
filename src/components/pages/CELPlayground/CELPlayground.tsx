@@ -9,15 +9,15 @@ import { CELActions } from "@/store/redux/cel-slice";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import * as CEL from "@marcbachmann/cel-js";
 import { TextFormats } from "@/lib/text-formats";
-import CELLogo from "@/components/icons/cel-logo";
+import CELLogo from "@/components/icons/sidebar/cel-logo";
 
 export default function CELPlayground() {
-  const celDataState = useAppSelector(state => state.cel);
+  const celDataState = useAppSelector((state) => state.cel);
   const dispatch = useAppDispatch();
 
   const handleCodeChanged = async (
     celExpressionVal?: string,
-    jsonStrVal?: string
+    jsonStrVal?: string,
   ) => {
     const celExpression =
       celExpressionVal === undefined
@@ -33,7 +33,7 @@ export default function CELPlayground() {
 
     try {
       const parsedJsonData = await Promise.resolve(
-        TextFormats.JSON.parse(jsonStr)
+        TextFormats.JSON.parse(jsonStr),
       );
 
       if (typeof parsedJsonData === "string" || Array.isArray(parsedJsonData))

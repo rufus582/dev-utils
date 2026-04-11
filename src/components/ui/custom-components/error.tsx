@@ -1,3 +1,5 @@
+import { Icon } from "../../icons/huge-icon";
+import { CancelCircleIcon } from "../../icons/ui";
 import {
   Empty,
   EmptyContent,
@@ -6,7 +8,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { CircleXIcon } from "lucide-react";
 import type React from "react";
 
 // Define error messages for common HTTP error status codes
@@ -40,7 +41,7 @@ type HTTPErrorStatusType = keyof typeof defaultHttpErrorMessages;
 
 const getHttpErrorMessage = (
   status: HTTPErrorStatusType,
-  customHttpMessages?: Partial<typeof defaultHttpErrorMessages>
+  customHttpMessages?: Partial<typeof defaultHttpErrorMessages>,
 ): string | undefined => {
   let httpStatusMessage = defaultHttpErrorMessages[status];
   if (customHttpMessages)
@@ -66,7 +67,7 @@ const Error = ({
   httpStatus,
   title,
   message,
-  icon = <CircleXIcon />,
+  icon = <Icon icon={CancelCircleIcon} />,
   children,
   className,
   httpErrorMessages,
@@ -78,7 +79,7 @@ const Error = ({
 
     const httpStatusMessage = getHttpErrorMessage(
       httpStatus.status as HTTPErrorStatusType,
-      httpErrorMessages
+      httpErrorMessages,
     );
     errorMessage = !message && httpStatusMessage ? httpStatusMessage : message;
   }

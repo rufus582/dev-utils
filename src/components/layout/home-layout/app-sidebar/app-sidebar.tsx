@@ -1,4 +1,3 @@
-import { CodeSquareIcon } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +22,7 @@ import DevUtilsCommandPrompt from "../command-prompt/command";
 import { AnimatePresence, motion } from "motion/react";
 import AppSidebarContent from "./app-sidebar-content";
 import * as URLMigration from "@/components/migration/url-migration";
+import AppLogo from "@/components/icons/app-logo";
 
 const AppSidebar = () => {
   const [activePathDefinition, setActivePathDefinition] = useState<number>(-1);
@@ -61,7 +61,7 @@ const AppSidebar = () => {
               onClick={() => handleNavigation({ definitionId: -1, path: "/" })}
             >
               <>
-                <CodeSquareIcon />
+                <AppLogo className="stroke-foreground" />
                 <span className="text-base font-semibold">Dev-Utils.</span>
               </>
             </SidebarMenuButton>

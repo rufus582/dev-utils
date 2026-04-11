@@ -1,8 +1,8 @@
 import Header from "@/components/layout/header/page-header";
-import GitHubLogo from "@/components/icons/github-logo";
 import type React from "react";
 import { DesktopLayout, MobileLayout } from "./HomePageLayout";
-import GoogleFontsInfoIcon from "@/components/icons/g-info-icon";
+import { Icon } from "@/components/icons/huge-icon";
+import { GithubIcon, DiscoverCircleIcon } from "@/components/icons/pages";
 
 interface ProfileLinkProps {
   link: string;
@@ -16,13 +16,13 @@ const HomePage = ({ isMobile }: { isMobile?: boolean }) => {
     {
       link: "https://github.com/rufus582/dev-utils",
       isWidelyAvailable: true,
-      icon: <GitHubLogo />,
+      icon: <Icon icon={GithubIcon} />,
       text: "Source Code",
     },
     {
       link: "https://rufus582.dev",
       isWidelyAvailable: true,
-      icon: <GoogleFontsInfoIcon />,
+      icon: <Icon icon={DiscoverCircleIcon} />,
       text: "About Developer",
     },
   ];

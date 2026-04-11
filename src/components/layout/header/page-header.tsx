@@ -1,13 +1,14 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { SettingsIcon } from "@/components/icons/pages";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useLocation } from "react-router";
 import { routeDefinitions } from "@/routes/route-definitions";
 import { Separator } from "@/components/ui/separator";
 import type React from "react";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
-import SidebarToggleIcon from "@/components/icons/sidebar-toggle-icon";
+import SidebarToggleIcon from "@/components/icons/pages/page-header/sidebar-toggle-icon";
 import SettingsDialog from "@/components/layout/header/settings-dialog";
 import { Button } from "@/components/ui/button";
-import { SettingsIcon } from "lucide-react";
 import { useContext } from "react";
 import { PWAProviderContext } from "@/store/pwa-provider";
 import { AnimatePresence, motion } from "motion/react";
@@ -68,7 +69,7 @@ const Header = ({
                 )}
               </AnimatePresence>
               <Button size="icon" variant="outline" className="my-auto mr-2">
-                <SettingsIcon strokeWidth="2" />
+                <Icon icon={SettingsIcon} strokeWidth={2.5} />
               </Button>
             </div>
           }

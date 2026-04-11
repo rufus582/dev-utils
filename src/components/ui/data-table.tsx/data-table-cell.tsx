@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import type { SnapshotType } from "@/store/indexed-db/snapshots";
 import type { HeaderContext } from "@tanstack/react-table";
-import { ChevronDown, ChevronsUpDown, ChevronUp } from "lucide-react";
+import { Icon } from "@/components/icons/huge-icon";
+import {
+  ArrowPointUpIcon,
+  ArrowPointDownIcon,
+  ArrowUpDownIcon,
+} from "@/components/icons/ui";
 
 interface IHeaderCellProps {
   name: string;
@@ -9,14 +14,25 @@ interface IHeaderCellProps {
   sorting?: boolean;
 }
 
+const SortingIcon = ({
+  sorting,
+  className,
+}: {
+  sorting: "asc" | "desc" | false;
+  className: string;
+}) => {
+  const SortIcon =
+    sorting === "asc"
+      ? ArrowPointUpIcon
+      : sorting === "desc"
+        ? ArrowPointDownIcon
+        : ArrowUpDownIcon;
+
+  return <Icon icon={SortIcon} className={className} />;
+};
+
 const HeaderCell = ({ name, headerCtx, sorting = true }: IHeaderCellProps) => {
   const isSorted = headerCtx.column.getIsSorted();
-  const Icon =
-    isSorted === "asc"
-      ? ChevronUp
-      : isSorted === "desc"
-      ? ChevronDown
-      : ChevronsUpDown;
 
   return (
     <Button
@@ -25,7 +41,12 @@ const HeaderCell = ({ name, headerCtx, sorting = true }: IHeaderCellProps) => {
       onClick={() => headerCtx.column.toggleSorting(isSorted === "asc")}
     >
       {name}
-      {sorting && <Icon className="ml-2 h-4 w-4" />}
+      {sorting && (
+        <SortingIcon
+          sorting={isSorted}
+          className="ml-2 h-4 w-4 text-muted-foreground/70"
+        />
+      )}
     </Button>
   );
 };

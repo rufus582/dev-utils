@@ -1,10 +1,11 @@
+import { Icon } from "@/component/icons/huge-icon";
 import {
   DownloadIcon,
-  MoonIcon,
   SaveIcon,
+  MoonIcon,
   SunIcon,
-  SunMoonIcon,
-} from "lucide-react";
+  ComputerSettingsIcon,
+} from "@/component/icons/pages";
 import { Button } from "@/components/ui/button";
 import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
 import {
@@ -134,7 +135,7 @@ const SettingsDialog = ({
             {needRefresh && (
               <>
                 <Alert className="col-span-5 rounded-xl">
-                  <DownloadIcon />
+                  <Icon icon={DownloadIcon} />
                   <div className="flex">
                     <div>
                       <AlertTitle>New content available!</AlertTitle>
@@ -180,15 +181,15 @@ const SettingsDialog = ({
                       <SelectGroup>
                         <SelectLabel>Select Theme</SelectLabel>
                         <SelectItem key="light" value="light">
-                          <SunIcon />
+                          <Icon icon={SunIcon} />
                           Light
                         </SelectItem>
                         <SelectItem key="dark" value="dark">
-                          <MoonIcon />
+                          <Icon icon={MoonIcon} />
                           Dark
                         </SelectItem>
                         <SelectItem key="system" value="system">
-                          <SunMoonIcon />
+                          <Icon icon={ComputerSettingsIcon} />
                           System
                         </SelectItem>
                       </SelectGroup>
@@ -241,7 +242,7 @@ const SettingsDialog = ({
             </DialogClose>
             <AnimatedButton
               type="submit"
-              buttonIcon={<SaveIcon />}
+              buttonIcon={<Icon icon={SaveIcon} />}
               className="rounded-full"
               onClick={handleSaveSettings}
               useDefaultInteractionAnimation

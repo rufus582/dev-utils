@@ -1,5 +1,7 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { CancelCircleIcon } from "@/components/icons/ui";
+import { BugIcon, UnavailableIcon } from "@/components/icons/pages";
 import Error from "@/components/ui/custom-components/error";
-import { BanIcon, BugIcon, CircleXIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EmptyDescription } from "@/components/ui/empty";
 import { openLinkInNewTab } from "@/lib/utils";
@@ -11,10 +13,10 @@ const AppError = () => {
   const appError = useRouteError();
   const isRouteError = isRouteErrorResponse(appError);
 
-  let errorIcon = <BanIcon />;
+  let errorIcon = <Icon icon={UnavailableIcon} />;
   if (isRouteError && appError.status >= 500 && appError.status < 600)
-    errorIcon = <BugIcon />;
-  else if (isRouteError) errorIcon = <CircleXIcon />;
+    errorIcon = <Icon icon={BugIcon} />;
+  else if (isRouteError) errorIcon = <Icon icon={CancelCircleIcon} />;
 
   return (
     <div className="h-full w-full flex flex-col">
@@ -38,7 +40,7 @@ const AppError = () => {
             variant="link"
             onClick={() =>
               openLinkInNewTab(
-                "https://github.com/rufus582/dev-utils/issues/new"
+                "https://github.com/rufus582/dev-utils/issues/new",
               )
             }
           >

@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@arktype/regex": "^0.0.5",
+    "@hugeicons/core-free-icons": "^4.1.1",
+    "@hugeicons/react": "^1.1.6",
     "@marcbachmann/cel-js": "^2.7.0",
     "@metrichor/jmespath": "^0.3.1",
     "@monaco-editor/react": "^4.7.0",
@@ -50,7 +52,6 @@
     "js-cookie": "^3.0.5",
     "jsonpathly": "^2.0.3",
     "lodash": "^4.17.21",
-    "lucide-react": "^0.542.0",
     "monaco-editor": "^0.53.0",
     "motion": "^12.23.26",
     "nanoid": "^5.1.7",

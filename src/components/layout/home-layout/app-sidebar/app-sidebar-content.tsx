@@ -1,4 +1,5 @@
-import { ChevronDown } from "lucide-react";
+import { Icon } from "@/components/icons/huge-icon";
+import { ArrowDownIcon } from "@/components/icons/ui";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -37,7 +38,7 @@ const AppSidebarContent = ({
 
   const initialSidebarContentState: Record<string, boolean> = useMemo(
     () => ({}),
-    []
+    [],
   );
   const sidebarContentCategories: string[] = [];
   sidebarContentDefinitions.forEach((definition) => {
@@ -51,7 +52,7 @@ const AppSidebarContent = ({
   });
 
   const [sidebarContentState, setSidebarContentState] = useImmer(
-    initialSidebarContentState
+    initialSidebarContentState,
   );
 
   const openAllCategories = useEffectEvent(() => {
@@ -74,7 +75,7 @@ const AppSidebarContent = ({
         const categoryDefinitions = sidebarContentDefinitions.filter(
           (definition) =>
             (category === CATEGORY_UNCATEGORISED && !definition.category) ||
-            category === definition.category
+            category === definition.category,
         );
         return (
           <Collapsible
@@ -112,7 +113,10 @@ const AppSidebarContent = ({
                     <SidebarGroupLabel asChild>
                       <CollapsibleTrigger className="w-full flex hover:bg-muted cursor-pointer">
                         {category}
-                        <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180 duration-300" />
+                        <Icon
+                          icon={ArrowDownIcon}
+                          className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180 duration-300"
+                        />
                       </CollapsibleTrigger>
                     </SidebarGroupLabel>
                   </motion.div>

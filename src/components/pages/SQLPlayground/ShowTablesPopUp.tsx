@@ -1,11 +1,10 @@
+import { Icon } from "@/components/icons/huge-icon";
 import {
-  CheckCircle,
-  EyeIcon,
   MoreHorizontalIcon,
-  Trash2Icon,
-  XCircle,
-} from "lucide-react";
-import DatabaseSearch from "@/components/icons/database-search";
+  CheckmarkCircleIcon,
+  DeleteIcon,
+  ViewIcon,
+} from "@/components/icons/ui";
 import {
   Popover,
   PopoverContent,
@@ -85,9 +84,8 @@ const ShowTablesPopUp = ({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          buttonIcon={<DatabaseSearch />}
-          successIcon={<CheckCircle />}
-          errorIcon={<XCircle />}
+          buttonIcon={<Icon icon={ViewIcon} />}
+          successIcon={<Icon icon={CheckmarkCircleIcon} />}
           errorBgColorClass="bg-destructive-alt"
           className="w-fit rounded-full mb-4 ml-2"
           useDefaultInteractionAnimation
@@ -121,7 +119,7 @@ const ShowTablesPopUp = ({
                           size="icon"
                           className="size-8"
                         >
-                          <MoreHorizontalIcon />
+                          <Icon icon={MoreHorizontalIcon} />
                           <span className="sr-only">Open menu</span>
                         </NormalButton>
                       </DropdownMenuTrigger>
@@ -131,7 +129,7 @@ const ShowTablesPopUp = ({
                             handleCellItemAction(`select * from ${name}`)
                           }
                         >
-                          <EyeIcon />
+                          <Icon icon={ViewIcon} />
                           View Records
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -141,7 +139,7 @@ const ShowTablesPopUp = ({
                             handleCellItemAction(`drop table ${name}`)
                           }
                         >
-                          <Trash2Icon />
+                          <Icon icon={DeleteIcon} />
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>

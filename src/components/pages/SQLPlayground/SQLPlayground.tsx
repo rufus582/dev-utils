@@ -1,3 +1,6 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { PasteIcon, CancelIcon, TickIcon } from "@/components/icons/ui";
+import { TypeCursorIcon, PlayIcon } from "@/components/icons/pages";
 import CodeEditor, {
   type CodeEditorRefType,
 } from "@/components/ui/code/code-editor";
@@ -10,15 +13,6 @@ import {
 } from "@/components/ui/resizable";
 import Header from "@/components/layout/header/page-header";
 import { Button } from "@/components/ui/custom-components/animated-button";
-import {
-  Check,
-  ClipboardCheck,
-  ClipboardPaste,
-  ClipboardX,
-  Play,
-  TextCursorInput,
-  X,
-} from "lucide-react";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import { getClipboardText } from "@/lib/utils";
 import { toast } from "sonner";
@@ -150,11 +144,8 @@ const SQLPlayground = () => {
           <Tooltip content="Paste copied data from clipboard" asChild>
             <Button
               variant="outline"
-              buttonIcon={<ClipboardPaste />}
-              loaderIcon={null}
-              successIcon={<ClipboardCheck />}
+              buttonIcon={<Icon icon={PasteIcon} />}
               successBgColorClass="bg-success-alt"
-              errorIcon={<ClipboardX />}
               errorBgColorClass="bg-destructive-alt"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={handleClipboardPaste}
@@ -181,10 +172,10 @@ const SQLPlayground = () => {
             className=" justify-items-end"
           >
             <Button
-              buttonIcon={<Play />}
-              successIcon={<Check />}
+              buttonIcon={<Icon icon={PlayIcon} />}
+              successIcon={<Icon icon={TickIcon} />}
               successBgColorClass="bg-primary"
-              errorIcon={<X />}
+              errorIcon={<Icon icon={CancelIcon} />}
               errorBgColorClass="bg-primary"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={() => onClickRunSQL()}
@@ -199,10 +190,10 @@ const SQLPlayground = () => {
             className="justify-items-end"
           >
             <Button
-              buttonIcon={<TextCursorInput />}
-              successIcon={<Check />}
+              buttonIcon={<Icon icon={TypeCursorIcon} />}
+              successIcon={<Icon icon={TickIcon} />}
               successBgColorClass="bg-primary"
-              errorIcon={<X />}
+              errorIcon={<Icon icon={CancelIcon} />}
               errorBgColorClass="bg-primary"
               className="w-fit rounded-full mb-4 ml-2"
               onClick={() => onClickRunSQL(true)}
