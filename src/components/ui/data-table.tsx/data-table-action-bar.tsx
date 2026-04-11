@@ -144,7 +144,7 @@ function DataTableActionBarAction({
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent
         sideOffset={6}
-        className="flex items-center gap-2 border  px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
+        className="flex items-center gap-2 border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
       >
         <p>{tooltip}</p>
         {keyName && (

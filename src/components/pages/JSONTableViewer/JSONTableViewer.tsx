@@ -271,9 +271,9 @@ const JSONTableViewer = () => {
           loaderIcon={null}
           buttonIcon={
             isInputCollapsed ? (
-              <Icon icon={PanelLeftOpenIcon} />
-            ) : (
               <Icon icon={PanelLeftCloseIcon} />
+            ) : (
+              <Icon icon={PanelLeftOpenIcon} />
             )
           }
           successIcon={null}
