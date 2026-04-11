@@ -7,27 +7,21 @@ const SidebarToggleIcon = () => {
       fill="currentColor"
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
+      className="scale-110"
     >
-      <rect
-        id="rect2"
-        width="20"
-        height="20"
-        fill="none"
+      <path
         stroke="currentColor"
         strokeWidth={2}
-        strokeLinejoin="round"
-        strokeLinecap="round"
-        x="2"
-        y="2"
-        rx="3.3952649"
+        fill="none"
+        d="M11 3H13C16.7712 3 18.6569 3 19.8284 4.17157C21 5.34315 21 7.22876 21 11V13C21 16.7712 21 18.6569 19.8284 19.8284C18.6569 21 16.7712 21 13 21H11C7.22876 21 5.34315 21 4.17157 19.8284C3 18.6569 3 16.7712 3 13V11C3 7.22876 3 5.34315 4.17157 4.17157C5.34315 3 7.22876 3 11 3Z"
       />
       <rect
         id="rect3"
         fill="currentColor"
-        x="5"
-        y="5"
+        x="6"
+        y="6"
         data-slot="sidebar-state"
-        className={`transition-all duration-300 origin-[20%] w-1.75 h-3.5 [rx:2px]`}
+        className={`transition-all duration-300 origin-[20%] w-1.75 h-3 [rx:2px]`}
       />
     </svg>
   );

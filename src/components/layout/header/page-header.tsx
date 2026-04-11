@@ -1,18 +1,15 @@
 import { Icon } from "@/components/icons/huge-icon";
 import { SettingsIcon } from "@/components/icons/pages";
-import { useSidebar } from "@/components/ui/sidebar";
 import { useLocation } from "react-router";
 import { routeDefinitions } from "@/routes/route-definitions";
 import { Separator } from "@/components/ui/separator";
 import type React from "react";
-import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
-import SidebarToggleIcon from "@/components/icons/pages/page-header/sidebar-toggle-icon";
 import SettingsDialog from "@/components/layout/header/settings-dialog";
 import { Button } from "@/components/ui/button";
 import { useContext } from "react";
 import { PWAProviderContext } from "@/store/pwa-provider";
 import { AnimatePresence, motion } from "motion/react";
-import { cn } from "@/lib/utils";
+import { SidebarToggle } from "@/components/ui/custom-components/sidebar-toggle";
 
 const Header = ({
   title,
@@ -27,30 +24,12 @@ const Header = ({
     (route) => route.path === location.pathname,
   );
 
-  const { toggleSidebar, open } = useSidebar();
-
   const { needRefresh } = useContext(PWAProviderContext);
 
   return (
     <>
       <div className="w-full flex pb-4 pt-4 justify-between">
-        <Tooltip
-          variant="secondary"
-          content={`${open ? "Close" : "Open"} Sidebar`}
-          asChild
-        >
-          <button
-            className={cn(
-              "p-2 cursor-pointer hover:bg-accent dark:hover:bg-accent/50 rounded-xl",
-              open
-                ? "*:*:data-[slot=sidebar-state]:w-1.75 hover:*:*:data-[slot=sidebar-state]:w-0.5 hover:*:*:data-[slot=sidebar-state]:[rx:1px]"
-                : "*:*:data-[slot=sidebar-state]:w-0.5 *:*:data-[slot=sidebar-state]:[rx:1px] hover:*:*:data-[slot=sidebar-state]:w-1.75 hover:*:*:data-[slot=sidebar-state]:[rx:2px]",
-            )}
-            onClick={toggleSidebar}
-          >
-            <SidebarToggleIcon />
-          </button>
-        </Tooltip>
+        <SidebarToggle />
         <span className="font-bold text-2xl text-primary">
           {title ?? routeDefinition?.displayable}
         </span>
