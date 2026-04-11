@@ -1,11 +1,11 @@
-import { Icon } from "../icons/huge-icon";
-import { LoadingIcon } from "../icons/ui";
+import { Icon } from "@/components/icons/huge-icon";
+import { LoadingIcon } from "@/components/icons/ui";
 import { cn } from "@/lib/utils";
 
 function Spinner({
   className,
   ...props
-}: Omit<React.ComponentProps<typeof HugeiconsIcon>, "icon">) {
+}: Omit<React.ComponentProps<typeof Icon>, "icon">) {
   return (
     <Icon
       icon={LoadingIcon}

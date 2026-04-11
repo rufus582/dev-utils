@@ -1,11 +1,11 @@
-import { Icon } from "@/component/icons/huge-icon";
+import { Icon } from "@/components/icons/huge-icon";
 import {
   DownloadIcon,
   SaveIcon,
   MoonIcon,
   SunIcon,
   ComputerSettingsIcon,
-} from "@/component/icons/pages";
+} from "@/components/icons/pages";
 import { Button } from "@/components/ui/button";
 import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
 import {
