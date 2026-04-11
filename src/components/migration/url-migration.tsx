@@ -19,8 +19,11 @@ import { ImportSnapshotsForm } from "../pages/SnapshotsPage/ImportSnapshotsForm"
  */
 
 const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 5);
+const currentEnv = getCurrentEnvironment();
 
 const ExportSnapshotsAndRedirect = () => {
+  if (currentEnv === "development") return null;
+
   const [searchParams] = useSearchParams();
 
   const snapshots = useLiveQuery(snapshotOps.readAll);
@@ -88,6 +91,8 @@ const ExportSnapshotsAndRedirect = () => {
 };
 
 const ImportSnapshotsBasedOnParams = () => {
+  if (currentEnv === "development") return null;
+
   const [searchParams, setSearchParams] = useSearchParams();
   const toastId = useRef<number | string>("");
 
