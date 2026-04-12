@@ -12,6 +12,22 @@ import {
 
 import { cn } from "@/lib/utils";
 
+const TRANSITION_DURATION = 0.2;
+const ICON_ANIMATION_PROPS = {
+  show: {
+    scale: 1,
+    width: "20px",
+    filter: "blur(0)",
+    opacity: 1,
+  },
+  hide: {
+    scale: 0.5,
+    width: "20px",
+    filter: "blur(2px)",
+    opacity: 0,
+  },
+};
+
 const defaultInteractionAnimation: React.ComponentProps<typeof motion.button> =
   {
     whileHover: { scale: 1.03 },
@@ -130,25 +146,13 @@ function Button({
       return;
     }
 
-    await animate(
-      ".icon",
-      {
-        scale: 0,
-      },
-      {
-        duration: 0.2,
-      },
-    );
+    await animate(".icon", ICON_ANIMATION_PROPS.hide, {
+      duration: TRANSITION_DURATION,
+    });
     if (loaderIcon) {
-      await animate(
-        ".loader",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        },
-      );
+      await animate(".loader", ICON_ANIMATION_PROPS.show, {
+        duration: TRANSITION_DURATION,
+      });
     }
   };
 
@@ -158,15 +162,9 @@ function Button({
     }
 
     if (loaderIcon) {
-      await animate(
-        ".loader",
-        {
-          scale: 0,
-        },
-        {
-          duration: 0.2,
-        },
-      );
+      await animate(".loader", ICON_ANIMATION_PROPS.hide, {
+        duration: TRANSITION_DURATION,
+      });
     }
     if (successIcon) {
       if (successBgColor || successBgColorClass) {
@@ -176,29 +174,13 @@ function Button({
             opacity: 1,
           },
           {
-            duration: 0.2,
+            duration: TRANSITION_DURATION,
           },
         );
       }
-      await animate(
-        ".success",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        },
-      );
-      await animate(
-        ".success",
-        {
-          scale: 0,
-        },
-        {
-          delay: 1,
-          duration: 0.2,
-        },
-      );
+      await animate(".success", ICON_ANIMATION_PROPS.show, {
+        duration: TRANSITION_DURATION,
+      });
       if (successBgColor || successBgColorClass) {
         animate(
           ".success-bg",
@@ -206,21 +188,20 @@ function Button({
             opacity: 0,
           },
           {
-            duration: 0.2,
+            delay: 1,
+            duration: TRANSITION_DURATION,
           },
         );
       }
+      await animate(".success", ICON_ANIMATION_PROPS.hide, {
+        delay: 1,
+        duration: TRANSITION_DURATION,
+      });
     }
 
-    await animate(
-      ".icon",
-      {
-        scale: 1,
-      },
-      {
-        duration: 0.2,
-      },
-    );
+    await animate(".icon", ICON_ANIMATION_PROPS.show, {
+      duration: 0.2,
+    });
   };
 
   const animateError = async () => {
@@ -229,15 +210,9 @@ function Button({
     }
 
     if (loaderIcon) {
-      await animate(
-        ".loader",
-        {
-          scale: 0,
-        },
-        {
-          duration: 0.2,
-        },
-      );
+      await animate(".loader", ICON_ANIMATION_PROPS.hide, {
+        duration: TRANSITION_DURATION,
+      });
     }
     if (errorIcon) {
       if (errorBgColor || errorBgColorClass) {
@@ -247,29 +222,13 @@ function Button({
             opacity: 1,
           },
           {
-            duration: 0.2,
+            duration: TRANSITION_DURATION,
           },
         );
       }
-      await animate(
-        ".error",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        },
-      );
-      await animate(
-        ".error",
-        {
-          scale: 0,
-        },
-        {
-          delay: 1,
-          duration: 0.2,
-        },
-      );
+      await animate(".error", ICON_ANIMATION_PROPS.show, {
+        duration: TRANSITION_DURATION,
+      });
       if (errorBgColor || errorBgColorClass) {
         animate(
           ".error-bg",
@@ -277,21 +236,20 @@ function Button({
             opacity: 0,
           },
           {
-            duration: 0.2,
+            delay: 1,
+            duration: TRANSITION_DURATION,
           },
         );
       }
+      await animate(".error", ICON_ANIMATION_PROPS.hide, {
+        delay: 1,
+        duration: TRANSITION_DURATION,
+      });
     }
 
-    await animate(
-      ".icon",
-      {
-        scale: 1,
-      },
-      {
-        duration: 0.2,
-      },
-    );
+    await animate(".icon", ICON_ANIMATION_PROPS.show, {
+      duration: TRANSITION_DURATION,
+    });
   };
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -362,13 +320,15 @@ function Button({
       <motion.div layout className="flex gap-0.5">
         <div className="relative w-5 items-center">
           <motion.div
-            className="loader absolute top-[8%]"
+            className="loader absolute top-[8%] -translate-x-0.5"
             initial={{
-              scale: 0,
+              scale: 0.5,
               width: "20px",
+              filter: "blur(2px)",
+              opacity: 0,
             }}
             style={{
-              scale: 1,
+              scale: 0,
               zIndex: 1,
             }}
           >
@@ -378,8 +338,10 @@ function Button({
             layout
             className="success absolute top-[8%]"
             initial={{
-              scale: 0,
+              scale: 0.5,
               width: "20px",
+              filter: "blur(2px)",
+              opacity: 0,
             }}
             style={{
               scale: 0,
@@ -392,11 +354,13 @@ function Button({
             layout
             className="error absolute top-[8%]"
             initial={{
-              scale: 0,
+              scale: 0.5,
               width: "20px",
+              filter: "blur(2px)",
+              opacity: 0,
             }}
             style={{
-              scale: 0,
+              scale: 0.5,
               zIndex: 1,
             }}
           >
@@ -408,6 +372,8 @@ function Button({
             initial={{
               scale: 1,
               width: "20px",
+              filter: "blur(0)",
+              opacity: 1,
             }}
             style={{
               scale: 1,
