@@ -15,10 +15,16 @@ export default defineConfig({
         {
           src: "src/lib/jq/jq.wasm",
           dest: "./",
+          rename: {
+            stripBase: true,
+          },
         },
         {
-          src: "node_modules/sql.js/dist/sql-wasm.wasm",
+          src: "node_modules/sql.js/dist/*.wasm",
           dest: "./",
+          rename: {
+            stripBase: true,
+          },
         },
       ],
     }),
@@ -27,6 +33,19 @@ export default defineConfig({
       manifest: false,
       workbox: {
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
+        globIgnores: ["**/*.wasm"],
+        runtimeCaching: [
+          {
+            urlPattern: /\.wasm$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "wasm-cache",
+              expiration: {
+                maxEntries: 10,
+              },
+            },
+          },
+        ],
       },
       devOptions: {
         enabled: false,
