@@ -1,21 +1,23 @@
-import { Button as NormalButton } from "@/components/ui/button";
+import _ from "lodash";
+import { AnimatePresence, motion } from "motion/react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import * as z from "zod";
 import { Icon } from "@/components/icons/huge-icon";
 import { DatabaseAddIcon } from "@/components/icons/pages";
 import { TableIcon } from "@/components/icons/routes";
+import { Button as NormalButton } from "@/components/ui/button";
+import { Button } from "@/components/ui/custom-components/animated-button";
 import {
   Dialog,
   DialogClose,
+  DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTrigger,
-  DialogContent,
   DialogTitle,
-  DialogDescription,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { TextFormatsList } from "@/lib/text-formats";
-import { Button } from "@/components/ui/custom-components/animated-button";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import {
   Field,
   FieldDescription,
@@ -23,13 +25,11 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field";
-import { AnimatePresence, motion } from "motion/react";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import type { ISQLDBProps } from "@/lib/sql";
 import { generateTableQueryFromJsonArray } from "@/lib/sql-utils";
-import _ from "lodash";
-import * as z from "zod";
-import { useRef, useState } from "react";
-import { toast } from "sonner";
-import type { Database } from "sql.js";
+import { TextFormatsList } from "@/lib/text-formats";
 
 const ImportTableFormFields = z.strictObject({
   tableName: z
@@ -47,10 +47,11 @@ type ImportTableFormType = z.infer<typeof ImportTableFormFields>;
 type ImportTableFormErrorType = z.core.$ZodFlattenedError<ImportTableFormType>;
 
 interface ImportTableFormProps {
-  db?: Database;
+  db?: ISQLDBProps;
+  disabled?: boolean;
 }
 
-const ImportTableForm = ({ db }: ImportTableFormProps) => {
+const ImportTableForm = ({ db, disabled }: ImportTableFormProps) => {
   const [isImportFormOpen, setIsImportFormOpen] = useState<boolean>(false);
   const [importTableFormErrors, setImportTableFormErrors] =
     useState<ImportTableFormErrorType>();
@@ -121,7 +122,8 @@ const ImportTableForm = ({ db }: ImportTableFormProps) => {
           buttonIcon={<Icon icon={DatabaseAddIcon} />}
           successIcon={null}
           errorIcon={null}
-          className="w-fit rounded-full mb-4 ml-2"
+          className="w-fit rounded-full"
+          disabled={disabled}
           useDefaultInteractionAnimation
         >
           Import Table
