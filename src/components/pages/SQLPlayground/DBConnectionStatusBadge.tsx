@@ -11,17 +11,17 @@ const MotionBadge = motion.create(Badge);
 const variants = {
   connecting: {
     className:
-      "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300! [&>svg]:text-current!",
+      "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300! [&>svg]:text-blue-700!",
     icon: <Spinner />,
   },
   connected: {
     className:
-      "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300! [&>svg]:text-current!",
+      "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300! [&>svg]:text-green-700!",
     icon: <Icon icon={CheckmarkCircleIcon} />,
   },
   error: {
     className:
-      "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300! [&>svg]:text-current!",
+      "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300! [&>svg]:text-red-700!",
     icon: <Icon icon={CancelCircleIcon} />,
   },
 };
@@ -64,14 +64,17 @@ export const DBConnectionStatusBadge = ({
               initial={{
                 opacity: 0,
                 filter: "blur(1px)",
+                scale: 0.7
               }}
               animate={{
                 opacity: 1,
                 filter: "blur(0)",
+                scale: 1
               }}
               exit={{
                 opacity: 0,
                 filter: "blur(1px)",
+                scale: 0.7
               }}
               transition={{
                 duration: 0.15,
