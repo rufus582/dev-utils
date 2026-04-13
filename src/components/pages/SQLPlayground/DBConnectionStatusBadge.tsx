@@ -11,18 +11,18 @@ const MotionBadge = motion.create(Badge);
 const variants = {
   connecting: {
     className:
-      "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300! [&>svg]:text-blue-700!",
-    icon: <Spinner />,
+      "bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300!",
+    icon: <Spinner className="text-current" />,
   },
   connected: {
     className:
-      "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300! [&>svg]:text-green-700!",
-    icon: <Icon icon={CheckmarkCircleIcon} />,
+      "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300!",
+    icon: <Icon icon={CheckmarkCircleIcon} className="text-current" />,
   },
   error: {
     className:
       "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300! [&>svg]:text-red-700!",
-    icon: <Icon icon={CancelCircleIcon} />,
+    icon: <Icon icon={CancelCircleIcon} className="text-current" />,
   },
 };
 

@@ -1,11 +1,17 @@
+import { useLiveQuery } from "dexie-react-hooks";
+import { AnimatePresence, motion } from "motion/react";
+import { type ReactNode, useContext, useRef, useState } from "react";
+import { toast } from "sonner";
+import * as z from "zod";
 import { Icon } from "@/components/icons/huge-icon";
 import {
-  DownloadIcon,
-  SaveIcon,
-  MoonIcon,
-  SunIcon,
   ComputerSettingsIcon,
+  DownloadIcon,
+  MoonIcon,
+  SaveIcon,
+  SunIcon,
 } from "@/components/icons/pages";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
 import {
@@ -18,12 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useContext, useRef, useState, type ReactNode } from "react";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
-import * as z from "zod";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-import { AnimatePresence, motion } from "motion/react";
 import {
   Select,
   SelectContent,
@@ -33,12 +34,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useLiveQuery } from "dexie-react-hooks";
-import { settingsOps } from "@/store/indexed-db/settings";
-import { cn, sleep } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Switch } from "@/components/ui/switch";
+import { cn, sleep } from "@/lib/utils";
+import { settingsOps } from "@/store/indexed-db/settings";
 import { PWAProviderContext } from "@/store/pwa-provider";
 
 const SettingsFormFields = z.strictObject({
@@ -169,15 +169,16 @@ const SettingsDialog = ({
                       id="theme"
                       name="theme"
                       className={cn(
-                        "my-auto max-w-30 rounded-full transition-all border-0 dark:bg-transparent",
-                        "dark:data-[state=open]:bg-input/50 [:hover,[data-state=open]]:bg-input",
-                        "[&>svg]:bg-input [&:is([data-state=open],_:hover)>svg]:bg-accent-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1",
+                        "max-w-30 rounded-3xl! transition-all border-0 dark:bg-transparent",
+                        "dark:[:hover,[data-state=open]]:bg-input dark:[&>svg]:bg-neutral-800 dark:[&:is([data-state=open],_:hover)>svg]:bg-neutral-600",
+                        "[:hover,[data-state=open]]:bg-input/80 [&>svg]:bg-neutral-200 [&:is([data-state=open],_:hover)>svg]:bg-neutral-400/50",
+                        "[&:is([data-state=open],_:hover)>svg]:text-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1 [&>span]:gap-2!",
                       )}
-                      size="sm"
+                      size="default"
                     >
                       <SelectValue placeholder="Select Theme" />
                     </SelectTrigger>
-                    <SelectContent className="rounded-b-xl">
+                    <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Select Theme</SelectLabel>
                         <SelectItem key="light" value="light">
