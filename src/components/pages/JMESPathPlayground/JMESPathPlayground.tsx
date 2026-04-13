@@ -6,18 +6,18 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import Header from "@/components/layout/header/page-header";
-import JMESPathLogo from "@/components/icons/jmespath-logo/logo";
+import JMESPathLogo from "@/components/icons/sidebar/jmespath-logo/logo";
 import { TextFormats } from "@/lib/text-formats";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JMESPathActions } from "@/store/redux/jmespath-slice";
 
 export default function JMESPathPlayground() {
-  const jmesPathDataState = useAppSelector(state => state.jmespath);
+  const jmesPathDataState = useAppSelector((state) => state.jmespath);
   const dispatch = useAppDispatch();
 
   const handleCodeChanged = async (
     expressionVal?: string,
-    jsonStrVal?: string
+    jsonStrVal?: string,
   ) => {
     const jmesPathExpression =
       expressionVal === undefined
@@ -35,7 +35,7 @@ export default function JMESPathPlayground() {
       const parsedJsonValue = await TextFormats.JSON.parse(jsonStr);
       const result = jmespath.search(
         parsedJsonValue as JSONValue,
-        jmesPathExpression
+        jmesPathExpression,
       );
       rawResult = await TextFormats.JSON.unparse(result as object);
     } catch (error: unknown) {

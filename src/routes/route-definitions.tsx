@@ -1,16 +1,23 @@
+import { Icon } from "@/components/icons/huge-icon";
+import {
+  AddIcon,
+  ArchiveIcon,
+  DatabaseIcon,
+  TableIcon,
+  TextIcon,
+  FileBracesIcon,
+} from "@/components/icons/routes";
 import JQPlayground from "@/components/pages/JQPlayground/JQPlayground";
 import TextConverter from "@/components/pages/TextConverter/TextConverter";
 import JSONTableViewer from "@/components/pages/JSONTableViewer/JSONTableViewer";
 import type React from "react";
-import { Archive, Database, Grid2x2, PlusIcon, WholeWord } from "lucide-react";
 import type { RouteObject } from "react-router";
-import JQLogo from "@/components/icons/jq-logo";
+import JQLogo from "@/components/icons/sidebar/jq-logo";
 import JMESPathPlayground from "@/components/pages/JMESPathPlayground/JMESPathPlayground";
 import SQLPlayground from "@/components/pages/SQLPlayground/SQLPlayground";
 import CELPlayground from "@/components/pages/CELPlayground/CELPlayground";
 import JSONPathPlayground from "@/components/pages/JSONPathPlayground/JSONPathPlayground";
-import { FileJson } from "lucide-react";
-import CELLogo from "@/components/icons/cel-logo";
+import CELLogo from "@/components/icons/sidebar/cel-logo";
 import SnapshotsPage from "@/components/pages/SnapshotsPage/SnapshotsPage";
 import CreateSnapshotDialog from "@/components/pages/SnapshotsPage/CreateSnapshotDialog";
 import { Button } from "@/components/ui/button";
@@ -32,7 +39,7 @@ export type RouteDefinition = RouteObject & {
   children?: RouteDefinition[];
   sidebarPlace: "header" | "content" | "footer";
   actionElement?: (
-    props: IRouteDefinitionActionElementProps
+    props: IRouteDefinitionActionElementProps,
   ) => React.ReactNode;
 };
 
@@ -41,7 +48,7 @@ export const routeDefinitions: RouteDefinition[] = [
     definitionId: 1,
     path: "/text-converter",
     element: <TextConverter />,
-    icon: <WholeWord />,
+    icon: <Icon icon={TextIcon} />,
     displayable: "Text Converter",
     sidebarPlace: "content",
     keywords: ["base64", "json", "yaml", "toml"],
@@ -73,7 +80,7 @@ export const routeDefinitions: RouteDefinition[] = [
     definitionId: 4,
     path: "/json-table",
     element: <JSONTableViewer />,
-    icon: <Grid2x2 />,
+    icon: <Icon icon={TableIcon} strokeWidth={1.5} />,
     displayable: "JSON Table Viewer",
     sidebarPlace: "content",
     keywords: ["csv", "parquet"],
@@ -83,7 +90,7 @@ export const routeDefinitions: RouteDefinition[] = [
     definitionId: 5,
     path: "/sql",
     element: <SQLPlayground />,
-    icon: <Database />,
+    icon: <Icon icon={DatabaseIcon} />,
     displayable: "SQL Playground",
     sidebarPlace: "content",
     category: "Playground",
@@ -101,7 +108,7 @@ export const routeDefinitions: RouteDefinition[] = [
     definitionId: 7,
     path: "/jsonpath",
     element: <JSONPathPlayground />,
-    icon: <FileJson />,
+    icon: <Icon icon={FileBracesIcon} />,
     displayable: "JSONPath Playground",
     sidebarPlace: "content",
     category: "Playground",
@@ -110,7 +117,7 @@ export const routeDefinitions: RouteDefinition[] = [
     definitionId: 8,
     path: "/snapshots",
     element: <SnapshotsPage />,
-    icon: <Archive />,
+    icon: <Icon icon={ArchiveIcon} />,
     displayable: "Saved Snapshots",
     sidebarPlace: "footer",
     keywords: ["data"],
@@ -123,10 +130,10 @@ export const routeDefinitions: RouteDefinition[] = [
               "rounded-xl duration-150 transition-all shadow-primary",
               "active:scale-90 hover:scale-110 hover:shadow-[0px_0_15px]",
               "absolute top-1.5 right-1 flex after:absolute group-data-[collapsible=icon]:hidden",
-              isActive && "shadow-[-10px_0_50px]"
+              isActive && "shadow-[-10px_0_50px]",
             )}
           >
-            <PlusIcon strokeWidth={7} />
+            <Icon icon={AddIcon} strokeWidth={7} />
           </Button>
         }
       />

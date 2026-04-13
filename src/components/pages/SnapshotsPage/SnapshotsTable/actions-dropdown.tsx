@@ -1,3 +1,6 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { DeleteIcon, MoreHorizontalIcon } from "@/components/icons/ui";
+import { ArchiveRestoreIcon, EditIcon } from "@/components/icons/pages";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,12 +14,6 @@ import { Kbd } from "@/components/ui/kbd";
 import { useAppDispatch } from "@/hooks/hooks";
 import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
 import { RootActions, type AppStateType } from "@/store/redux/root-reducer";
-import {
-  ArchiveRestoreIcon,
-  MoreHorizontal,
-  PencilLineIcon,
-  Trash2Icon,
-} from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useStore } from "react-redux";
 import { toast } from "sonner";
@@ -87,7 +84,7 @@ const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
+          <Icon icon={MoreHorizontalIcon} className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -99,13 +96,13 @@ const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
           ref={restoreRef}
           onClick={() => handleLoadSnapshot(snapshot.id)}
         >
-          <ArchiveRestoreIcon /> Restore Snapshot <Kbd>R</Kbd>
+          <Icon icon={ArchiveRestoreIcon} /> Restore Snapshot <Kbd>R</Kbd>
         </DropdownMenuItem>
         <DropdownMenuItem
           ref={updateRef}
           onClick={() => handleUpdateSnapshot(snapshot.id, appState)}
         >
-          <PencilLineIcon /> Update Snapshot <Kbd>S</Kbd>
+          <Icon icon={EditIcon} /> Update Snapshot <Kbd>S</Kbd>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -113,7 +110,7 @@ const SnapshotActionsCell = ({ snapshot }: { snapshot: SnapshotType }) => {
           variant="destructive"
           onClick={() => handleDeleteSnapshot(snapshot.id)}
         >
-          <Trash2Icon /> Delete Snapshot{" "}
+          <Icon icon={DeleteIcon} /> Delete Snapshot{" "}
           <Kbd className="text-destructive/90 bg-destructive/10 border-destructive/20">
             D
           </Kbd>

@@ -3,8 +3,30 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion, useAnimate, type MotionStyle } from "motion/react";
+import { Icon } from "@/components/icons/huge-icon";
+import {
+  CancelCircleIcon,
+  LoadingIcon,
+  CheckmarkCircleIcon,
+} from "@/components/icons/ui";
 
 import { cn } from "@/lib/utils";
+
+const TRANSITION_DURATION = 0.2;
+const ICON_ANIMATION_PROPS = {
+  show: {
+    scale: 1,
+    width: "20px",
+    filter: "blur(0)",
+    opacity: 1,
+  },
+  hide: {
+    scale: 0.5,
+    width: "20px",
+    filter: "blur(2px)",
+    opacity: 0,
+  },
+};
 
 const defaultInteractionAnimation: React.ComponentProps<typeof motion.button> =
   {
@@ -48,9 +70,12 @@ const buttonVariants = cva(
   },
 );
 
+const MotionIcon = motion.create(Icon);
+
 const Loader = () => {
   return (
-    <motion.svg
+    <MotionIcon
+      icon={LoadingIcon}
       initial={{
         scale: 1,
         width: "20px",
@@ -64,7 +89,7 @@ const Loader = () => {
         rotate: [0, 360],
       }}
       transition={{
-        duration: 0.3,
+        duration: 1.5,
         repeat: Infinity,
         ease: "linear",
       }}
@@ -74,53 +99,10 @@ const Loader = () => {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2"
+      strokeWidth={2.5}
       strokeLinecap="round"
       strokeLinejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 3a9 9 0 1 0 9 9" />
-    </motion.svg>
-  );
-};
-
-const CheckIcon = () => {
-  return (
-    <motion.svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-      <path d="M9 12l2 2l4 -4" />
-    </motion.svg>
-  );
-};
-
-const XIcon = () => {
-  return (
-    <motion.svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-      <path d="M10 10l4 4m0 -4l-4 4" />
-    </motion.svg>
+    />
   );
 };
 
@@ -132,8 +114,8 @@ function Button({
   onClick,
   disabled = undefined,
   loaderIcon = <Loader />,
-  successIcon = <CheckIcon />,
-  errorIcon = <XIcon />,
+  successIcon = <MotionIcon icon={CheckmarkCircleIcon} />,
+  errorIcon = <MotionIcon icon={CancelCircleIcon} />,
   useDefaultInteractionAnimation,
   successBgColor,
   successBgColorClass,
@@ -164,25 +146,13 @@ function Button({
       return;
     }
 
-    await animate(
-      ".icon",
-      {
-        scale: 0,
-      },
-      {
-        duration: 0.2,
-      },
-    );
+    await animate(".icon", ICON_ANIMATION_PROPS.hide, {
+      duration: TRANSITION_DURATION,
+    });
     if (loaderIcon) {
-      await animate(
-        ".loader",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        },
-      );
+      await animate(".loader", ICON_ANIMATION_PROPS.show, {
+        duration: TRANSITION_DURATION,
+      });
     }
   };
 
@@ -192,15 +162,9 @@ function Button({
     }
 
     if (loaderIcon) {
-      await animate(
-        ".loader",
-        {
-          scale: 0,
-        },
-        {
-          duration: 0.2,
-        },
-      );
+      await animate(".loader", ICON_ANIMATION_PROPS.hide, {
+        duration: TRANSITION_DURATION,
+      });
     }
     if (successIcon) {
       if (successBgColor || successBgColorClass) {
@@ -210,29 +174,13 @@ function Button({
             opacity: 1,
           },
           {
-            duration: 0.2,
+            duration: TRANSITION_DURATION,
           },
         );
       }
-      await animate(
-        ".success",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        },
-      );
-      await animate(
-        ".success",
-        {
-          scale: 0,
-        },
-        {
-          delay: 1,
-          duration: 0.2,
-        },
-      );
+      await animate(".success", ICON_ANIMATION_PROPS.show, {
+        duration: TRANSITION_DURATION,
+      });
       if (successBgColor || successBgColorClass) {
         animate(
           ".success-bg",
@@ -240,21 +188,20 @@ function Button({
             opacity: 0,
           },
           {
-            duration: 0.2,
+            delay: 1,
+            duration: TRANSITION_DURATION,
           },
         );
       }
+      await animate(".success", ICON_ANIMATION_PROPS.hide, {
+        delay: 1,
+        duration: TRANSITION_DURATION,
+      });
     }
 
-    await animate(
-      ".icon",
-      {
-        scale: 1,
-      },
-      {
-        duration: 0.2,
-      },
-    );
+    await animate(".icon", ICON_ANIMATION_PROPS.show, {
+      duration: 0.2,
+    });
   };
 
   const animateError = async () => {
@@ -263,15 +210,9 @@ function Button({
     }
 
     if (loaderIcon) {
-      await animate(
-        ".loader",
-        {
-          scale: 0,
-        },
-        {
-          duration: 0.2,
-        },
-      );
+      await animate(".loader", ICON_ANIMATION_PROPS.hide, {
+        duration: TRANSITION_DURATION,
+      });
     }
     if (errorIcon) {
       if (errorBgColor || errorBgColorClass) {
@@ -281,29 +222,13 @@ function Button({
             opacity: 1,
           },
           {
-            duration: 0.2,
+            duration: TRANSITION_DURATION,
           },
         );
       }
-      await animate(
-        ".error",
-        {
-          scale: 1,
-        },
-        {
-          duration: 0.2,
-        },
-      );
-      await animate(
-        ".error",
-        {
-          scale: 0,
-        },
-        {
-          delay: 1,
-          duration: 0.2,
-        },
-      );
+      await animate(".error", ICON_ANIMATION_PROPS.show, {
+        duration: TRANSITION_DURATION,
+      });
       if (errorBgColor || errorBgColorClass) {
         animate(
           ".error-bg",
@@ -311,21 +236,20 @@ function Button({
             opacity: 0,
           },
           {
-            duration: 0.2,
+            delay: 1,
+            duration: TRANSITION_DURATION,
           },
         );
       }
+      await animate(".error", ICON_ANIMATION_PROPS.hide, {
+        delay: 1,
+        duration: TRANSITION_DURATION,
+      });
     }
 
-    await animate(
-      ".icon",
-      {
-        scale: 1,
-      },
-      {
-        duration: 0.2,
-      },
-    );
+    await animate(".icon", ICON_ANIMATION_PROPS.show, {
+      duration: TRANSITION_DURATION,
+    });
   };
 
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -396,13 +320,15 @@ function Button({
       <motion.div layout className="flex gap-0.5">
         <div className="relative w-5 items-center">
           <motion.div
-            className="loader absolute top-[8%]"
+            className="loader absolute top-[8%] -translate-x-0.5"
             initial={{
-              scale: 0,
+              scale: 0.5,
               width: "20px",
+              filter: "blur(2px)",
+              opacity: 0,
             }}
             style={{
-              scale: 1,
+              scale: 0,
               zIndex: 1,
             }}
           >
@@ -412,8 +338,10 @@ function Button({
             layout
             className="success absolute top-[8%]"
             initial={{
-              scale: 0,
+              scale: 0.5,
               width: "20px",
+              filter: "blur(2px)",
+              opacity: 0,
             }}
             style={{
               scale: 0,
@@ -426,11 +354,13 @@ function Button({
             layout
             className="error absolute top-[8%]"
             initial={{
-              scale: 0,
+              scale: 0.5,
               width: "20px",
+              filter: "blur(2px)",
+              opacity: 0,
             }}
             style={{
-              scale: 0,
+              scale: 0.5,
               zIndex: 1,
             }}
           >
@@ -442,6 +372,8 @@ function Button({
             initial={{
               scale: 1,
               width: "20px",
+              filter: "blur(0)",
+              opacity: 1,
             }}
             style={{
               scale: 1,

@@ -1,12 +1,14 @@
+import { Icon } from "../../icons/huge-icon";
+import {
+  CopyIcon,
+  CopyCheckIcon,
+  FolderOpenIcon,
+  CancelCircleIcon,
+  LoadingIcon,
+} from "../../icons/ui";
 import Editor, { type OnMount } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 import { Button } from "@/components/ui/custom-components/animated-button";
-import {
-  Clipboard,
-  ClipboardCheck,
-  ClipboardX,
-  FolderOpen,
-} from "lucide-react";
 import { useTheme } from "@/store/theme-provider";
 import { cn, copyToClipboard } from "@/lib/utils";
 import useOpenFile, { type IUseOpenFileInputType } from "@/hooks/use-open-file";
@@ -102,7 +104,7 @@ const CodeEditor = ({
               <Button
                 className="rounded-full hover:bg-secondary bg-secondary text-secondary-foreground border-border border-2"
                 size="sm"
-                buttonIcon={<FolderOpen />}
+                buttonIcon={<Icon icon={FolderOpenIcon} />}
                 errorIcon={null}
                 successIcon={null}
                 loaderIcon={null}
@@ -123,11 +125,11 @@ const CodeEditor = ({
                   : "",
             )}
             size="sm"
-            buttonIcon={<Clipboard />}
-            loaderIcon={null}
-            successIcon={<ClipboardCheck />}
+            buttonIcon={<Icon icon={CopyIcon} />}
+            loaderIcon={<Icon icon={LoadingIcon} />}
+            successIcon={<Icon icon={CopyCheckIcon} />}
             successBgColorClass="bg-success-alt"
-            errorIcon={<ClipboardX />}
+            errorIcon={<Icon icon={CancelCircleIcon} />}
             errorBgColorClass="bg-destructive-alt"
             onClick={handleCopyToClipboard}
             useDefaultInteractionAnimation

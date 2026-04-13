@@ -1,7 +1,8 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { SaveIcon, SettingsIcon } from "@/components/icons/pages";
 import { CommandGroup, CommandItem } from "@/components/ui/command";
 import SettingsDialog from "@/components/layout/header/settings-dialog";
 import { useState, type JSX } from "react";
-import { SaveIcon, SettingsIcon } from "lucide-react";
 import CreateSnapshotDialog from "@/components/pages/SnapshotsPage/CreateSnapshotDialog";
 
 interface IActionItem {
@@ -25,7 +26,7 @@ const ActionsCommandGroup = ({
   const actions: IActionItem[] = [
     {
       name: "Create Snapshot",
-      icon: <SaveIcon />,
+      icon: <Icon icon={SaveIcon} />,
       element: (item) => {
         return (
           <CreateSnapshotDialog
@@ -37,7 +38,7 @@ const ActionsCommandGroup = ({
     },
     {
       name: "Settings",
-      icon: <SettingsIcon />,
+      icon: <Icon icon={SettingsIcon} />,
       element: (item) => {
         return (
           <SettingsDialog

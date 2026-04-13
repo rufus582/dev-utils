@@ -1,3 +1,5 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { SearchIcon } from "@/components/icons/ui";
 import { useEffect, useState } from "react";
 import {
   CommandDialog,
@@ -13,7 +15,6 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Kbd } from "@/components/ui/kbd";
-import { SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface IDevUtilsCommandPromptProps {
@@ -51,7 +52,7 @@ const DevUtilsCommandPrompt = ({
         <InputGroup
           className={cn(
             "rounded-full hover:border-muted-foreground transition-all",
-            className
+            className,
           )}
         >
           <InputGroupInput
@@ -59,7 +60,7 @@ const DevUtilsCommandPrompt = ({
             placeholder={searchBarPlaceholder}
           />
           <InputGroupAddon>
-            <SearchIcon />
+            <Icon icon={SearchIcon} />
           </InputGroupAddon>
           <InputGroupAddon align="inline-end">
             <Kbd>⌘ K</Kbd>

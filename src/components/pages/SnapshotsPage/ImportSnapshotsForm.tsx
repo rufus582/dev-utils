@@ -1,5 +1,6 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { UploadIcon } from "@/components/icons/pages";
 import { Button as NormalButton } from "@/components/ui/button";
-import { FileUpIcon } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -233,7 +234,7 @@ const ImportSnapshotsForm = ({
             </DialogClose>
             <Button
               type="submit"
-              buttonIcon={<FileUpIcon />}
+              buttonIcon={<Icon icon={UploadIcon} />}
               className="rounded-full"
               onClick={onImportSnapshotsFormSubmit}
               useDefaultInteractionAnimation

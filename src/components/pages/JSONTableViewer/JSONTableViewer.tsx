@@ -1,3 +1,11 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { FolderOpenIcon, PasteIcon } from "@/components/icons/ui";
+import {
+  ApiIcon,
+  PanelLeftCloseIcon,
+  PanelLeftOpenIcon,
+  PlayCircleIcon,
+} from "@/components/icons/pages";
 import CodeEditor from "@/components/ui/code/code-editor";
 import { useEffect, useRef, useState } from "react";
 import { TextFormats, TextFormatsList } from "@/lib/text-formats";
@@ -10,16 +18,6 @@ import {
 import Header from "@/components/layout/header/page-header";
 import type { ImperativePanelHandle } from "react-resizable-panels";
 import { Button } from "@/components/ui/custom-components/animated-button";
-import {
-  Braces,
-  ClipboardCheck,
-  ClipboardPaste,
-  ClipboardX,
-  FolderOpen,
-  PanelLeftClose,
-  PanelLeftOpen,
-  PlayCircle,
-} from "lucide-react";
 import useOpenFile from "@/hooks/use-open-file";
 import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 import { getClipboardText, getCurrentEnvironment } from "@/lib/utils";
@@ -46,7 +44,7 @@ const JSONTableViewer = () => {
 
   const handleJsonDataChanged = async (
     value: string,
-    showToast: boolean = false
+    showToast: boolean = false,
   ) => {
     let parsedJsonData: object | string = {};
     try {
@@ -74,11 +72,11 @@ const JSONTableViewer = () => {
       const fileFormat = TextFormatsList.find(
         (format) =>
           format.mimeType === file.type ||
-          (fileExtension && format.extensions.includes(fileExtension))
+          (fileExtension && format.extensions.includes(fileExtension)),
       );
       if (!fileFormat || fileFormat === undefined) {
         return toast.error(
-          "Unsupported file format. Supported formats are: JSON, YAML, CSV, PARQUET"
+          "Unsupported file format. Supported formats are: JSON, YAML, CSV, PARQUET",
         );
       }
 
@@ -144,7 +142,7 @@ const JSONTableViewer = () => {
           <b>Unable to fetch JSON from CURL!</b>
           <br />
           {`${curlState.error}`}
-        </p>
+        </p>,
       );
     }
   }, [curlState.error]);
@@ -169,13 +167,13 @@ const JSONTableViewer = () => {
             curlResponse.statusText
           ) {
             toast.error(
-              `${curlResponse.statusCode} :: ${curlResponse.statusText}`
+              `${curlResponse.statusCode} :: ${curlResponse.statusText}`,
             );
             isSuccess = false;
           } else {
             if (curlResponse.responseJson) {
               const responseStr = await TextFormats.JSON.unparse(
-                curlResponse.responseJson
+                curlResponse.responseJson,
               );
               isSuccess = await handleJsonDataChanged(responseStr, true);
             } else isSuccess = false;
@@ -203,7 +201,7 @@ const JSONTableViewer = () => {
         <Tooltip content="Supported files: JSON, YAML, CSV, PARQUET" asChild>
           <Button
             loaderIcon={null}
-            buttonIcon={<FolderOpen />}
+            buttonIcon={<Icon icon={FolderOpenIcon} />}
             successIcon={null}
             className="w-fit rounded-full mb-4 ml-2"
             onClick={() => openFileDialog() || true}
@@ -215,11 +213,8 @@ const JSONTableViewer = () => {
         <Tooltip content="Paste copied data from clipboard" asChild>
           <Button
             variant="outline"
-            buttonIcon={<ClipboardPaste />}
-            loaderIcon={null}
-            successIcon={<ClipboardCheck />}
+            buttonIcon={<Icon icon={PasteIcon} />}
             successBgColorClass="bg-success-alt"
-            errorIcon={<ClipboardX />}
             errorBgColorClass="bg-destructive-alt"
             className="w-fit rounded-full mb-4 ml-2"
             onClick={handleClipboardPaste}
@@ -238,7 +233,7 @@ const JSONTableViewer = () => {
               <Button
                 variant="outline"
                 loaderIcon={null}
-                buttonIcon={<Braces />}
+                buttonIcon={<Icon icon={ApiIcon} />}
                 successIcon={null}
                 errorIcon={null}
                 className="w-fit rounded-full mb-4 ml-2"
@@ -257,7 +252,7 @@ const JSONTableViewer = () => {
                   defaultValue={curlState.curlCommand}
                 />
                 <Button
-                  buttonIcon={<PlayCircle />}
+                  buttonIcon={<Icon icon={PlayCircleIcon} />}
                   successBgColorClass=""
                   errorBgColorClass=""
                   className="w-full rounded-b-xl rounded-t-none"
@@ -274,7 +269,13 @@ const JSONTableViewer = () => {
         <Button
           variant="outline"
           loaderIcon={null}
-          buttonIcon={isInputCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+          buttonIcon={
+            isInputCollapsed ? (
+              <Icon icon={PanelLeftCloseIcon} />
+            ) : (
+              <Icon icon={PanelLeftOpenIcon} />
+            )
+          }
           successIcon={null}
           className="w-fit rounded-full mb-4 ml-2"
           onClick={toggleLeftPanel}

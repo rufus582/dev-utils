@@ -1,3 +1,6 @@
+import { Icon } from "@/components/icons/huge-icon";
+import { DeleteIcon } from "@/components/icons/ui";
+import { ArchiveRestoreIcon, EditIcon } from "@/components/icons/pages";
 import {
   DataTableActionBar,
   DataTableActionBarAction,
@@ -8,7 +11,6 @@ import { useAppDispatch } from "@/hooks/hooks";
 import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
 import { RootActions, type AppStateType } from "@/store/redux/root-reducer";
 import type { Table } from "@tanstack/react-table";
-import { ArchiveRestoreIcon, PencilLineIcon, Trash2Icon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useStore } from "react-redux";
 import { toast } from "sonner";
@@ -102,7 +104,7 @@ const SelectedSnapshotsActionBar = ({
               onClick={handleLoadSnapshot}
               keyName="R"
             >
-              <ArchiveRestoreIcon />
+              <Icon icon={ArchiveRestoreIcon} />
             </DataTableActionBarAction>
             <DataTableActionBarAction
               size="icon"
@@ -110,7 +112,7 @@ const SelectedSnapshotsActionBar = ({
               onClick={handleUpdateSnapshot}
               keyName="S"
             >
-              <PencilLineIcon />
+              <Icon icon={EditIcon} />
             </DataTableActionBarAction>
           </motion.div>
         )}
@@ -123,7 +125,7 @@ const SelectedSnapshotsActionBar = ({
           onClick={handleDeleteSelected}
           keyName="D"
         >
-          <Trash2Icon />
+          <Icon icon={DeleteIcon} />
         </DataTableActionBarAction>
       </motion.div>
     </DataTableActionBar>

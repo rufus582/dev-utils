@@ -1,17 +1,27 @@
+import { Arrow } from "@radix-ui/react-popover";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Icon } from "@/components/icons/huge-icon";
 import {
-  CheckCircle,
-  EyeIcon,
+  CheckmarkCircleIcon,
+  DeleteIcon,
   MoreHorizontalIcon,
-  Trash2Icon,
-  XCircle,
-} from "lucide-react";
-import DatabaseSearch from "@/components/icons/database-search";
+  ViewIcon,
+} from "@/components/icons/ui";
+import { Button as NormalButton } from "@/components/ui/button";
+import { Button } from "@/components/ui/custom-components/animated-button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Arrow } from "@radix-ui/react-popover";
 import {
   Table,
   TableBody,
@@ -20,25 +30,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { convertSqlResultToRecords } from "@/lib/sql-utils";
-import { useState } from "react";
-import { Button } from "@/components/ui/custom-components/animated-button";
-import { Button as NormalButton } from "@/components/ui/button";
-import type { Database } from "sql.js";
-import { toast } from "sonner";
+import type { ISQLDBProps } from "@/lib/sql";
 
 interface ShowTablesPopUpProps {
   tables: JSONObject[];
   setTables: (tables: JSONObject[]) => void;
-  db?: Database;
+  db?: ISQLDBProps;
   onClickCellItemAction: (query: string) => void;
+  disabled?: boolean;
 }
 
 const ShowTablesPopUp = ({
@@ -46,6 +45,7 @@ const ShowTablesPopUp = ({
   setTables,
   db,
   onClickCellItemAction,
+  disabled,
 }: ShowTablesPopUpProps) => {
   const [isShowTablesPopoverOpen, setIsShowTablesPopoverOpen] = useState(false);
 
@@ -53,11 +53,8 @@ const ShowTablesPopUp = ({
     e?: React.MouseEvent<HTMLButtonElement>,
     showWarning: boolean = true,
   ) => {
-    const result = db?.exec(
-      'SELECT name FROM sqlite_master WHERE type = "table"',
-    );
-    if (result && result.length > 0) {
-      const tablesList = convertSqlResultToRecords(result[0]);
+    const tablesList = await db?.showTables();
+    if (tablesList && tablesList.length > 0) {
       setTables(tablesList);
       return true;
     }
@@ -85,11 +82,11 @@ const ShowTablesPopUp = ({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          buttonIcon={<DatabaseSearch />}
-          successIcon={<CheckCircle />}
-          errorIcon={<XCircle />}
+          buttonIcon={<Icon icon={ViewIcon} />}
+          successIcon={<Icon icon={CheckmarkCircleIcon} />}
           errorBgColorClass="bg-destructive-alt"
-          className="w-fit rounded-full mb-4 ml-2"
+          className="w-fit rounded-full"
+          disabled={disabled}
           useDefaultInteractionAnimation
           onClick={handleShowTables}
         >
@@ -121,7 +118,7 @@ const ShowTablesPopUp = ({
                           size="icon"
                           className="size-8"
                         >
-                          <MoreHorizontalIcon />
+                          <Icon icon={MoreHorizontalIcon} />
                           <span className="sr-only">Open menu</span>
                         </NormalButton>
                       </DropdownMenuTrigger>
@@ -131,7 +128,7 @@ const ShowTablesPopUp = ({
                             handleCellItemAction(`select * from ${name}`)
                           }
                         >
-                          <EyeIcon />
+                          <Icon icon={ViewIcon} />
                           View Records
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -141,7 +138,7 @@ const ShowTablesPopUp = ({
                             handleCellItemAction(`drop table ${name}`)
                           }
                         >
-                          <Trash2Icon />
+                          <Icon icon={DeleteIcon} />
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>

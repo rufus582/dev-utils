@@ -1,73 +1,94 @@
+import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { useImmer } from "use-immer";
+import { Icon } from "@/components/icons/huge-icon";
+import { PlayIcon, TypeCursorIcon } from "@/components/icons/pages";
+import { CancelIcon, PasteIcon, TickIcon } from "@/components/icons/ui";
+import Header from "@/components/layout/header/page-header";
 import CodeEditor, {
   type CodeEditorRefType,
 } from "@/components/ui/code/code-editor";
-import { useEffect, useRef, useState } from "react";
-import { useImmer } from "use-immer";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import Header from "@/components/layout/header/page-header";
-import { Button } from "@/components/ui/custom-components/animated-button";
-import {
-  Check,
-  ClipboardCheck,
-  ClipboardPaste,
-  ClipboardX,
-  Play,
-  TextCursorInput,
-  X,
-} from "lucide-react";
-import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
-import { getClipboardText } from "@/lib/utils";
-import { toast } from "sonner";
-import { convertSqlResultToRecords } from "@/lib/sql-utils";
-import initSqlJs, { type Database } from "sql.js";
 import type {
   JSONGridTabDataProps,
   JSONGridTabsRefType,
 } from "@/components/ui/code/json-grid-tabs";
 import JSONGridTabs from "@/components/ui/code/json-grid-tabs";
-import { ShowTablesPopUp } from "./ShowTablesPopUp";
+import { Button } from "@/components/ui/custom-components/animated-button";
+import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DatabaseLibs,
+  type DatabaseType,
+  type ISQLDBProps,
+  supportedDatabaseTypes,
+} from "@/lib/sql";
+import { getClipboardText, sleep } from "@/lib/utils";
+import {
+  type DBConnectionState,
+  DBConnectionStatusBadge,
+} from "./DBConnectionStatusBadge";
 import { ImportTableForm } from "./ImportTableForm";
+import { ShowTablesPopUp } from "./ShowTablesPopUp";
+
+const MotionSelectTrigger = motion.create(SelectTrigger);
 
 interface SQLDataStateType {
-  db?: Database;
+  db?: ISQLDBProps;
   sqlCode: string;
   resultData: JSONGridTabDataProps[];
   tables: JSONObject[];
+  databaseType: DatabaseType;
 }
 
 const SQLPlayground = () => {
+  const [dbConnectionState, setDbConnectionState] =
+    useState<DBConnectionState>("connecting");
   const [isSQLPanelCollapsed, setIsSQLPanelCollapsed] = useState(false);
   const [sqlDataState, setSQLDataState] = useImmer<SQLDataStateType>({
+    db: new DatabaseLibs.DuckDB(),
     sqlCode: "",
     resultData: [],
     tables: [],
+    databaseType: "DuckDB",
   });
 
   const editorRef: CodeEditorRefType = useRef(null);
   const resultViewerRef: JSONGridTabsRefType = useRef(null);
 
   useEffect(() => {
-    if (!sqlDataState.db) {
-      initSqlJs({
-        locateFile: (file) => `/${file}`,
-      }).then((SQL) => {
-        setSQLDataState((state) => {
-          const db = new SQL.Database();
-          state.db = db;
-        });
-        console.log("SQLite DB was successfully created");
-      });
-    }
+    const connectDB = async () => {
+      try {
+        setDbConnectionState("connecting");
+        await sqlDataState.db?.establishConnection();
+        await sleep(150);
+      } catch (e) {
+        console.log(e);
+        return setDbConnectionState("error");
+      }
+
+      setDbConnectionState("connected");
+    };
+
+    connectDB();
 
     return () => {
       sqlDataState.db?.close();
-      console.log("SQLite DB connection closed");
     };
-  }, [setSQLDataState, sqlDataState.db]);
+  }, [sqlDataState.db]);
 
   useEffect(() => {
     if (sqlDataState.resultData.length > 0)
@@ -76,21 +97,10 @@ const SQLPlayground = () => {
       );
   }, [sqlDataState.resultData]);
 
-  const runSQLQueryAndUpdateState = (query: string) => {
+  const runSQLQueryAndUpdateState = async (query: string) => {
     try {
-      const result = sqlDataState.db?.exec(query);
-      if (result && result.length > 0) {
-        const resultData: JSONGridTabDataProps[] = result.map(
-          (resultItem, index) => {
-            const resultRecords = convertSqlResultToRecords(resultItem);
-            return {
-              displayable: `Result ${index + 1}`,
-              value: `${index + 1}`,
-              content: resultRecords,
-            };
-          },
-        );
-
+      const resultData = await sqlDataState.db?.exec(query);
+      if (resultData && resultData.length > 0) {
         setSQLDataState((state) => {
           state.resultData = resultData;
         });
@@ -104,7 +114,9 @@ const SQLPlayground = () => {
     }
   };
 
-  const onClickRunSQL = (selection: boolean = false): boolean => {
+  const onClickRunSQL = async (
+    selection: boolean = false,
+  ): Promise<boolean> => {
     try {
       let queryToRun: string = sqlDataState.sqlCode;
       if (selection && editorRef.current) {
@@ -141,23 +153,33 @@ const SQLPlayground = () => {
     return isSuccess;
   };
 
+  const handleDbChange = async (newDB: DatabaseType) => {
+    setSQLDataState((state) => {
+      state.db = new DatabaseLibs[newDB]();
+      state.databaseType = newDB;
+      state.resultData = [];
+      state.tables = [];
+    });
+  };
+
   return (
-    <div className="flex flex-col h-full rounded-xl">
+    <div className="flex flex-col h-full rounded-xl gap-4">
       <Header separator />
       <div className="flex justify-between">
-        <div>
-          <ImportTableForm db={sqlDataState.db} />
+        <div className="flex gap-2 ml-2">
+          <ImportTableForm
+            db={sqlDataState.db}
+            disabled={dbConnectionState !== "connected"}
+          />
           <Tooltip content="Paste copied data from clipboard" asChild>
             <Button
               variant="outline"
-              buttonIcon={<ClipboardPaste />}
-              loaderIcon={null}
-              successIcon={<ClipboardCheck />}
+              buttonIcon={<Icon icon={PasteIcon} />}
               successBgColorClass="bg-success-alt"
-              errorIcon={<ClipboardX />}
               errorBgColorClass="bg-destructive-alt"
-              className="w-fit rounded-full mb-4 ml-2"
+              className="w-fit rounded-full"
               onClick={handleClipboardPaste}
+              disabled={dbConnectionState !== "connected"}
               useDefaultInteractionAnimation
             >
               Paste
@@ -172,22 +194,60 @@ const SQLPlayground = () => {
             }
             db={sqlDataState.db}
             onClickCellItemAction={runSQLQueryAndUpdateState}
+            disabled={dbConnectionState !== "connected"}
           />
+          <Select
+            onValueChange={handleDbChange}
+            value={sqlDataState.databaseType}
+          >
+            <Tooltip
+              content="Select a Database to run SQL"
+              asChild
+              variant="secondary"
+              delayDuration={0}
+            >
+              <MotionSelectTrigger
+                layout
+                transition={{
+                  duration: 0.15,
+                }}
+                className="rounded-3xl flex gap-2"
+                disabled={dbConnectionState === "connecting"}
+              >
+                <DBConnectionStatusBadge
+                  className="-ml-1.5"
+                  state={dbConnectionState}
+                />
+                <SelectValue />
+              </MotionSelectTrigger>
+            </Tooltip>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Database</SelectLabel>
+                {supportedDatabaseTypes.map((dbType) => (
+                  <SelectItem key={dbType} value={dbType}>
+                    {dbType}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
-        <div className="mr-2">
+        <div className="mr-2 flex gap-2">
           <Tooltip
             content="Run SQL Query"
             asChild
             className=" justify-items-end"
           >
             <Button
-              buttonIcon={<Play />}
-              successIcon={<Check />}
+              buttonIcon={<Icon icon={PlayIcon} />}
+              successIcon={<Icon icon={TickIcon} />}
               successBgColorClass="bg-primary"
-              errorIcon={<X />}
+              errorIcon={<Icon icon={CancelIcon} />}
               errorBgColorClass="bg-primary"
-              className="w-fit rounded-full mb-4 ml-2"
+              className="w-fit rounded-full"
               onClick={() => onClickRunSQL()}
+              disabled={dbConnectionState !== "connected"}
               useDefaultInteractionAnimation
             >
               Run SQL
@@ -199,13 +259,14 @@ const SQLPlayground = () => {
             className="justify-items-end"
           >
             <Button
-              buttonIcon={<TextCursorInput />}
-              successIcon={<Check />}
+              buttonIcon={<Icon icon={TypeCursorIcon} />}
+              successIcon={<Icon icon={TickIcon} />}
               successBgColorClass="bg-primary"
-              errorIcon={<X />}
+              errorIcon={<Icon icon={CancelIcon} />}
               errorBgColorClass="bg-primary"
-              className="w-fit rounded-full mb-4 ml-2"
+              className="w-fit rounded-full"
               onClick={() => onClickRunSQL(true)}
+              disabled={dbConnectionState !== "connected"}
               useDefaultInteractionAnimation
             >
               Run Selected

@@ -1,15 +1,16 @@
-'use client';
- 
-import * as React from 'react';
+"use client";
+
+import * as React from "react";
 import {
   AnimatePresence,
   type HTMLMotionProps,
   motion,
   type Transition,
-} from 'motion/react';
-import { ArrowRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
- 
+} from "motion/react";
+import { Icon as HIcon } from "@/components/icons/huge-icon";
+import { ArrowPointRightIcon } from "@/components/icons/ui";
+import { cn } from "@/lib/utils";
+
 type InputButtonContextType = {
   showInput: boolean;
   setShowInput: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,21 +20,21 @@ type InputButtonContextType = {
 const InputButtonContext = React.createContext<
   InputButtonContextType | undefined
 >(undefined);
- 
+
 const useInputButton = (): InputButtonContextType => {
   const context = React.useContext(InputButtonContext);
   if (!context) {
-    throw new Error('useInputButton must be used within a InputButton');
+    throw new Error("useInputButton must be used within a InputButton");
   }
   return context;
 };
- 
-type InputButtonProviderProps = React.ComponentProps<'div'> &
+
+type InputButtonProviderProps = React.ComponentProps<"div"> &
   Partial<InputButtonContextType>;
- 
+
 function InputButtonProvider({
   className,
-  transition = { type: 'spring', stiffness: 300, damping: 20 },
+  transition = { type: "spring", stiffness: 300, damping: 20 },
   showInput,
   setShowInput,
   id,
@@ -42,7 +43,7 @@ function InputButtonProvider({
 }: InputButtonProviderProps) {
   const localId = React.useId();
   const [localShowInput, setLocalShowInput] = React.useState(false);
- 
+
   return (
     <InputButtonContext.Provider
       value={{
@@ -55,8 +56,8 @@ function InputButtonProvider({
       <div
         data-slot="input-button-provider"
         className={cn(
-          'relative w-fit flex items-center justify-center h-10',
-          (showInput || localShowInput) && 'w-full max-w-[400px]',
+          "relative w-fit flex items-center justify-center h-10",
+          (showInput || localShowInput) && "w-full max-w-[400px]",
           className,
         )}
         {...props}
@@ -66,29 +67,29 @@ function InputButtonProvider({
     </InputButtonContext.Provider>
   );
 }
- 
-type InputButtonProps = HTMLMotionProps<'div'>;
- 
+
+type InputButtonProps = HTMLMotionProps<"div">;
+
 function InputButton({ className, ...props }: InputButtonProps) {
   return (
     <motion.div
       data-slot="input-button"
-      className={cn('flex size-full', className)}
+      className={cn("flex size-full", className)}
       {...props}
     />
   );
 }
- 
-type InputButtonActionProps = HTMLMotionProps<'button'>;
- 
+
+type InputButtonActionProps = HTMLMotionProps<"button">;
+
 function InputButtonAction({ className, ...props }: InputButtonActionProps) {
   const { transition, setShowInput, id } = useInputButton();
- 
+
   return (
     <motion.button
       data-slot="input-button-action"
       className={cn(
-        'bg-background text-sm whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-full border text-background-foreground cursor-pointer pl-4 pr-12 size-full font-medium',
+        "bg-background text-sm whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive rounded-full border text-background-foreground cursor-pointer pl-4 pr-12 size-full font-medium",
         className,
       )}
       layoutId={`input-button-action-${id}`}
@@ -98,19 +99,19 @@ function InputButtonAction({ className, ...props }: InputButtonActionProps) {
     />
   );
 }
- 
-type InputButtonSubmitProps = HTMLMotionProps<'button'> & {
+
+type InputButtonSubmitProps = HTMLMotionProps<"button"> & {
   icon?: React.ElementType;
 };
- 
+
 function InputButtonSubmit({
   className,
   children,
-  icon: Icon = ArrowRight,
+  icon: Icon = () => <HIcon icon={ArrowPointRightIcon} />,
   ...props
 }: InputButtonSubmitProps) {
   const { transition, showInput, setShowInput, id } = useInputButton();
- 
+
   return (
     <motion.button
       data-slot="input-button-submit"
@@ -118,7 +119,7 @@ function InputButtonSubmit({
       transition={transition}
       className={cn(
         "z-[1] [&_svg:not([class*='size-'])]:size-4 cursor-pointer disabled:pointer-events-none  disabled:opacity-50 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap bg-primary hover:bg-primary/90 transition-colors text-primary-foreground rounded-full text-sm flex items-center justify-center font-medium absolute inset-y-1 right-1",
-        showInput ? 'px-4' : 'aspect-square',
+        showInput ? "px-4" : "aspect-square",
         className,
       )}
       onClick={() => setShowInput((prev) => !prev)}
@@ -140,18 +141,21 @@ function InputButtonSubmit({
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.2 }}
         >
-          {React.createElement(Icon as React.ComponentType<React.SVGAttributes<SVGElement>>, { className: "size-4" })}
+          {React.createElement(
+            Icon as React.ComponentType<React.SVGAttributes<SVGElement>>,
+            { className: "size-4" },
+          )}
         </motion.span>
       )}
     </motion.button>
   );
 }
- 
-type InputButtonInputProps = React.ComponentProps<'input'>;
- 
+
+type InputButtonInputProps = React.ComponentProps<"input">;
+
 function InputButtonInput({ className, ...props }: InputButtonInputProps) {
   const { transition, showInput, id } = useInputButton();
- 
+
   return (
     <AnimatePresence>
       {showInput && (
@@ -164,7 +168,7 @@ function InputButtonInput({ className, ...props }: InputButtonInputProps) {
             <input
               data-slot="input-button-input"
               className={cn(
-                'size-full selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground inset-0 pl-4 focus-visible:border-ring border focus-visible:ring-ring/50 focus-visible:ring-[3px] pr-32 py-2 text-sm bg-background rounded-full focus:outline-none absolute shrink-0 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:cursor-not-allowed',
+                "size-full selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground inset-0 pl-4 focus-visible:border-ring border focus-visible:ring-ring/50 focus-visible:ring-[3px] pr-32 py-2 text-sm bg-background rounded-full focus:outline-none absolute shrink-0 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive disabled:pointer-events-none disabled:cursor-not-allowed",
                 className,
               )}
               {...props}
@@ -175,7 +179,7 @@ function InputButtonInput({ className, ...props }: InputButtonInputProps) {
     </AnimatePresence>
   );
 }
- 
+
 export {
   InputButton,
   InputButtonProvider,

@@ -5,7 +5,7 @@ import {
   ResizableHandle,
 } from "@/components/ui/resizable";
 import Header from "@/components/layout/header/page-header";
-import JQLogo from "@/components/icons/jq-logo";
+import JQLogo from "@/components/icons/sidebar/jq-logo";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JQActions } from "@/store/redux/jq-slice";
 import { useJQ } from "@/hooks/use-jq";

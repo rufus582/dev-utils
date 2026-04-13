@@ -1,7 +1,8 @@
 "use client";
 
+import { Icon } from "../../icons/huge-icon";
+import { CancelIcon, LoadingIcon } from "../../icons/ui";
 import type { Table } from "@tanstack/react-table";
-import { Loader, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
@@ -115,7 +116,11 @@ function DataTableActionBarAction({
       disabled={disabled || isPending}
       {...props}
     >
-      {isPending ? <Loader className="animate-spin" /> : children}
+      {isPending ? (
+        <Icon icon={LoadingIcon} className="animate-spin" />
+      ) : (
+        children
+      )}
     </Button>
   );
 
@@ -139,7 +144,7 @@ function DataTableActionBarAction({
       <TooltipTrigger asChild>{trigger}</TooltipTrigger>
       <TooltipContent
         sideOffset={6}
-        className="flex items-center gap-2 border  px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
+        className="flex items-center gap-2 border bg-accent px-2 py-1 font-semibold text-foreground dark:bg-zinc-900 [&>span]:hidden"
       >
         <p>{tooltip}</p>
         {keyName && (
@@ -180,7 +185,7 @@ function DataTableActionBarSelection<TData>({
             className="size-5"
             onClick={onClearSelection}
           >
-            <X className="size-3.5" />
+            <Icon icon={CancelIcon} className="size-3.5" />
           </Button>
         </TooltipTrigger>
         <TooltipContent

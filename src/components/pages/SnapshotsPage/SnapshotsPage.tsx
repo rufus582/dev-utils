@@ -1,10 +1,7 @@
-import {
-  ArchiveIcon,
-  Download,
-  FileUpIcon,
-  SaveIcon,
-  XIcon,
-} from "lucide-react";
+import { Icon } from "@/components/icons/huge-icon";
+import { ArchiveIcon } from "@/components/icons/routes";
+import { SaveIcon, DownloadIcon, UploadIcon } from "@/components/icons/pages";
+import { CancelIcon } from "@/components/icons/ui";
 import Header from "@/components/layout/header/page-header";
 import { useLiveQuery } from "dexie-react-hooks";
 import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
@@ -51,7 +48,7 @@ const NoSnapshots = () => {
     <Empty className="h-full">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <ArchiveIcon />
+          <Icon icon={ArchiveIcon} />
         </EmptyMedia>
         <EmptyTitle>No Saved Snapshots Found</EmptyTitle>
         <EmptyDescription>You haven't saved any snapshots yet</EmptyDescription>
@@ -139,7 +136,7 @@ const SnapshotsPage = () => {
               onClick={() => handleCancelSearch()}
               className={"aspect-square px-0"}
             >
-              <XIcon />
+              <Icon icon={CancelIcon} />
             </InputButtonSubmit>
           </InputButton>
           <InputButtonInput
@@ -165,7 +162,7 @@ const SnapshotsPage = () => {
                 <Button
                   variant={"outline"}
                   className="w-fit ml-auto rounded-full"
-                  buttonIcon={<FileUpIcon />}
+                  buttonIcon={<Icon icon={UploadIcon} />}
                   loaderIcon={null}
                   errorIcon={null}
                   successIcon={null}
@@ -178,7 +175,7 @@ const SnapshotsPage = () => {
             <Button
               variant={"outline"}
               className="w-fit ml-auto rounded-full border!"
-              buttonIcon={<Download />}
+              buttonIcon={<Icon icon={DownloadIcon} />}
               onClick={onExportClick}
               whileTap={{ scale: 0.97 }}
             >
@@ -194,7 +191,7 @@ const SnapshotsPage = () => {
             trigger={
               <Button
                 className="w-fit ml-auto rounded-full"
-                buttonIcon={<SaveIcon />}
+                buttonIcon={<Icon icon={SaveIcon} />}
                 loaderIcon={null}
                 errorIcon={null}
                 successIcon={null}
