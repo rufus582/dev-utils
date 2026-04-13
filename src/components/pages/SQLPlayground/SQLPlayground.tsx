@@ -211,7 +211,7 @@ const SQLPlayground = () => {
                 transition={{
                   duration: 0.15,
                 }}
-                className="rounded-3xl flex gap-2"
+                className="rounded-3xl flex gap-2 py-1! h-full!"
                 disabled={dbConnectionState === "connecting"}
               >
                 <DBConnectionStatusBadge
