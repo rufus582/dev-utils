@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useImmer } from "use-immer";
@@ -35,13 +36,15 @@ import {
   type ISQLDBProps,
   supportedDatabaseTypes,
 } from "@/lib/sql";
-import { getClipboardText } from "@/lib/utils";
+import { getClipboardText, sleep } from "@/lib/utils";
 import {
   type DBConnectionState,
   DBConnectionStatusBadge,
 } from "./DBConnectionStatusBadge";
 import { ImportTableForm } from "./ImportTableForm";
 import { ShowTablesPopUp } from "./ShowTablesPopUp";
+
+const MotionSelectTrigger = motion.create(SelectTrigger);
 
 interface SQLDataStateType {
   db?: ISQLDBProps;
@@ -71,9 +74,10 @@ const SQLPlayground = () => {
       try {
         setDbConnectionState("connecting");
         await sqlDataState.db?.establishConnection();
+        await sleep(150);
       } catch (e) {
         console.log(e);
-        setDbConnectionState("error");
+        return setDbConnectionState("error");
       }
 
       setDbConnectionState("connected");
@@ -196,16 +200,20 @@ const SQLPlayground = () => {
             onValueChange={handleDbChange}
             value={sqlDataState.databaseType}
           >
-            <SelectTrigger
-              className="rounded-3xl flex gap-0 w-50"
-              disabled={dbConnectionState !== "connected"}
+            <MotionSelectTrigger
+              layout
+              transition={{
+                duration: 0.15,
+              }}
+              className="rounded-3xl flex gap-2"
+              disabled={dbConnectionState === "connecting"}
             >
               <DBConnectionStatusBadge
                 className="-ml-1.5"
                 state={dbConnectionState}
               />
               <SelectValue />
-            </SelectTrigger>
+            </MotionSelectTrigger>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Database</SelectLabel>

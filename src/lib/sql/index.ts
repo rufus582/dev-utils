@@ -9,6 +9,6 @@ export const DatabaseLibs = {
 
 export type DatabaseType = keyof typeof DatabaseLibs;
 
-export const supportedDatabaseTypes = Object.keys(DatabaseLibs);
+export const supportedDatabaseTypes = Object.keys(DatabaseLibs).sort();
 
 export type { ISQLDBProps };
