@@ -200,20 +200,27 @@ const SQLPlayground = () => {
             onValueChange={handleDbChange}
             value={sqlDataState.databaseType}
           >
-            <MotionSelectTrigger
-              layout
-              transition={{
-                duration: 0.15,
-              }}
-              className="rounded-3xl flex gap-2"
-              disabled={dbConnectionState === "connecting"}
+            <Tooltip
+              content="Select a Database to run SQL"
+              asChild
+              variant="secondary"
+              delayDuration={0}
             >
-              <DBConnectionStatusBadge
-                className="-ml-1.5"
-                state={dbConnectionState}
-              />
-              <SelectValue />
-            </MotionSelectTrigger>
+              <MotionSelectTrigger
+                layout
+                transition={{
+                  duration: 0.15,
+                }}
+                className="rounded-3xl flex gap-2"
+                disabled={dbConnectionState === "connecting"}
+              >
+                <DBConnectionStatusBadge
+                  className="-ml-1.5"
+                  state={dbConnectionState}
+                />
+                <SelectValue />
+              </MotionSelectTrigger>
+            </Tooltip>
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Database</SelectLabel>

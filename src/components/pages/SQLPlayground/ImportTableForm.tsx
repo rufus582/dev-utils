@@ -30,6 +30,7 @@ import { Separator } from "@/components/ui/separator";
 import type { ISQLDBProps } from "@/lib/sql";
 import { generateTableQueryFromJsonArray } from "@/lib/sql-utils";
 import { TextFormatsList } from "@/lib/text-formats";
+import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
 
 const ImportTableFormFields = z.strictObject({
   tableName: z
@@ -115,20 +116,22 @@ const ImportTableForm = ({ db, disabled }: ImportTableFormProps) => {
 
   return (
     <Dialog open={isImportFormOpen} onOpenChange={onImportTableFormOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          loaderIcon={null}
-          buttonIcon={<Icon icon={DatabaseAddIcon} />}
-          successIcon={null}
-          errorIcon={null}
-          className="w-fit rounded-full"
-          disabled={disabled}
-          useDefaultInteractionAnimation
-        >
-          Import Table
-        </Button>
-      </DialogTrigger>
+      <Tooltip content="Import table from a file" asChild>
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            loaderIcon={null}
+            buttonIcon={<Icon icon={DatabaseAddIcon} />}
+            successIcon={null}
+            errorIcon={null}
+            className="w-fit rounded-full"
+            disabled={disabled}
+            useDefaultInteractionAnimation
+          >
+            Import Table
+          </Button>
+        </DialogTrigger>
+      </Tooltip>
       <DialogContent className="rounded-3xl" bgBlur>
         <DialogHeader>
           <DialogTitle>Import Table</DialogTitle>
