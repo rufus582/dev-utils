@@ -1,0 +1,9 @@
+# https://lefthook.dev/configuration/
+pre-push:
+  commands:
+    build:
+      tags:
+        - type-safety
+        - build
+      run: pnpm run build
+      fail_text: "Please fix the errors before pushing"
