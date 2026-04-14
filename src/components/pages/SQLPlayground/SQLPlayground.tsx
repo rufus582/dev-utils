@@ -163,10 +163,10 @@ const SQLPlayground = () => {
   };
 
   return (
-    <div className="flex flex-col h-full rounded-xl gap-4">
+    <div className="flex flex-col h-full rounded-xl">
       <Header separator />
       <div className="flex justify-between">
-        <div className="flex gap-2 ml-2">
+        <div className="flex gap-2 ml-2 mb-4">
           <ImportTableForm
             db={sqlDataState.db}
             disabled={dbConnectionState !== "connected"}

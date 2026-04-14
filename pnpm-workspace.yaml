@@ -4,3 +4,4 @@ onlyBuiltDependencies:
   - esbuild
   - node-jq
   - sharp
+  - lefthook
