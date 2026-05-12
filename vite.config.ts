@@ -1,67 +1,25 @@
-import path from "path";
 import tailwindcss from "@tailwindcss/vite";
-import { VitePWA } from "vite-plugin-pwa";
-import { viteStaticCopy } from "vite-plugin-static-copy";
+import { devtools } from "@tanstack/devtools-vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
-export default defineConfig({
+const config = defineConfig({
+  resolve: { tsconfigPaths: true },
   plugins: [
-    react(),
+    tanstackStart(),
+    devtools(),
+    nitro(),
     tailwindcss(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: "src/lib/jq/jq.wasm",
-          dest: "./",
-          rename: {
-            stripBase: true,
-          },
-        },
-        {
-          src: "node_modules/sql.js/dist/*.wasm",
-          dest: "./",
-          rename: {
-            stripBase: true,
-          },
-        },
-      ],
-    }),
-    VitePWA({
-      registerType: "prompt",
-      manifest: false,
-      workbox: {
-        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-        globIgnores: ["**/*.wasm"],
-        runtimeCaching: [
-          {
-            urlPattern: /\.wasm$/,
-            handler: "CacheFirst",
-            options: {
-              cacheName: "wasm-cache",
-              expiration: {
-                maxEntries: 10,
-              },
-            },
-          },
-        ],
-      },
-      devOptions: {
-        enabled: false,
-      },
-    }),
+    viteReact(),
   ],
-  define: {
-    "process.env.VERCEL_ENV": JSON.stringify(process.env.VERCEL_ENV),
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
   server: {
     host: true,
   },
-  envPrefix: ["VITE_", "DU_", "DEVUTILS_"],
+  build: {
+    outDir: ".output",
+  },
 });
+
+export default config;

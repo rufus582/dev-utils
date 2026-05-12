@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "#ui/button";
 import type { SnapshotType } from "@/store/indexed-db/snapshots";
 import type { HeaderContext } from "@tanstack/react-table";
-import { Icon } from "@/components/icons/huge-icon";
+import { Icon } from "#icons/huge-icon";
 import {
   ArrowPointUpIcon,
   ArrowPointDownIcon,
   ArrowUpDownIcon,
-} from "@/components/icons/ui";
+} from "#icons/ui";
 
 interface IHeaderCellProps {
   name: string;

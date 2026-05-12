@@ -3,12 +3,12 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion, useAnimate, type MotionStyle } from "motion/react";
-import { Icon } from "@/components/icons/huge-icon";
+import { Icon } from "#icons/huge-icon";
 import {
   CancelCircleIcon,
   LoadingIcon,
   CheckmarkCircleIcon,
-} from "@/components/icons/ui";
+} from "#icons/ui";
 
 import { cn } from "@/lib/utils";
 

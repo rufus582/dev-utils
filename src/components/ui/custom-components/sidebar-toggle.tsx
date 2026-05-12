@@ -1,6 +1,6 @@
-import { useSidebar } from "@/components/ui/sidebar";
-import { Tooltip } from "@/components/ui/custom-components/tooltip-wrapper";
-import SidebarToggleIcon from "@/components/icons/pages/page-header/sidebar-toggle-icon";
+import SidebarToggleIcon from "#icons/pages/page-header/sidebar-toggle-icon";
+import { Tooltip } from "#ui/custom-components/tooltip-wrapper";
+import { useSidebar } from "#ui/sidebar";
 import { cn } from "@/lib/utils";
 
 const SidebarToggle = () => {
@@ -20,6 +20,7 @@ const SidebarToggle = () => {
             : "*:*:data-[slot=sidebar-state]:w-0.5 *:*:data-[slot=sidebar-state]:[rx:1px] hover:*:*:data-[slot=sidebar-state]:w-1.75 hover:*:*:data-[slot=sidebar-state]:[rx:2px]",
         )}
         onClick={toggleSidebar}
+        type="button"
       >
         <SidebarToggleIcon />
       </button>

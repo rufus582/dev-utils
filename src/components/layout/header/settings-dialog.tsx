@@ -1,19 +1,17 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { AnimatePresence, motion } from "motion/react";
-import { type ReactNode, useContext, useRef, useState } from "react";
+import { type ReactNode, useRef, useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Icon } from "@/components/icons/huge-icon";
+import { Icon } from "#icons/huge-icon";
 import {
   ComputerSettingsIcon,
-  DownloadIcon,
   MoonIcon,
   SaveIcon,
   SunIcon,
-} from "@/components/icons/pages";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Button as AnimatedButton } from "@/components/ui/custom-components/animated-button";
+} from "#icons/pages";
+import { Button } from "#ui/button";
+import { Button as AnimatedButton } from "#ui/custom-components/animated-button";
 import {
   Dialog,
   DialogClose,
@@ -23,8 +21,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+} from "#ui/dialog";
+import { Field, FieldError, FieldLabel } from "#ui/field";
 import {
   Select,
   SelectContent,
@@ -33,13 +31,15 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Switch } from "@/components/ui/switch";
+} from "#ui/select";
+import { Separator } from "#ui/separator";
+import { Skeleton } from "#ui/skeleton";
+import { Switch } from "#ui/switch";
 import { cn, sleep } from "@/lib/utils";
 import { settingsOps } from "@/store/indexed-db/settings";
-import { PWAProviderContext } from "@/store/pwa-provider";
+
+// import { PWAProviderContext } from "@/store/pwa-provider";
+// import { Alert, AlertDescription, AlertTitle } from "#ui/alert";
 
 const SettingsFormFields = z.strictObject({
   theme: z.literal(["system", "light", "dark"]),
@@ -76,7 +76,7 @@ const SettingsDialog = ({
   open,
   onOpenChange,
 }: ISettingsDialogProps) => {
-  const { needRefresh, updateServiceWorker } = useContext(PWAProviderContext);
+  // const { needRefresh, updateServiceWorker } = useContext(PWAProviderContext);
 
   const settings = useLiveQuery(settingsOps.get);
 
@@ -132,7 +132,7 @@ const SettingsDialog = ({
           }}
         >
           <div className="grid grid-cols-5 gap-0 **:data-field-separator:col-span-5 **:data-field-separator:my-4">
-            {needRefresh && (
+            {/*{needRefresh && (
               <>
                 <Alert className="col-span-5 rounded-xl">
                   <Icon icon={DownloadIcon} />
@@ -155,7 +155,7 @@ const SettingsDialog = ({
                 </Alert>
                 <Separator data-field-separator />
               </>
-            )}
+            )}*/}
 
             {settings ? (
               <>

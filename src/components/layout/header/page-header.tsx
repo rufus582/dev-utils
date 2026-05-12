@@ -1,15 +1,14 @@
-import { Icon } from "@/components/icons/huge-icon";
-import { SettingsIcon } from "@/components/icons/pages";
-import { useLocation } from "react-router";
-import { routeDefinitions } from "@/routes/route-definitions";
-import { Separator } from "@/components/ui/separator";
+import { useRouterState } from "@tanstack/react-router";
+// import { PWAProviderContext } from "@/store/pwa-provider";
+// import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
-import SettingsDialog from "@/components/layout/header/settings-dialog";
-import { Button } from "@/components/ui/button";
-import { useContext } from "react";
-import { PWAProviderContext } from "@/store/pwa-provider";
-import { AnimatePresence, motion } from "motion/react";
-import { SidebarToggle } from "@/components/ui/custom-components/sidebar-toggle";
+import SettingsDialog from "#components/layout/header/settings-dialog";
+import { useRouteCatalog } from "#hooks/use-route-catalog";
+import { Icon } from "#icons/huge-icon";
+import { SettingsIcon } from "#icons/pages";
+import { Button } from "#ui/button";
+import { SidebarToggle } from "#ui/custom-components/sidebar-toggle";
+import { Separator } from "#ui/separator";
 
 const Header = ({
   title,
@@ -18,25 +17,25 @@ const Header = ({
   title?: React.ReactNode;
   separator?: boolean;
 }) => {
-  const location = useLocation();
+  // const { needRefresh } = useContext(PWAProviderContext);
 
-  const routeDefinition = routeDefinitions.find(
-    (route) => route.path === location.pathname,
-  );
-
-  const { needRefresh } = useContext(PWAProviderContext);
+  const resolvedPath = useRouterState({
+    select: (s) => s.resolvedLocation?.pathname,
+  });
+  const routeCatalog = useRouteCatalog();
+  const route = routeCatalog.find((r) => r.fullPath === resolvedPath);
 
   return (
     <>
       <div className="w-full flex pb-4 pt-4 justify-between">
         <SidebarToggle />
         <span className="font-bold text-2xl text-primary">
-          {title ?? routeDefinition?.displayable}
+          {title ?? route?.title}
         </span>
         <SettingsDialog
           trigger={
             <div className="relative">
-              <AnimatePresence initial={false}>
+              {/*<AnimatePresence initial={false}>
                 {needRefresh && (
                   <motion.div
                     initial={{ scale: 0, x: "-50%", y: "50%" }}
@@ -46,7 +45,7 @@ const Header = ({
                     className="absolute -top-1 right-1 w-2 h-2 rounded-full bg-secondary-foreground"
                   />
                 )}
-              </AnimatePresence>
+              </AnimatePresence>*/}
               <Button size="icon" variant="outline" className="my-auto mr-2">
                 <Icon icon={SettingsIcon} strokeWidth={2.5} />
               </Button>

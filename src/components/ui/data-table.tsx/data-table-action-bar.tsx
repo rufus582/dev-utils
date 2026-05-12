@@ -6,13 +6,13 @@ import type { Table } from "@tanstack/react-table";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "#ui/button";
+import { Separator } from "#ui/separator";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "#ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Kbd } from "../kbd";
 
