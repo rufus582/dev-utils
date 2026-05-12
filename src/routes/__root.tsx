@@ -15,6 +15,7 @@ import store from "#store/redux";
 import { ThemeProvider } from "#store/theme-provider";
 import { Toaster } from "#ui/sonner.tsx";
 import appCss from "@/styles.css?url";
+import { getCurrentEnvironment } from "#lib/utils.ts";
 
 const getSidebarState = createIsomorphicFn().server(() => {
   const sidebarState = getCookie("sidebar_state");
@@ -37,7 +38,7 @@ export const Route = createRootRoute({
         content: "width=device-width, initial-scale=1",
       },
       {
-        title: "DevUtils",
+        title: "Dev-Utils.",
       },
     ],
     links: [
@@ -56,10 +57,19 @@ export const Route = createRootRoute({
 function RootDocument() {
   const theme = useLoaderData({ from: "__root__", select: (s) => s?.theme });
 
+  const currentEnv = getCurrentEnvironment();
+  let pageTitle = "Dev-Utils.";
+  if (currentEnv === "development") {
+    pageTitle += " Alpha";
+  } else if (currentEnv === "preview") {
+    pageTitle += " Beta";
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
+        <title>{pageTitle}</title>
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: This is needed to avoid theme flicker on page load
           dangerouslySetInnerHTML={{
