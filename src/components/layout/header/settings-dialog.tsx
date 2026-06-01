@@ -6,10 +6,12 @@ import * as z from "zod";
 import { Icon } from "#icons/huge-icon";
 import {
   ComputerSettingsIcon,
+  DownloadIcon,
   MoonIcon,
   SaveIcon,
   SunIcon,
 } from "#icons/pages";
+import { Alert, AlertDescription, AlertTitle } from "#ui/alert";
 import { Button } from "#ui/button";
 import { Button as AnimatedButton } from "#ui/custom-components/animated-button";
 import {
@@ -37,9 +39,7 @@ import { Skeleton } from "#ui/skeleton";
 import { Switch } from "#ui/switch";
 import { cn, sleep } from "@/lib/utils";
 import { settingsOps } from "@/store/indexed-db/settings";
-
-// import { PWAProviderContext } from "@/store/pwa-provider";
-// import { Alert, AlertDescription, AlertTitle } from "#ui/alert";
+import { usePWA } from "@/store/pwa-provider";
 
 const SettingsFormFields = z.strictObject({
   theme: z.literal(["system", "light", "dark"]),
@@ -76,7 +76,7 @@ const SettingsDialog = ({
   open,
   onOpenChange,
 }: ISettingsDialogProps) => {
-  // const { needRefresh, updateServiceWorker } = useContext(PWAProviderContext);
+  const { needRefresh, updateServiceWorker } = usePWA();
 
   const settings = useLiveQuery(settingsOps.get);
 
@@ -132,7 +132,7 @@ const SettingsDialog = ({
           }}
         >
           <div className="grid grid-cols-5 gap-0 **:data-field-separator:col-span-5 **:data-field-separator:my-4">
-            {/*{needRefresh && (
+            {needRefresh && (
               <>
                 <Alert className="col-span-5 rounded-xl">
                   <Icon icon={DownloadIcon} />
@@ -155,7 +155,7 @@ const SettingsDialog = ({
                 </Alert>
                 <Separator data-field-separator />
               </>
-            )}*/}
+            )}
 
             {settings ? (
               <>

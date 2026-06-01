@@ -99,6 +99,8 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.12",
+    "@serwist/vite": "^9.5.11",
+    "@serwist/window": "^9.5.11",
     "@tailwindcss/typography": "^0.5.19",
     "@tanstack/devtools-vite": "latest",
     "@testing-library/dom": "^10.4.1",
@@ -110,9 +112,9 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "jsdom": "^29.0.2",
     "lefthook": "^2.1.6",
+    "serwist": "^9.5.11",
     "typescript": "^6.0.3",
     "vite": "^8.0.8",
-    "vitest": "^4.1.4",
-    "workbox-window": "^7.4.1"
+    "vitest": "^4.1.4"
   }
 }

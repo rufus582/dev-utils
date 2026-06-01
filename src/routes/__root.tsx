@@ -11,11 +11,12 @@ import { getCookie } from "@tanstack/react-start/server";
 import { Provider as ReduxProvider } from "react-redux";
 import PageLayout from "#/components/layout/page-layout/page-layout";
 import AppError from "#components/layout/page-layout/app-error.tsx";
+import { getCurrentEnvironment } from "#lib/utils.ts";
+import { PWAProvider } from "#store/pwa-provider.tsx";
 import store from "#store/redux";
 import { ThemeProvider } from "#store/theme-provider";
 import { Toaster } from "#ui/sonner.tsx";
 import appCss from "@/styles.css?url";
-import { getCurrentEnvironment } from "#lib/utils.ts";
 
 const getSidebarState = createIsomorphicFn().server(() => {
   const sidebarState = getCookie("sidebar_state");
@@ -45,6 +46,10 @@ export const Route = createRootRoute({
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      {
+        rel: "manifest",
+        href: "/app.webmanifest",
       },
     ],
   }),
@@ -79,12 +84,14 @@ function RootDocument() {
         />
       </head>
       <body className="">
-        <ReduxProvider store={store}>
-          <ThemeProvider defaultTheme={theme ?? "dark"} storageKey="ui-theme">
-            <Toaster closeButton richColors />
-            <PageLayout />
-          </ThemeProvider>
-        </ReduxProvider>
+        <PWAProvider>
+          <ReduxProvider store={store}>
+            <ThemeProvider defaultTheme={theme ?? "dark"} storageKey="ui-theme">
+              <Toaster closeButton richColors />
+              <PageLayout />
+            </ThemeProvider>
+          </ReduxProvider>
+        </PWAProvider>
         <TanStackDevtools
           config={{
             position: "bottom-right",

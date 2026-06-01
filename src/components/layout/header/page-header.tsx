@@ -1,11 +1,11 @@
 import { useRouterState } from "@tanstack/react-router";
-// import { PWAProviderContext } from "@/store/pwa-provider";
-// import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import type React from "react";
 import SettingsDialog from "#components/layout/header/settings-dialog";
 import { useRouteCatalog } from "#hooks/use-route-catalog";
 import { Icon } from "#icons/huge-icon";
 import { SettingsIcon } from "#icons/pages";
+import { usePWA } from "#store/pwa-provider.tsx";
 import { Button } from "#ui/button";
 import { SidebarToggle } from "#ui/custom-components/sidebar-toggle";
 import { Separator } from "#ui/separator";
@@ -17,7 +17,7 @@ const Header = ({
   title?: React.ReactNode;
   separator?: boolean;
 }) => {
-  // const { needRefresh } = useContext(PWAProviderContext);
+  const { needRefresh } = usePWA();
 
   const resolvedPath = useRouterState({
     select: (s) => s.resolvedLocation?.pathname,
@@ -35,7 +35,7 @@ const Header = ({
         <SettingsDialog
           trigger={
             <div className="relative">
-              {/*<AnimatePresence initial={false}>
+              <AnimatePresence initial={false}>
                 {needRefresh && (
                   <motion.div
                     initial={{ scale: 0, x: "-50%", y: "50%" }}
@@ -45,7 +45,7 @@ const Header = ({
                     className="absolute -top-1 right-1 w-2 h-2 rounded-full bg-secondary-foreground"
                   />
                 )}
-              </AnimatePresence>*/}
+              </AnimatePresence>
               <Button size="icon" variant="outline" className="my-auto mr-2">
                 <Icon icon={SettingsIcon} strokeWidth={2.5} />
               </Button>
