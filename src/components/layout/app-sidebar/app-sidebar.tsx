@@ -1,7 +1,14 @@
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { AnimatePresence, motion } from "motion/react";
+import DevUtilsCommandPrompt from "#components/layout/command-prompt/command";
+import {
+  type RouteCatalogItem,
+  useRouteCatalog,
+} from "#hooks/use-route-catalog";
 import AppLogo from "#icons/app-logo";
+import { getCurrentEnvironment } from "#lib/utils.ts";
+import { Badge } from "#ui/badge.tsx";
 import { Tooltip } from "#ui/custom-components/tooltip-wrapper";
 import {
   Sidebar,
@@ -15,12 +22,13 @@ import {
   useSidebar,
 } from "#ui/sidebar";
 import { settingsOps } from "@/store/indexed-db/settings";
-import DevUtilsCommandPrompt from "#components/layout/command-prompt/command";
 import AppSidebarContent from "./app-sidebar-content";
-import {
-  type RouteCatalogItem,
-  useRouteCatalog,
-} from "#hooks/use-route-catalog";
+
+const VERSION_TAG = {
+  production: "",
+  preview: "beta",
+  development: "alpha",
+}[getCurrentEnvironment()];
 
 const AppSidebar = () => {
   const routeCatalog = useRouteCatalog();
@@ -54,11 +62,16 @@ const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              className="cursor-pointer"
+              className="cursor-pointer active:scale-98 transition-all"
               onClick={() => handleNavigation({ routeId: "", fullPath: "/" })}
             >
               <AppLogo className="stroke-foreground" />
               <span className="text-base font-semibold">Dev-Utils.</span>
+              {VERSION_TAG && (
+                <Badge className="bg-muted text-muted-foreground font-mono text-[0.6rem] uppercase border border-border">
+                  {VERSION_TAG}
+                </Badge>
+              )}
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
