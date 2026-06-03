@@ -14,10 +14,10 @@
   },
   "scripts": {
     "postinstall": "node scripts/copy-wasm-to-public.mjs",
-    "dev": "vite dev --port 3000",
+    "dev": "APP_PWA=false vite dev --port 3000",
     "build": "vite build",
-    "preview": "node .output/server/index.mjs",
-    "preview:vite": "vite preview",
+    "preview": "PORT=3001 node .output/server/index.mjs",
+    "preview:vite": "vite preview --port 3001",
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",

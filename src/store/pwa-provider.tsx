@@ -79,7 +79,8 @@ function PWAProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!("serviceWorker" in navigator)) return;
+    if (!("serviceWorker" in navigator) || process.env.APP_PWA === "false")
+      return;
 
     let updateInterval: number | undefined;
 

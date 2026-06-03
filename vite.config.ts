@@ -35,6 +35,7 @@ const config = defineConfig({
   },
   define: {
     "process.env.VERCEL_ENV": JSON.stringify(process.env.VERCEL_ENV),
+    "process.env.APP_PWA": JSON.stringify(process.env.APP_PWA),
   },
   envPrefix: ["VITE_", "DU_", "DEVUTILS_"],
 });
