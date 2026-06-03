@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="virtual:serwist" />
 /// <reference lib="webworker" />
 
 // biome-ignore lint/correctness/noUnusedVariables: needed for ENV type safety

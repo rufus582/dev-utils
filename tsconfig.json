@@ -15,8 +15,8 @@
       "#store/*": ["./src/store/*"],
       "#lib/*": ["./src/lib/*"],
     },
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable", "webworker"],
+    "types": ["vite/client", "@serwist/vite/typings"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -30,6 +30,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  }
+    "noUncheckedSideEffectImports": true,
+  },
 }

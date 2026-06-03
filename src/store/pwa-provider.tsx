@@ -1,3 +1,4 @@
+import { getSerwist } from "virtual:serwist";
 import type { Serwist as SerwistWindow } from "@serwist/window";
 import {
   createContext,
@@ -19,16 +20,6 @@ const SW_UPDATE_WINDOW_MS = parseInt(
   import.meta.env.DEVUTILS_SW_UPDATE_ON_LOAD_WINDOW_MS || "10000",
   10,
 );
-
-type PWASideEffectStateType = "pending" | "completed";
-
-const PWASideEffectState = {
-  get: () =>
-    (localStorage.getItem("pwa-side-effect-state") ??
-      "pending") as PWASideEffectStateType,
-  set: (state: PWASideEffectStateType) =>
-    localStorage.setItem("pwa-side-effect-state", state),
-};
 
 interface PWAProviderProps {
   needRefresh: boolean;
@@ -65,76 +56,69 @@ function PWAProvider({ children }: { children: React.ReactNode }) {
   const [needRefresh, setNeedRefresh] = useState(false);
 
   const updateServiceWorker = useCallback(() => {
-    PWASideEffectState.set("pending");
     serwistRef.current?.messageSkipWaiting();
     setNeedRefresh(false);
   }, []);
 
   useEffect(() => {
-    const handleLoad = async () => {
+    let windowTimeout: number | undefined;
+
+    const openUpdateWindow = () => {
       canUpdatePWA.current = true;
-      window.setTimeout(() => {
+      windowTimeout = window.setTimeout(() => {
         canUpdatePWA.current = false;
       }, SW_UPDATE_WINDOW_MS);
     };
 
-    window.addEventListener("load", handleLoad);
+    window.addEventListener("load", openUpdateWindow, { once: true });
 
-    return () => window.removeEventListener("load", handleLoad);
+    return () => {
+      if (windowTimeout) window.clearTimeout(windowTimeout);
+      window.removeEventListener("load", openUpdateWindow);
+    };
   }, []);
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
 
-    let isMounted = true;
     let updateInterval: number | undefined;
 
-    void import("@serwist/window")
-      .then(({ Serwist }) => {
-        if (!isMounted) return;
+    const loadSerwist = async () => {
+      const serwist = await getSerwist();
+      serwistRef.current = serwist;
 
-        const serwist = new Serwist("/sw.js", { scope: "/" });
-        serwistRef.current = serwist;
+      serwist?.addEventListener("waiting", () => {
+        setNeedRefresh(true);
 
-        const checkForUpdates = () => {
-          void serwist.update();
-        };
-
-        serwist.addEventListener("waiting", () => {
-          setNeedRefresh(true);
-
-          if (canUpdatePWA.current) {
-            const toastId = toast.loading(
-              <AutoUpdatePWAToast
-                initialSeconds={5}
-                onComplete={() => {
-                  updateServiceWorker();
-                  canUpdatePWA.current = false;
-                  toast.dismiss(toastId);
-                }}
-              />,
-            );
-          }
-        });
-
-        serwist.addEventListener("controlling", () => {
-          window.location.reload();
-        });
-
-        return serwist.register().then(() => {
-          checkForUpdates();
-          updateInterval = window.setInterval(
-            checkForUpdates,
-            SW_REFRESH_INTERVAL_MS,
+        if (canUpdatePWA.current) {
+          const toastId = toast.loading(
+            <AutoUpdatePWAToast
+              initialSeconds={5}
+              onComplete={() => {
+                updateServiceWorker();
+                canUpdatePWA.current = false;
+                toast.dismiss(toastId);
+              }}
+            />,
           );
-        });
-      })
-      .catch((error: unknown) => {
-        console.log("SW registration error", error);
+        }
       });
 
+      serwist?.addEventListener("controlling", () => {
+        window.location.reload();
+      });
+
+      void serwist?.register().then(() => {
+        updateInterval = window.setInterval(
+          () => void serwist.update(),
+          SW_REFRESH_INTERVAL_MS,
+        );
+      });
+    };
+
+    loadSerwist().catch((error) => console.log("SW registration error", error));
+
     return () => {
-      isMounted = false;
       if (updateInterval) window.clearInterval(updateInterval);
       serwistRef.current = undefined;
     };
@@ -161,4 +145,4 @@ const usePWA = () => {
   return context;
 };
 
-export { PWAProvider, PWAProviderContext, PWASideEffectState, usePWA };
+export { PWAProvider, PWAProviderContext, usePWA };

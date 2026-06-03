@@ -15,6 +15,7 @@ export default defineConfig({
   //   //   },
   //   // },
   // },
+  // preset: "vercel",
   routeRules: {
     // HTML files
     "/**/*.html": {
