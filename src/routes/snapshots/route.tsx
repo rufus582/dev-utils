@@ -9,9 +9,16 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { useLiveQuery } from "dexie-react-hooks";
+import { motion } from "motion/react";
 import { customAlphabet } from "nanoid";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { Icon } from "#icons/huge-icon";
+import { DownloadIcon, SaveIcon, UploadIcon } from "#icons/pages";
+import { AddIcon, ArchiveIcon } from "#icons/routes";
+import { CancelIcon } from "#icons/ui";
+import { cn, sleep } from "#lib/utils";
+import { type SnapshotType, snapshotOps } from "#store/indexed-db/snapshots";
 import { Button as NormalButton } from "#ui/button";
 import { ButtonGroup } from "#ui/button-group";
 import { Button } from "#ui/custom-components/animated-button";
@@ -30,17 +37,13 @@ import {
   InputButtonProvider,
   InputButtonSubmit,
 } from "#ui/input-button";
-import { Icon } from "#icons/huge-icon";
-import { DownloadIcon, SaveIcon, UploadIcon } from "#icons/pages";
-import { AddIcon, ArchiveIcon } from "#icons/routes";
-import { CancelIcon } from "#icons/ui";
 import Header from "@/components/layout/header/page-header";
-import { cn, sleep } from "#lib/utils";
-import { type SnapshotType, snapshotOps } from "#store/indexed-db/snapshots";
 import CreateSnapshotDialog from "./-create-snapshot-dialog";
 import { ImportSnapshotsForm } from "./-import-snapshots-form";
 import SelectedSnapshotsActionBar from "./-snapshots-table/action-bar";
 import { columns } from "./-snapshots-table/columns";
+
+const MotionNormalButton = motion.create(NormalButton);
 
 export const Route = createFileRoute("/snapshots")({
   component: RouteComponent,
@@ -55,7 +58,9 @@ export const Route = createFileRoute("/snapshots")({
       action: ({ isActive }) => (
         <CreateSnapshotDialog
           trigger={
-            <NormalButton
+            <MotionNormalButton
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               size="icon"
               className={cn(
                 "rounded-xl duration-150 transition-all shadow-primary",
@@ -65,7 +70,7 @@ export const Route = createFileRoute("/snapshots")({
               )}
             >
               <Icon icon={AddIcon} strokeWidth={7} />
-            </NormalButton>
+            </MotionNormalButton>
           }
         />
       ),

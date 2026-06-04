@@ -19,6 +19,7 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
   useSidebar,
 } from "#ui/sidebar";
 import { settingsOps } from "@/store/indexed-db/settings";
@@ -148,18 +149,23 @@ const AppSidebar = () => {
                     {sidebarFooterRoutes.sidebar?.label}
                   </span>
                 </SidebarMenuButton>
-                <SidebarMenuAction asChild>
-                  {sidebarFooterRoutes.sidebar?.action?.({
-                    fullPath: sidebarFooterRoutes.fullPath,
-                    routeId: sidebarFooterRoutes.routeId,
-                    isActive: curPath === sidebarFooterRoutes.routeId,
-                  })}
-                </SidebarMenuAction>
+                <AnimatePresence initial={false}>
+                  {sidebarOpen && (
+                    <SidebarMenuAction asChild>
+                      {sidebarFooterRoutes.sidebar?.action?.({
+                        fullPath: sidebarFooterRoutes.fullPath,
+                        routeId: sidebarFooterRoutes.routeId,
+                        isActive: curPath === sidebarFooterRoutes.routeId,
+                      })}
+                    </SidebarMenuAction>
+                  )}
+                </AnimatePresence>
               </SidebarMenuItem>
             </Tooltip>
           )}
         </SidebarMenu>
       </SidebarFooter>
+      <SidebarRail className="after:left-1.5 hover:after:bg-transparent group-data-[side=left]:right-0 w-2 " />
     </Sidebar>
   );
 };

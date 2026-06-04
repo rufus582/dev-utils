@@ -23,6 +23,7 @@ const SidebarToggle = () => {
         type="button"
       >
         <SidebarToggleIcon />
+        <span className="sr-only">Toggle Sidebar</span>
       </button>
     </Tooltip>
   );
