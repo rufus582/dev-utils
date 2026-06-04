@@ -7,8 +7,7 @@ import {
   useRouteCatalog,
 } from "#hooks/use-route-catalog";
 import AppLogo from "#icons/app-logo";
-import { getCurrentEnvironment } from "#lib/utils.ts";
-import { Badge } from "#ui/badge.tsx";
+import { cn, getCurrentEnvironment } from "#lib/utils.ts";
 import { Tooltip } from "#ui/custom-components/tooltip-wrapper";
 import {
   Sidebar,
@@ -17,6 +16,7 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuAction,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
@@ -29,6 +29,8 @@ const VERSION_TAG = {
   preview: "beta",
   development: "alpha",
 }[getCurrentEnvironment()];
+
+const MotionSidebarMenuBadge = motion.create(SidebarMenuBadge);
 
 const AppSidebar = () => {
   const routeCatalog = useRouteCatalog();
@@ -60,19 +62,28 @@ const AppSidebar = () => {
     <Sidebar variant="floating" collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="active:scale-98 transition-all">
             <SidebarMenuButton
-              className="cursor-pointer active:scale-98 transition-all"
+              className="cursor-pointer rounded-3xl"
               onClick={() => handleNavigation({ routeId: "", fullPath: "/" })}
             >
               <AppLogo className="stroke-foreground" />
               <span className="text-base font-semibold">Dev-Utils.</span>
-              {VERSION_TAG && (
-                <Badge className="bg-muted text-muted-foreground font-mono text-[0.6rem] uppercase border border-border">
-                  {VERSION_TAG}
-                </Badge>
-              )}
             </SidebarMenuButton>
+            <AnimatePresence initial={false}>
+              {VERSION_TAG && sidebarOpen && (
+                <MotionSidebarMenuBadge
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className={cn(
+                    "rounded-3xl bg-muted text-muted-foreground font-mono text-[0.6rem] uppercase border border-border px-2",
+                    "peer-data-[active=true]/menu-button:text-muted-foreground peer-hover/menu-button:text-muted-foreground",
+                  )}
+                >
+                  {VERSION_TAG}
+                </MotionSidebarMenuBadge>
+              )}
+            </AnimatePresence>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
