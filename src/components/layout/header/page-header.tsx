@@ -1,15 +1,14 @@
-import { Icon } from "@/components/icons/huge-icon";
-import { SettingsIcon } from "@/components/icons/pages";
-import { useLocation } from "react-router";
-import { routeDefinitions } from "@/routes/route-definitions";
-import { Separator } from "@/components/ui/separator";
-import type React from "react";
-import SettingsDialog from "@/components/layout/header/settings-dialog";
-import { Button } from "@/components/ui/button";
-import { useContext } from "react";
-import { PWAProviderContext } from "@/store/pwa-provider";
+import { useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { SidebarToggle } from "@/components/ui/custom-components/sidebar-toggle";
+import type React from "react";
+import SettingsDialog from "#components/layout/header/settings-dialog";
+import { useRouteCatalog } from "#hooks/use-route-catalog";
+import { Icon } from "#icons/huge-icon";
+import { SettingsIcon } from "#icons/pages";
+import { usePWA } from "#store/pwa-provider.tsx";
+import { Button } from "#ui/button";
+import { SidebarToggle } from "#ui/custom-components/sidebar-toggle";
+import { Separator } from "#ui/separator";
 
 const Header = ({
   title,
@@ -18,20 +17,20 @@ const Header = ({
   title?: React.ReactNode;
   separator?: boolean;
 }) => {
-  const location = useLocation();
+  const { needRefresh } = usePWA();
 
-  const routeDefinition = routeDefinitions.find(
-    (route) => route.path === location.pathname,
-  );
-
-  const { needRefresh } = useContext(PWAProviderContext);
+  const resolvedPath = useRouterState({
+    select: (s) => s.resolvedLocation?.pathname,
+  });
+  const routeCatalog = useRouteCatalog();
+  const route = routeCatalog.find((r) => r.fullPath === resolvedPath);
 
   return (
     <>
       <div className="w-full flex pb-4 pt-4 justify-between">
         <SidebarToggle />
         <span className="font-bold text-2xl text-primary">
-          {title ?? routeDefinition?.displayable}
+          {title ?? route?.title}
         </span>
         <SettingsDialog
           trigger={

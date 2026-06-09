@@ -1,0 +1,143 @@
+import jmespath, { type JSONValue } from "@metrichor/jmespath";
+import { createFileRoute } from "@tanstack/react-router";
+import JMESPathLogo from "#icons/sidebar/jmespath-logo/logo";
+import Header from "@/components/layout/header/page-header";
+import CodeEditor from "#ui/code/code-editor";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "#ui/resizable";
+import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
+import { TextFormats } from "@/lib/text-formats";
+import { JMESPathActions } from "@/store/redux/jmespath-slice";
+
+export const Route = createFileRoute("/jmespath")({
+  component: RouteComponent,
+  staticData: {
+    title: "JMESPath Playground",
+    sidebar: {
+      label: "JMESPath",
+      icon: (
+        <div className="font-bold font-mono text-muted-foreground flex">
+          J <p className="text-foreground">P</p>
+        </div>
+      ),
+      place: "content",
+      category: "Playground",
+      order: 3,
+    },
+  },
+  ssr: false,
+});
+
+function RouteComponent() {
+  const jmesPathDataState = useAppSelector((state) => state.jmespath);
+  const dispatch = useAppDispatch();
+
+  const handleCodeChanged = async (
+    expressionVal?: string,
+    jsonStrVal?: string,
+  ) => {
+    const jmesPathExpression =
+      expressionVal === undefined
+        ? jmesPathDataState.expression
+        : expressionVal;
+    const jsonStr =
+      jsonStrVal === undefined ? jmesPathDataState.jsonStr : jsonStrVal;
+
+    dispatch(JMESPathActions.setExpression(jmesPathExpression));
+    dispatch(JMESPathActions.setJsonStr(jsonStr));
+
+    let rawResult = "";
+
+    try {
+      const parsedJsonValue = await TextFormats.JSON.parse(jsonStr);
+      const result = jmespath.search(
+        parsedJsonValue as JSONValue,
+        jmesPathExpression,
+      );
+      rawResult = await TextFormats.JSON.unparse(result as object);
+    } catch (error: unknown) {
+      if (error && typeof error === "object") {
+        const err = error as { stderr?: string; message?: string };
+        rawResult = `${
+          err.stderr ?? err.message ?? "Error processing JMESPath Expression"
+        }`;
+      } else {
+        rawResult = "Error processing JMESPath Expression";
+      }
+    }
+
+    dispatch(JMESPathActions.setResult(rawResult));
+  };
+
+  const onOpenJSONFile = (files: FileList | null) => {
+    if (files && files.length > 0) {
+      files[0]
+        .text()
+        .then((fileContent) => handleCodeChanged(undefined, fileContent));
+    }
+  };
+
+  const titleContent = (
+    <div className="flex gap-2">
+      <JMESPathLogo className="m-auto h-5" />
+      <p>Playground</p>
+    </div>
+  );
+
+  return (
+    <div className="h-full w-full flex flex-col">
+      <Header title={titleContent} separator />
+      <ResizablePanelGroup
+        orientation="vertical"
+        className="pt-0"
+        style={{ viewTransitionName: "code-view" }}
+      >
+        <ResizablePanel minSize={100} maxSize={300} defaultSize={150}>
+          <CodeEditor
+            className="rounded-t-xl rounded-b-none h-full w-full"
+            value={jmesPathDataState.expression}
+            onChange={(expression) => handleCodeChanged(expression)}
+            title="JMESPath Expression"
+            copyButton
+            lineNumbers={false}
+          />
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel>
+          <ResizablePanelGroup orientation="horizontal">
+            <ResizablePanel minSize={350}>
+              <CodeEditor
+                className="rounded-t-none rounded-bl-xl rounded-br-none h-full"
+                value={jmesPathDataState.jsonStr}
+                title="Input JSON"
+                language="json"
+                onChange={(jsonStr) => handleCodeChanged(undefined, jsonStr)}
+                copyButton
+                fileButton={{
+                  enabled: true,
+                  acceptedExtensions: ".json",
+                  onOpenFiles: onOpenJSONFile,
+                  tooltipContent: "Supported files: JSON",
+                }}
+              />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel minSize={200}>
+              <CodeEditor
+                className="rounded-br-xl rounded-bl-none rounded-t-none h-full"
+                value={jmesPathDataState.result}
+                title="Output"
+                language="json"
+                readOnly
+                copyButton
+              />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </div>
+  );
+}

@@ -1,5 +1,5 @@
-import { Icon } from "@/components/icons/huge-icon";
-import { LoadingIcon } from "@/components/icons/ui";
+import { Icon } from "#icons/huge-icon";
+import { LoadingIcon } from "#icons/ui";
 import { cn } from "@/lib/utils";
 
 function Spinner({

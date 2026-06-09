@@ -13,7 +13,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "#ui/table";
 import { getCommonPinningStyles } from "@/lib/data-table-utils";
 
 interface DataTableProps<TData, TValue> {

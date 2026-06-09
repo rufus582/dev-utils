@@ -1,4 +1,4 @@
-import type { JSONGridTabDataProps } from "@/components/ui/code/json-grid-tabs";
+import type { JSONGridTabDataProps } from "#ui/code/json-grid-tabs";
 
 export default interface ISQLDBProps {
   connection: unknown;

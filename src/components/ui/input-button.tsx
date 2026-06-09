@@ -7,8 +7,8 @@ import {
   motion,
   type Transition,
 } from "motion/react";
-import { Icon as HIcon } from "@/components/icons/huge-icon";
-import { ArrowPointRightIcon } from "@/components/icons/ui";
+import { Icon as HIcon } from "#icons/huge-icon";
+import { ArrowPointRightIcon } from "#icons/ui";
 import { cn } from "@/lib/utils";
 
 type InputButtonContextType = {

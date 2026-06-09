@@ -1,10 +1,18 @@
-import { useTimeout } from "@/hooks/use-timeout";
-import { createContext, useEffect, useRef } from "react";
+import { getSerwist } from "virtual:serwist";
+import type { Serwist as SerwistWindow } from "@serwist/window";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "sonner";
-import { useRegisterSW } from "virtual:pwa-register/react";
+import { useTimeout } from "@/hooks/use-timeout";
 
 const SW_REFRESH_INTERVAL_MS = parseInt(
-  import.meta.env.DEVUTILS_SW_REFRESH_INTERVAL_MS || "600000",
+  import.meta.env.DEVUTILS_SW_REFRESH_INTERVAL_MS || "1000",
   10,
 );
 
@@ -44,52 +52,78 @@ const AutoUpdatePWAToast = ({
 
 function PWAProvider({ children }: { children: React.ReactNode }) {
   const canUpdatePWA = useRef(false);
+  const serwistRef = useRef<SerwistWindow | undefined>(undefined);
+  const [needRefresh, setNeedRefresh] = useState(false);
 
-  const {
-    needRefresh: [needRefresh, setNeedRefresh],
-    updateServiceWorker: updatePWAServiceWorker,
-  } = useRegisterSW({
-    onRegisteredSW(_, registration) {
-      setInterval(() => {
-        registration?.update();
-      }, SW_REFRESH_INTERVAL_MS);
-    },
-    onRegisterError(error) {
-      console.log("SW registration error", error);
-    },
-    onNeedRefresh() {
-      if (canUpdatePWA.current) {
-        const toastId = toast.loading(
-          <AutoUpdatePWAToast
-            initialSeconds={5}
-            onComplete={() => {
-              updateServiceWorker();
-              canUpdatePWA.current = false;
-              toast.dismiss(toastId);
-            }}
-          />,
-        );
-      }
-    },
-  });
+  const updateServiceWorker = useCallback(() => {
+    serwistRef.current?.messageSkipWaiting();
+    setNeedRefresh(false);
+  }, []);
 
   useEffect(() => {
-    const handleLoad = async () => {
+    let windowTimeout: number | undefined;
+
+    const openUpdateWindow = () => {
       canUpdatePWA.current = true;
-      setTimeout(() => {
+      windowTimeout = window.setTimeout(() => {
         canUpdatePWA.current = false;
       }, SW_UPDATE_WINDOW_MS);
     };
 
-    window.addEventListener("load", handleLoad);
+    window.addEventListener("load", openUpdateWindow, { once: true });
 
-    return () => window.removeEventListener("load", handleLoad);
-  });
+    return () => {
+      if (windowTimeout) window.clearTimeout(windowTimeout);
+      window.removeEventListener("load", openUpdateWindow);
+    };
+  }, []);
 
-  const updateServiceWorker = () => {
-    updatePWAServiceWorker(true);
-    setNeedRefresh(false);
-  };
+  useEffect(() => {
+    if (!("serviceWorker" in navigator) || process.env.APP_PWA === "false")
+      return;
+
+    let updateInterval: number | undefined;
+
+    const loadSerwist = async () => {
+      const serwist = await getSerwist();
+      serwistRef.current = serwist;
+
+      serwist?.addEventListener("waiting", () => {
+        setNeedRefresh(true);
+
+        if (canUpdatePWA.current) {
+          const toastId = toast.loading(
+            <AutoUpdatePWAToast
+              initialSeconds={5}
+              onComplete={() => {
+                updateServiceWorker();
+                canUpdatePWA.current = false;
+                toast.dismiss(toastId);
+              }}
+            />,
+          );
+        }
+      });
+
+      serwist?.addEventListener("controlling", () => {
+        window.location.reload();
+      });
+
+      void serwist?.register().then(() => {
+        updateInterval = window.setInterval(
+          () => void serwist.update(),
+          SW_REFRESH_INTERVAL_MS,
+        );
+      });
+    };
+
+    loadSerwist().catch((error) => console.log("SW registration error", error));
+
+    return () => {
+      if (updateInterval) window.clearInterval(updateInterval);
+      serwistRef.current = undefined;
+    };
+  }, [updateServiceWorker]);
 
   const value: PWAProviderProps = {
     needRefresh,
@@ -103,4 +137,13 @@ function PWAProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export { PWAProviderContext, PWAProvider };
+const usePWA = () => {
+  const context = useContext(PWAProviderContext);
+
+  if (context === undefined)
+    throw new Error("useTheme must be used within a PWAProvider");
+
+  return context;
+};
+
+export { PWAProvider, PWAProviderContext, usePWA };

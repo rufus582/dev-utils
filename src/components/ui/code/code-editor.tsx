@@ -8,7 +8,7 @@ import {
 } from "../../icons/ui";
 import Editor, { type OnMount } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
-import { Button } from "@/components/ui/custom-components/animated-button";
+import { Button } from "#ui/custom-components/animated-button";
 import { useTheme } from "@/store/theme-provider";
 import { cn, copyToClipboard } from "@/lib/utils";
 import useOpenFile, { type IUseOpenFileInputType } from "@/hooks/use-open-file";

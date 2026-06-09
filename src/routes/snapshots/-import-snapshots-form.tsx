@@ -1,0 +1,252 @@
+import { AnimatePresence, motion } from "motion/react";
+import type React from "react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
+import * as z from "zod";
+import { Icon } from "#icons/huge-icon";
+import { UploadIcon } from "#icons/pages";
+import { Button as NormalButton } from "#ui/button";
+import { Checkbox } from "#ui/checkbox";
+import { Button } from "#ui/custom-components/animated-button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "#ui/dialog";
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldLabel,
+  FieldSet,
+} from "#ui/field";
+import { Input } from "#ui/input";
+import { Separator } from "#ui/separator";
+import { TextFormats } from "@/lib/text-formats";
+import { snapshotOps, snapshotSchema } from "@/store/indexed-db/snapshots";
+
+const ImportSnapshotsFormFields = z.strictObject({
+  file: z.file().min(1, "Please open a valid backup file."),
+  overrideDuplicates: z.literal(["on", "off", undefined]),
+});
+
+const snapshotsFileSchema = z.array(snapshotSchema);
+
+type ImportSnapshotsFormType = z.infer<typeof ImportSnapshotsFormFields>;
+type ImportSnapshotsFormErrorType =
+  z.core.$ZodFlattenedError<ImportSnapshotsFormType>;
+
+interface ImportSnapshotsFormProps {
+  triggerElement?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  interactionOutside?: boolean;
+  showCloseButton?: boolean;
+  successMessage?: string | (() => void);
+  onCancel?: () => void;
+}
+
+const ImportSnapshotsForm = ({
+  triggerElement,
+  open,
+  onOpenChange,
+  interactionOutside = true,
+  showCloseButton = true,
+  successMessage = "Successfully imported snapshots",
+  onCancel,
+}: ImportSnapshotsFormProps) => {
+  const [isImportFormOpen, setIsImportFormOpen] = useState<boolean>(
+    open || false,
+  );
+  const [importSnapshotsFormErrors, setImportSnapshotsFormErrors] =
+    useState<ImportSnapshotsFormErrorType>();
+  const importSnapshotsFormRef = useRef<HTMLFormElement>(null);
+  const onImportSnapshotsFormSubmit = async (): Promise<boolean> => {
+    try {
+      const formData = new FormData(
+        importSnapshotsFormRef.current ?? undefined,
+      );
+      const formResponse = ImportSnapshotsFormFields.parse(
+        Object.fromEntries(formData.entries()),
+        {},
+      );
+
+      const fileContent = await formResponse.file.text();
+      const parsedData = await TextFormats.JSON.parse(fileContent);
+
+      const importedSnapshots = snapshotsFileSchema.safeParse(parsedData);
+      if (!importedSnapshots.success) {
+        console.log(importedSnapshots.error);
+        throw new SyntaxError();
+      }
+      await snapshotOps.createBulk(
+        importedSnapshots.data,
+        formResponse.overrideDuplicates === "on",
+      );
+
+      if (successMessage && typeof successMessage === "string")
+        toast.success(successMessage);
+      else if (successMessage && typeof successMessage === "function")
+        successMessage();
+
+      setIsImportFormOpen(false);
+      onOpenChange?.(false);
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setImportSnapshotsFormErrors(z.flattenError(error));
+      } else if (error instanceof SyntaxError)
+        setImportSnapshotsFormErrors({
+          fieldErrors: {
+            file: [
+              "The opened file cannot be imported, it is either damaged or corrupted.",
+            ],
+          },
+          formErrors: [],
+        });
+      else toast.error(`${error}`);
+
+      return false;
+    }
+  };
+
+  const onImportSnapshotsFormOpenChange = (open: boolean) => {
+    setIsImportFormOpen(open);
+    onOpenChange?.(open);
+    setImportSnapshotsFormErrors(undefined);
+  };
+
+  return (
+    <Dialog
+      open={open || isImportFormOpen}
+      onOpenChange={onImportSnapshotsFormOpenChange}
+    >
+      <DialogTrigger asChild>{triggerElement}</DialogTrigger>
+      <DialogContent
+        className="rounded-3xl"
+        bgBlur
+        onInteractOutside={(e) => {
+          if (!interactionOutside) e.preventDefault();
+        }}
+        showCloseButton={showCloseButton}
+      >
+        <DialogHeader>
+          <DialogTitle>Import Snapshots</DialogTitle>
+          <DialogDescription>
+            Import backed up Snapshots from a different browser/device.
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          ref={importSnapshotsFormRef}
+          onSubmit={(ev) => {
+            ev.preventDefault();
+          }}
+        >
+          <FieldSet>
+            <Field
+              data-invalid={Boolean(
+                importSnapshotsFormErrors?.fieldErrors.file,
+              )}
+            >
+              <FieldLabel htmlFor="fileInput">Open File</FieldLabel>
+              <Input
+                id="fileInput"
+                name="file"
+                type="file"
+                accept=".dvubak"
+                className="file:text-secondary-foreground file:bg-secondary file:border-border file:border file:px-2 file:h-full file:rounded-full hover:file:bg-secondary/60 hover:border-muted-foreground rounded-full px-1 cursor-pointer file:cursor-pointer col-span-4 transition-colors"
+                onChange={() => setImportSnapshotsFormErrors(undefined)}
+                aria-invalid={Boolean(
+                  importSnapshotsFormErrors?.fieldErrors.file,
+                )}
+              />
+              <AnimatePresence mode="popLayout">
+                {importSnapshotsFormErrors?.fieldErrors.file && (
+                  <motion.div
+                    // key={1}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <FieldError
+                      errors={importSnapshotsFormErrors.fieldErrors.file.map(
+                        (err) => ({
+                          message: err,
+                        }),
+                      )}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              <AnimatePresence mode="popLayout" initial={false}>
+                {!importSnapshotsFormErrors?.fieldErrors.file && (
+                  <motion.div
+                    // key={2}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <FieldDescription className="mb-0!">
+                      Only files exported from this page are supported.
+                    </FieldDescription>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Field>
+            <Field
+              data-invalid={Boolean(
+                importSnapshotsFormErrors?.fieldErrors.overrideDuplicates,
+              )}
+            >
+              <div className="flex *:my-auto gap-2">
+                <Checkbox
+                  id="overrideDuplicates"
+                  name="overrideDuplicates"
+                  className="aspect-square max-w-fit"
+                />
+                <FieldLabel htmlFor="overrideDuplicates">
+                  Override duplicates
+                </FieldLabel>
+              </div>
+              <FieldDescription>
+                If enabled, snapshots with duplicate names will be renamed while
+                importing.
+              </FieldDescription>
+            </Field>
+            <Separator className="mb-4" />
+          </FieldSet>
+          <DialogFooter className="*:w-[48%] sm:justify-between">
+            <DialogClose asChild>
+              <NormalButton
+                variant="outline"
+                className="rounded-full"
+                type="button"
+                onClick={onCancel}
+              >
+                Cancel
+              </NormalButton>
+            </DialogClose>
+            <Button
+              type="submit"
+              buttonIcon={<Icon icon={UploadIcon} />}
+              className="rounded-full"
+              onClick={onImportSnapshotsFormSubmit}
+              useDefaultInteractionAnimation
+            >
+              Import
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export { ImportSnapshotsForm, type ImportSnapshotsFormProps };
