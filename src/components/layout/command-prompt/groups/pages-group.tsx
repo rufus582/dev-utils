@@ -9,7 +9,8 @@ import { settingsOps } from "@/store/indexed-db/settings";
 const PagesCommandGroup = ({ closeCommand }: { closeCommand: () => void }) => {
   const settings = useLiveQuery(settingsOps.get);
   const navigate = useNavigate();
-  const routeCatalog = useRouteCatalog()
+  const routeCatalog = useRouteCatalog();
+  routeCatalog.sort((a, b) => (a.title ?? "").localeCompare(b.title ?? ""));
 
   const navigateCommand = (path: string) => {
     navigate({

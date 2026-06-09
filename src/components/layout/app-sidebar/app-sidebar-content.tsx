@@ -74,11 +74,15 @@ const AppSidebarContent = ({
   return (
     <>
       {sidebarContentCategories.sort().map((category) => {
-        const categoryDefinitions = sidebarContentRoutes.filter(
-          (route) =>
-            (category === CATEGORY_UNCATEGORISED && !route.sidebar?.category) ||
-            category === route.sidebar?.category,
-        );
+        const categoryDefinitions = sidebarContentRoutes
+          .filter(
+            (route) =>
+              (category === CATEGORY_UNCATEGORISED &&
+                !route.sidebar?.category) ||
+              category === route.sidebar?.category,
+          )
+          .sort((a, b) => (a.title ?? "").localeCompare(b.title ?? ""));
+
         return (
           <Collapsible
             key={category}
@@ -144,9 +148,7 @@ const AppSidebarContent = ({
                           <SidebarMenuButton
                             className="cursor-pointer active:scale-98 transition-all"
                             onClick={() => handleNavigation(contentItem)}
-                            isActive={
-                              activeRouteId === contentItem.routeId
-                            }
+                            isActive={activeRouteId === contentItem.routeId}
                           >
                             {contentItem.sidebar?.icon}
                             <span>{contentItem.sidebar?.label}</span>
