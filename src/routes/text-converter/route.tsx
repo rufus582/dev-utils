@@ -1,8 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Icon } from "#icons/huge-icon";
 import { TextIcon } from "#icons/routes";
-import Header from "@/components/layout/header/page-header";
 import CodeEditor from "#ui/code/code-editor";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "#ui/resizable";
+import Header from "@/components/layout/header/page-header";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { getTextFormat } from "@/lib/text-formats";
 import {
@@ -90,26 +95,31 @@ function RouteComponent() {
           }
         />
       </div>
-      <div
-        className="grid grid-cols-2 gap-2 h-[93%]"
+      <ResizablePanelGroup
+        orientation="horizontal"
         style={{ viewTransitionName: "code-view" }}
       >
-        <CodeEditor
-          className="rounded-l-2xl resize-none rounded-r-md"
-          onChange={(value) => handleTextConvertion(value)}
-          title="Text to convert"
-          value={convertDataState.toConvert}
-          language={fromFormat?.highlightName}
-        />
-        <CodeEditor
-          className="rounded-r-2xl rounded-l-md"
-          title="Converted text"
-          value={convertDataState.converted}
-          language={toFormat?.highlightName}
-          readOnly
-          copyButton
-        />
-      </div>
+        <ResizablePanel minSize={250} collapsible={false}>
+          <CodeEditor
+            className="rounded-l-2xl resize-none h-full"
+            onChange={(value) => handleTextConvertion(value)}
+            title="Text to convert"
+            value={convertDataState.toConvert}
+            language={fromFormat?.highlightName}
+          />
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel minSize={300} collapsible={false}>
+          <CodeEditor
+            className="rounded-r-2xl h-full"
+            title="Converted text"
+            value={convertDataState.converted}
+            language={toFormat?.highlightName}
+            readOnly
+            copyButton
+          />
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 }
