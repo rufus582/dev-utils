@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt="header" src="https://shieldcn.dev/header/dots.svg?title=Dev-Utils.&amp;subtitle=A+bunch+of+useful+utilities+for+developers%21%0A&amp;logo=https%3A%2F%2Fgithub.com%2Frufus582%2Fdev-utils%2Fblob%2Fmaster%2Fdocs%2Freadme-logo.png%3Fraw%3Dtrue&amp;size=wide&amp;mode=dark" />
+  <img alt="header" src="https://shieldcn.dev/header/dots.svg?title=Dev-Utils.&amp;subtitle=A+bunch+of+useful+utilities+for+developers%21%0A&amp;logo=https%3A%2F%2Fraw.githubusercontent.com%2Frufus582%2Fdev-utils%2Frefs%2Fheads%2Fmaster%2Fdocs%2Freadme-logo.png&amp;size=wide&amp;mode=dark" />
 </p>
 
 <p align="center">
