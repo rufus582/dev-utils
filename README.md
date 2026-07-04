@@ -1,161 +1,91 @@
-<a id="readme-top"></a>
+<p align="center">
+  <img alt="header" src="https://shieldcn.dev/header/dots.svg?title=Dev-Utils.&amp;subtitle=A+bunch+of+useful+utilities+for+developers%21%0A&amp;logo=https%3A%2F%2Fgithub.com%2Frufus582%2Fdev-utils%2Fblob%2Fmaster%2Fdocs%2Freadme-logo.png%3Fraw%3Dtrue&amp;size=wide&amp;mode=dark" />
+</p>
 
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+<p align="center">
+  <a href="https://dev-utils.rufus582.dev/"><img alt="Check it out" src="https://shieldcn.dev/badge/Check_it_out-f0b100.svg?logo=lu%3AExternalLink" /></a>
+  <a href="https://github.com/rufus582/dev-utils"><img alt="stars" src="https://shieldcn.dev/github/rufus582/dev-utils/stars.svg?variant=secondary" /></a>
+</p>
 
+## Overview
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/rufus582/dev-utils">
-    <img src="public/logo.svg" alt="Logo" width="80" height="80">
-  </a>
+Dev-Utils. provides useful utilities to developers, with a nice UI/UX. This is a frontend-only project built using Tanstack Start, so you can be assured of the privacy & security of your data. Below is the list of utils that are available:
 
-<h3 align="center">Dev-Utils.</h3>
-  <p align="center">
-    A bunch of useful utilities for developers!
-    <br />
-    <a href="https://dev-utils-rufus.vercel.app"><strong>Check it out here »</strong></a>
-  </p>
-</div>
+- [Text Converter](https://dev-utils.rufus582.dev/text-converter) - Convert text from/to formats like JSON, YAML, TOML, Base64, CSV
+- [JQ Playground](https://dev-utils.rufus582.dev/jq) - Experiment and play around with JQ
+- [JMESPATH Playground](https://dev-utils.rufus582.dev/jmespath) - Experiment and play around with JMESPATH
+- [JSON Table Viewer](https://dev-utils.rufus582.dev/json-table) - View simple & complex JSON in a simple, yet readable table format
+- [SQL Playground](https://dev-utils.rufus582.dev/sql) - Create/import tables from JSON files, and play around it using SQL
+- [CEL Playground](https://dev-utils.rufus582.dev/jmespath) - Test & evaluate different conditions using CEL Expression
 
+## Tech Stack
 
+[![Tanstack Start](https://shieldcn.dev/badge/Tanstack%20Start.svg?variant=outline&font=fira-code&logo=tanstack)](https://tanstack.com/start/latest)
+[![React](https://shieldcn.dev/badge/React.svg?variant=outline&font=fira-code&logo=react)](https://react.dev/)
+[![Tailwind CSS](https://shieldcn.dev/badge/Tailwind%20CSS.svg?variant=outline&font=fira-code&logo=tailwindcss)](https://tailwindcss.com/)
+[![Vercel](https://shieldcn.dev/badge/Vercel.svg?variant=outline&font=fira-code&logo=vercel)](https://vercel.com/)
+[![Vite](https://shieldcn.dev/badge/Vite.svg?variant=outline&font=fira-code&logo=vite)](https://vite.dev/)
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ol>
-</details>
-
-
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
-[![Product Name Screen Shot][product-screenshot]](https://dev-utils-rufus.vercel.app)
-
-This project aims to provide useful utilities to developers, with a nice UI/UX. This is a frontend-only project built with React, so you can be assured of the privacy & security of your data. Below is the list of utils that are available:
-- [Text Converter](https://dev-utils-rufus.vercel.app/text-converter)  - Convert text from/to formats like JSON, YAML, TOML, Base64, CSV
-- [JQ Playground](https://dev-utils-rufus.vercel.app/jq)               - Experiment and play around with JQ
-- [JMESPATH Playground](https://dev-utils-rufus.vercel.app/jmespath)   - Experiment and play around with JMESPATH
-- [JSON Table Viewer](https://dev-utils-rufus.vercel.app/json-table)   - View simple & complex JSON in a simple, yet readable table format
-- [SQL Playground](https://dev-utils-rufus.vercel.app/sql)             - Create/import tables from JSON files, and play around it using SQL
-- [CEL Playground](https://dev-utils-rufus.vercel.app/jmespath)        - Test & evaluate different conditions using CEL Expression
-
-<h3>Local Only Features</h3>
+## Local Only Features
 
 When you set up this project and run it in your localhost, you can access the below feature(s):
-- In [JSON Table Viewer](https://dev-utils-rufus.vercel.app/json-table), you can fetch the JSON content from a given CURL command using the `Fetch from CURL` button
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+- In [JSON Table Viewer](https://dev-utils.rufus582.dev/json-table), you can fetch the JSON content from a given CURL command using the `Fetch from CURL` button
 
-### Built With
-
-* [![React][React.js]][React-url]
-* [![Tailwind CSS][TailwindCSS]][TailwindCSS-url]
-* [![Vite][Vite]][Vite-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- GETTING STARTED -->
 ## Getting Started
 
-To get a local copy of this project and access the Local Only Features, follow the below steps.
+To get a local copy of this project and access the above features, follow the below steps.
 
 ### Prerequisites
 
-You need to have [![pnpm](https://img.shields.io/badge/pnpm-F69220?logo=pnpm&logoColor=fff)](https://pnpm.io) installed. For macOS with [![Homebrew](https://img.shields.io/badge/Homebrew-FBB040?logo=homebrew&logoColor=fff)](https://brew.sh/) run the below command
-  ```sh
-  brew install pnpm
-  ```
+You need to have [![pnpm](https://shieldcn.dev/badge/pnpm.svg?variant=branded&size=xs&logo=pnpm)](https://pnpm.io) installed. For macOS with [![Homebrew](https://shieldcn.dev/badge/Homebrew.svg?variant=branded&size=xs&logo=homebrew)](https://brew.sh/) run the below command
+
+```sh
+brew install pnpm
+```
+
 For other platforms and more details, visit the official site [here](https://pnpm.io/installation#using-other-package-managers)
 
 ### Installation
 
 1. Clone the repo
+
    ```sh
    git clone https://github.com/rufus582/dev-utils.git
    ```
+
 2. Install dependencies
+
    ```sh
    pnpm install
    ```
+
 3. Run the dev server
+
    ```sh
    pnpm run dev
    ```
-4. Visit http://localhost:5173 on your browser to access this web application
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+4. Visit http://localhost:3000 on your browser to access this web application
 
-<!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+I am not currently accepting direct contributions.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+If you'd like to help:
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request to the `preview` branch
+- Open an issue for bugs or feature requests.
+- If you already have a proposed solution, include it in the issue.
+- If the proposal looks like a good fit, I may ask you to submit a pull request.
+- We'll take it from there.
 
-<!-- LICENSE -->
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
-
-<!-- CONTACT -->
 ## Contact
 
-Rufus Immanuel Raj P - rufus5802@gmail.com
-
-Project Link: [https://github.com/rufus582/dev-utils](https://github.com/rufus582/dev-utils)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/rufus582/dev-utils.svg?style=for-the-badge
-[contributors-url]: https://github.com/rufus582/dev-utils/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/rufus582/dev-utils.svg?style=for-the-badge
-[forks-url]: https://github.com/rufus582/dev-utils/network/members
-[stars-shield]: https://img.shields.io/github/stars/rufus582/dev-utils.svg?style=for-the-badge
-[stars-url]: https://github.com/rufus582/dev-utils/stargazers
-[issues-shield]: https://img.shields.io/github/issues/rufus582/dev-utils.svg?style=for-the-badge
-[issues-url]: https://github.com/rufus582/dev-utils/issues
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/rufus58
-[product-screenshot]: docs/screenshot.png
-<!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
-[TailwindCSS]: https://img.shields.io/badge/Tailwind%20CSS-%2338B2AC.svg?logo=tailwind-css&logoColor=white
-[TailwindCSS-url]: https://tailwindcss.com/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vite]: https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff
-[Vite-url]: https://vite.dev/
+[![Email](https://shieldcn.dev/badge/hi@rufus582.dev.svg?variant=secondary&logo=lu%3AMail)](mailto:hi@rufus582.dev)
+[![X](https://shieldcn.dev/badge/rufus582.svg?variant=outline&logo=x)](https://x.com/rufus582)
+[![LinkedIn](https://shieldcn.dev/badge/rufus582-0A66C2.svg?logo=ri%3ABsLinkedin)](https://linkedin.com/in/rufus58)
+[![Website](https://shieldcn.dev/badge/Website.svg?variant=branded&theme=emerald&logo=lu%3AGlobe)](https://rufus582.dev)
