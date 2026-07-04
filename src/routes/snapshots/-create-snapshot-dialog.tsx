@@ -1,0 +1,164 @@
+import { AnimatePresence, motion } from "motion/react";
+import { type ReactNode, useRef, useState } from "react";
+import { useStore } from "react-redux";
+import { toast } from "sonner";
+import * as z from "zod";
+import { Icon } from "#icons/huge-icon";
+import { InformationCircleIcon, SaveIcon } from "#icons/pages";
+import { Alert, AlertDescription } from "#ui/alert";
+import { Button } from "#ui/button";
+import { Button as AnimatedButton } from "#ui/custom-components/animated-button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "#ui/dialog";
+import { Field, FieldError, FieldLabel } from "#ui/field";
+import { Input } from "#ui/input";
+import { Separator } from "#ui/separator";
+import { snapshotOps } from "@/store/indexed-db/snapshots";
+import type { AppStateType } from "@/store/redux";
+
+const CreateSnapshotFormFields = z.strictObject({
+  name: z.string().min(5, "Name must have atleast 5 characters."),
+});
+
+type CreateSnapshotFormType = z.infer<typeof CreateSnapshotFormFields>;
+type CreateSnapshotFormErrors =
+  z.core.$ZodFlattenedError<CreateSnapshotFormType>;
+
+interface ICreateSnapshotDialogProps {
+  trigger?: ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+const CreateSnapshotDialog = ({
+  trigger,
+  open,
+  onOpenChange,
+}: ICreateSnapshotDialogProps) => {
+  const store = useStore<AppStateType>();
+  const currentAppState = store.getState();
+
+  const [isFormOpen, setIsFormOpen] = useState<boolean>(open || false);
+  const [createSnapshotFormErrors, setCreateSnapshotFormErrors] =
+    useState<CreateSnapshotFormErrors>();
+  const createSnapshotFormRef = useRef<HTMLFormElement>(null);
+  const handleSaveSnapshot = async (): Promise<boolean> => {
+    try {
+      const formData = new FormData(createSnapshotFormRef.current ?? undefined);
+      const formResponse = CreateSnapshotFormFields.parse(
+        Object.fromEntries(formData.entries()),
+      );
+
+      await snapshotOps.create(currentAppState, formResponse.name);
+
+      toast.success(`Successfully saved current app state.`);
+      setIsFormOpen(false);
+      onOpenChange?.(false);
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError)
+        setCreateSnapshotFormErrors(z.flattenError(error));
+      else toast.error(`${error}`);
+
+      return false;
+    }
+  };
+
+  const onFormOpenChange = (open: boolean) => {
+    setIsFormOpen(open);
+    onOpenChange?.(open);
+    setCreateSnapshotFormErrors(undefined);
+  };
+
+  return (
+    <Dialog open={open || isFormOpen} onOpenChange={onFormOpenChange}>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="rounded-3xl" bgBlur>
+        <DialogHeader>
+          <DialogTitle>Create Snapshot</DialogTitle>
+          <DialogDescription>
+            Save a snapshot of the data from all pages.
+          </DialogDescription>
+        </DialogHeader>
+        <form
+          ref={createSnapshotFormRef}
+          onSubmit={(ev) => {
+            ev.preventDefault();
+          }}
+        >
+          <div className="grid grid-cols-5 gap-4">
+            <Alert className="col-span-5 rounded-xl">
+              <Icon icon={InformationCircleIcon} />
+              <AlertDescription>
+                Data from SQL Playground cannot be saved!
+              </AlertDescription>
+            </Alert>
+            <Separator className="col-span-5" />
+
+            <Field
+              data-invalid={Boolean(createSnapshotFormErrors?.fieldErrors.name)}
+              className="col-span-5"
+            >
+              <FieldLabel htmlFor="name">Name</FieldLabel>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                className="rounded-full hover:border-muted-foreground transition-colors aria-invalid:border-destructive"
+                placeholder="Any name of your choice to use when saving app state"
+                aria-invalid={Boolean(
+                  createSnapshotFormErrors?.fieldErrors.name,
+                )}
+                onChange={() => setCreateSnapshotFormErrors(undefined)}
+              />
+              <AnimatePresence>
+                {createSnapshotFormErrors?.fieldErrors.name && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2, ease: "easeInOut" }}
+                  >
+                    <FieldError
+                      errors={createSnapshotFormErrors.fieldErrors.name.map(
+                        (val) => ({
+                          message: val,
+                        }),
+                      )}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Field>
+          </div>
+          <DialogFooter className="mt-5 *:w-[48%] sm:justify-between">
+            <DialogClose asChild>
+              <Button variant="outline" className="rounded-full" type="button">
+                Cancel
+              </Button>
+            </DialogClose>
+            <AnimatedButton
+              type="submit"
+              buttonIcon={<Icon icon={SaveIcon} />}
+              className="rounded-full"
+              onClick={handleSaveSnapshot}
+              useDefaultInteractionAnimation
+            >
+              Save
+            </AnimatedButton>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default CreateSnapshotDialog;

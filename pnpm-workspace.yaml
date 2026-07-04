@@ -1,7 +1,5 @@
-onlyBuiltDependencies:
-  - '@swc/core'
-  - '@tailwindcss/oxide'
-  - esbuild
-  - node-jq
-  - sharp
-  - lefthook
+allowBuilds:
+  esbuild: true
+  lefthook: true
+  lightningcss: true
+  msw: true

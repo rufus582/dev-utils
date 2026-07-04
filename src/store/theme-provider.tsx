@@ -1,12 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
-import {
-  createContext,
-  useContext,
-  useEffect,
-} from "react";
-import { settingsOps } from "./indexed-db/settings";
+
 import { useLiveQuery } from "dexie-react-hooks";
-import { useSystemTheme } from "@/hooks/use-system-theme";
+import { createContext, useContext, useEffect } from "react";
+import { useIsClient } from "#hooks/use-client.ts";
+import { useSystemTheme } from "#hooks/use-system-theme";
+import { settingsOps } from "./indexed-db/settings";
 
 type Theme = "dark" | "light" | "system";
 type ResolvedTheme = "dark" | "light";
@@ -43,20 +41,24 @@ const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "system",
+  defaultTheme = "dark",
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
+  const isClient = useIsClient();
   const settings = useLiveQuery(settingsOps.get);
 
-  const theme =
-    settings?.theme ||
-    (localStorage.getItem(storageKey) as Theme) ||
-    defaultTheme;
+  let theme = settings?.theme || defaultTheme;
+  if (isClient) {
+    theme =
+      settings?.theme ||
+      (window.localStorage.getItem(storageKey) as Theme) ||
+      defaultTheme;
+  }
 
   const setTheme = async (theme: Theme) => {
     if (theme) {
-      localStorage.setItem(storageKey, theme);
+      if (isClient) window.localStorage.setItem(storageKey, theme);
       await settingsOps.update({ theme });
     }
   };
@@ -64,8 +66,15 @@ export function ThemeProvider({
   const systemTheme = useSystemTheme();
 
   useEffect(() => {
-    setGlobalTheme(getResolvedTheme(theme, systemTheme));
-  }, [theme, systemTheme]);
+    const resolvedTheme = getResolvedTheme(theme, systemTheme);
+    setGlobalTheme(resolvedTheme);
+    window.localStorage.setItem(`${storageKey}-resolved`, resolvedTheme);
+    document.cookie = `${`${storageKey}-resolved`}=${resolvedTheme}; path=/; max-age=${60 * 60 * 24 * 7}`;
+  }, [theme, systemTheme, storageKey]);
+
+  useEffect(() => {
+    window.localStorage.setItem(storageKey, settings?.theme || theme);
+  }, [settings?.theme, theme, storageKey]);
 
   const value: ThemeProviderState = {
     theme: getResolvedTheme(theme, systemTheme),

@@ -142,7 +142,7 @@ export function getTextFormat(
   const textFormat = TextFormatsList.filter(
     (format) => textFormatName === format.displayable
   );
-  if (textFormat.length == 0) {
+  if (textFormat.length === 0) {
     onNotFound?.();
     return undefined;
   }

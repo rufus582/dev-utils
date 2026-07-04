@@ -1,12 +1,10 @@
 import newJQ from "./jq.wasm.js";
 
-const BASE_URL = import.meta.env.BASE_URL || "/";
-
 const invoke = async (jsonStr: string, jqFilter: string) => {
   try {
     const jq = await newJQ({
       locateFile: (path: string, prefix: string) => {
-        return path.endsWith("jq.wasm") ? BASE_URL + "jq.wasm" : prefix + path;
+        return path.endsWith("jq.wasm") ? "/jq.wasm" : prefix + path;
       },
     });
 
@@ -20,7 +18,7 @@ const version = async () => {
   try {
     const jq = await newJQ({
       locateFile: (path: string, prefix: string) => {
-        return path.endsWith("jq.wasm") ? BASE_URL + "jq.wasm" : prefix + path;
+        return path.endsWith("jq.wasm") ? "/jq.wasm" : prefix + path;
       },
     });
     const jqVersion = await jq.version();

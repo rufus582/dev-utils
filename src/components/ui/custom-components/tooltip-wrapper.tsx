@@ -2,7 +2,7 @@ import {
   Tooltip as TooltipShadcn,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
+} from "#ui/tooltip";
 import { cva, type VariantProps } from "class-variance-authority";
 import type React from "react";
 

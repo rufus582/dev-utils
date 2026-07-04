@@ -1,5 +1,5 @@
 import initSqlJs, { type Database } from "sql.js";
-import type { JSONGridTabDataProps } from "@/components/ui/code/json-grid-tabs";
+import type { JSONGridTabDataProps } from "#ui/code/json-grid-tabs";
 import { convertSqlResultToRecords } from "@/lib/sql-utils";
 import type ISQLDBProps from "./sql.types";
 

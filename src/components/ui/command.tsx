@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "#ui/dialog";
 import { Icon } from "../icons/huge-icon";
 import { SearchIcon } from "../icons/ui";
 

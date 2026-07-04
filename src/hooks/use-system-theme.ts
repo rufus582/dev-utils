@@ -1,5 +1,5 @@
-import { getSystemTheme } from "@/lib/theme-utils";
 import { useSyncExternalStore } from "react";
+import { getSystemTheme } from "#lib/theme-utils";
 
 const themeSubscriber = (cb: () => void) => {
   const systemTheme = getSystemTheme();
@@ -13,7 +13,13 @@ const getThemeSnapshot = () => {
   return systemTheme.theme;
 };
 
+const getServerThemeSnapshot = () => "dark" as "light" | "dark";
+
 const useSystemTheme = () =>
-  useSyncExternalStore(themeSubscriber, getThemeSnapshot);
+  useSyncExternalStore(
+    themeSubscriber,
+    getThemeSnapshot,
+    getServerThemeSnapshot,
+  );
 
 export { useSystemTheme };
