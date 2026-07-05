@@ -10,6 +10,7 @@ import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie } from "@tanstack/react-start/server";
 import { Provider as ReduxProvider } from "react-redux";
 import PageLayout from "#/components/layout/page-layout/page-layout";
+import { HomePage } from "#/routes/index/-layout";
 import AppError from "#components/layout/page-layout/app-error.tsx";
 import { getCurrentEnvironment } from "#lib/utils.ts";
 import { PWAProvider } from "#store/pwa-provider.tsx";
@@ -88,7 +89,14 @@ function RootDocument() {
           <ReduxProvider store={store}>
             <ThemeProvider defaultTheme={theme ?? "dark"} storageKey="ui-theme">
               <Toaster closeButton richColors />
-              <PageLayout />
+              {/* Mobile view */}
+              <div className="h-svh w-svw md:hidden select-none">
+                <HomePage layout="mobile" />
+              </div>
+              {/* Desktop view */}
+              <div className="h-screen w-screen hidden md:block">
+                <PageLayout />
+              </div>
             </ThemeProvider>
           </ReduxProvider>
         </PWAProvider>

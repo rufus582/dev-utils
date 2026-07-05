@@ -17,6 +17,7 @@
     "dev": "APP_PWA=false vite dev --port 3000",
     "build": "vite build",
     "preview": "PORT=3001 node .output/server/index.mjs",
+    "preview@latest": "pn build && PORT=3001 node .output/server/index.mjs",
     "preview:vite": "vite preview --port 3001",
     "test": "vitest run",
     "format": "biome format",
