@@ -1,4 +1,7 @@
+import Header from "#components/layout/header/page-header";
 import AppLogo from "#icons/app-logo";
+import { Icon } from "#icons/huge-icon";
+import { DiscoverCircleIcon, GithubIcon } from "#icons/pages";
 import { Button } from "#ui/button";
 import { ButtonGroup } from "#ui/button-group";
 import TiltContainer from "#ui/custom-components/tilt-container";
@@ -28,7 +31,7 @@ const DesktopLayout = ({ links }: HomePageLayoutProps) => {
       }}
     >
       <div className="translate-z-14 transform-3d">
-        <div className="max-h-[45vh] min-h-30 aspect-square p-[max(12px,3.5cqh)] bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[25%] shadow-2xl transform-3d">
+        <div className="max-h-[45vh] min-h-30 max-w-[40vw] aspect-square p-[max(12px,3.5cqh)] bg-linear-45 from-[#FF7D00] to-[#EFB100] mx-auto mb-4 rounded-[25%] shadow-2xl transform-3d">
           <AppLogo className="w-full h-full translate-z-5 drop-shadow-2xl drop-shadow-black/40 active:translate-z-3 transition" />
         </div>
       </div>
@@ -100,5 +103,39 @@ const MobileLayout = ({ links }: HomePageLayoutProps) => {
   );
 };
 
+const HomePage = ({ layout }: { layout?: "mobile" | "desktop" }) => {
+  const links: ProfileLinkProps[] = [
+    {
+      link: "https://github.com/rufus582/dev-utils",
+      isWidelyAvailable: true,
+      icon: <Icon icon={GithubIcon} />,
+      text: "Source Code",
+    },
+    {
+      link: "https://rufus582.dev",
+      isWidelyAvailable: true,
+      icon: <Icon icon={DiscoverCircleIcon} />,
+      text: "About Developer",
+    },
+  ];
+
+  const HomeLayout = layout === "mobile" ? MobileLayout : DesktopLayout;
+
+  return (
+    <div
+      className="h-full w-full flex flex-col"
+      style={{ scrollbarWidth: "none" }}
+    >
+      {layout !== "mobile" && <Header />}
+      <div
+        className="m-auto text-center w-full flex overflow-x-clip"
+        style={{ scrollbarWidth: "none" }}
+      >
+        <HomeLayout links={links} />
+      </div>
+    </div>
+  );
+};
+
 export type { HomePageLayoutProps, ProfileLinkProps };
-export { DesktopLayout, MobileLayout };
+export { HomePage };
