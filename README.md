@@ -20,11 +20,11 @@ Dev-Utils. provides useful utilities to developers, with a nice UI/UX. This is a
 
 ## Tech Stack
 
-[![Tanstack Start](https://shieldcn.dev/badge/Tanstack%20Start.svg?variant=outline&font=fira-code&logo=tanstack)](https://tanstack.com/start/latest)
-[![React](https://shieldcn.dev/badge/React.svg?variant=outline&font=fira-code&logo=react)](https://react.dev/)
-[![Tailwind CSS](https://shieldcn.dev/badge/Tailwind%20CSS.svg?variant=outline&font=fira-code&logo=tailwindcss)](https://tailwindcss.com/)
-[![Vercel](https://shieldcn.dev/badge/Vercel.svg?variant=outline&font=fira-code&logo=vercel)](https://vercel.com/)
-[![Vite](https://shieldcn.dev/badge/Vite.svg?variant=outline&font=fira-code&logo=vite)](https://vite.dev/)
+[![Tanstack Start](https://shieldcn.dev/badge/Tanstack%20Start.svg?variant=branded&font=fira-code&logo=tanstack)](https://tanstack.com/start/latest)
+[![React](https://shieldcn.dev/badge/React.svg?variant=branded&font=fira-code&logo=react)](https://react.dev/)
+[![Tailwind CSS](https://shieldcn.dev/badge/Tailwind%20CSS.svg?variant=branded&font=fira-code&logo=tailwindcss)](https://tailwindcss.com/)
+[![Vercel](https://shieldcn.dev/badge/Vercel.svg?variant=branded&font=fira-code&logo=vercel)](https://vercel.com/)
+[![Vite](https://shieldcn.dev/badge/Vite.svg?variant=branded&font=fira-code&logo=vite)](https://vite.dev/)
 
 ## Local Only Features
 
@@ -86,6 +86,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 ## Contact
 
 [![Email](https://shieldcn.dev/badge/hi@rufus582.dev.svg?variant=secondary&logo=lu%3AMail)](mailto:hi@rufus582.dev)
-[![X](https://shieldcn.dev/badge/rufus582.svg?variant=outline&logo=x)](https://x.com/rufus582)
-[![LinkedIn](https://shieldcn.dev/badge/rufus582-0A66C2.svg?logo=ri%3ABsLinkedin)](https://linkedin.com/in/rufus58)
-[![Website](https://shieldcn.dev/badge/Website.svg?variant=branded&theme=emerald&logo=lu%3AGlobe)](https://rufus582.dev)
+[![X](https://shieldcn.dev/badge/rufus582.svg?variant=branded&logo=x)](https://x.com/rufus582)
+[![LinkedIn](https://shieldcn.dev/badge/rufus582-0A66C2.svg?logo=ri%3ABsLinkedin)](https://linkedin.com/in/rufus582)
+[![Website](https://shieldcn.dev/badge/rufus582.dev.svg?variant=branded&theme=emerald&logo=lu%3AGlobe)](https://rufus582.dev)
