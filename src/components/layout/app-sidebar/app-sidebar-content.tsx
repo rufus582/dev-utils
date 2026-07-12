@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useEffectEvent, useMemo } from "react";
 import { useImmer } from "use-immer";
+import type { RouteCatalogItem } from "#hooks/use-route-catalog";
 import { Icon } from "#icons/huge-icon";
 import { ArrowDownIcon } from "#icons/ui";
+import { cn } from "#lib/utils.ts";
 import {
   Collapsible,
   CollapsibleContent,
@@ -18,7 +20,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "#ui/sidebar";
-import type { RouteCatalogItem } from "#hooks/use-route-catalog";
 import sidebarStyles from "./app-sidebar-content.module.css";
 
 interface IAppSidebarContentProps {
@@ -144,9 +145,14 @@ const AppSidebarContent = ({
                         side="right"
                         variant="secondary"
                       >
-                        <SidebarMenuItem>
+                        <SidebarMenuItem
+                          className={cn(
+                            "transition-all duration-150 ease-out",
+                            sidebarOpen ? "active:scale-98" : "active:scale-95",
+                          )}
+                        >
                           <SidebarMenuButton
-                            className="cursor-pointer active:scale-98 transition-all"
+                            className="cursor-pointer transition-all"
                             onClick={() => handleNavigation(contentItem)}
                             isActive={activeRouteId === contentItem.routeId}
                           >
