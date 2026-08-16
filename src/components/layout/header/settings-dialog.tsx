@@ -24,7 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#ui/dialog";
-import { Field, FieldError, FieldLabel } from "#ui/field";
+import { Field, FieldDescription, FieldError, FieldLabel } from "#ui/field";
 import {
   Select,
   SelectContent,
@@ -37,6 +37,7 @@ import {
 import { Separator } from "#ui/separator";
 import { Skeleton } from "#ui/skeleton";
 import { Switch } from "#ui/switch";
+import LoginWithChatGPTSettings from "@/components/chatgpt/login-with-chatgpt-settings";
 import { cn, sleep } from "@/lib/utils";
 import { settingsOps } from "@/store/indexed-db/settings";
 import { usePWA } from "@/store/pwa-provider";
@@ -163,13 +164,18 @@ const SettingsDialog = ({
                   data-invalid={Boolean(formErrors?.fieldErrors.theme)}
                   className="col-span-5 flex flex-row"
                 >
-                  <FieldLabel htmlFor="theme">Theme</FieldLabel>
+                  <div className="flex flex-col gap-1 w-full">
+                    <FieldLabel htmlFor="theme">Theme</FieldLabel>
+                    <FieldDescription>
+                      Select the theme for the app.
+                    </FieldDescription>
+                  </div>
                   <Select name="theme" defaultValue={settings.theme}>
                     <SelectTrigger
                       id="theme"
                       name="theme"
                       className={cn(
-                        "max-w-30 rounded-3xl! transition-all border-0 dark:bg-transparent",
+                        "max-w-30 rounded-3xl! transition-all border-0 dark:bg-transparent my-auto",
                         "dark:[:hover,[data-state=open]]:bg-input dark:[&>svg]:bg-neutral-800 dark:[&:is([data-state=open],_:hover)>svg]:bg-neutral-600",
                         "[:hover,[data-state=open]]:bg-input/80 [&>svg]:bg-neutral-200 [&:is([data-state=open],_:hover)>svg]:bg-neutral-400/50",
                         "[&:is([data-state=open],_:hover)>svg]:text-foreground [&>svg]:rounded-full [&>svg]:transition-all [&>svg]:-m-1 [&>span]:gap-2!",
@@ -219,20 +225,27 @@ const SettingsDialog = ({
                   data-invalid={Boolean(formErrors?.fieldErrors.pageTransition)}
                   className="col-span-5 flex flex-row"
                 >
-                  <FieldLabel htmlFor="pageTransition">
-                    Page Transition Animation
-                  </FieldLabel>
+                  <div className="flex flex-col gap-1 w-full">
+                    <FieldLabel htmlFor="pageTransition">
+                      Page Transition Animation
+                    </FieldLabel>
+                    <FieldDescription>
+                      Enable or disable the page transition animation.
+                    </FieldDescription>
+                  </div>
                   <Switch
                     id="pageTransition"
                     name="pageTransition"
-                    className="max-w-8"
+                    className="max-w-8 my-auto mr-2"
                     defaultChecked={settings.pageTransition}
                   />
                 </Field>
                 <Separator data-field-separator />
+                <LoginWithChatGPTSettings />
+                <Separator data-field-separator />
               </>
             ) : (
-              <SettingsSkeleton fieldsCount={3} />
+              <SettingsSkeleton fieldsCount={4} />
             )}
           </div>
           <DialogFooter className="*:w-[48%] sm:justify-between">

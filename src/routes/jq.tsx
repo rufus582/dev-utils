@@ -1,15 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import JQLogo from "#icons/sidebar/jq-logo";
 import CodeEditor from "#ui/code/code-editor";
 import {
-  ResizablePanelGroup,
-  ResizablePanel,
   ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
 } from "#ui/resizable";
+import GenerateExpressionPopover from "@/components/chatgpt/generate-expression-popover";
 import Header from "@/components/layout/header/page-header";
-import JQLogo from "#icons/sidebar/jq-logo";
+import SettingsDialog from "@/components/layout/header/settings-dialog";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
-import { JQActions } from "@/store/redux/jq-slice";
 import { useJQ } from "@/hooks/use-jq";
+import { sanitizeGeneratedExpression } from "@/lib/chatgpt/generation-tools";
+import { JQActions } from "@/store/redux/jq-slice";
 
 export const Route = createFileRoute("/jq")({
   component: RouteComponent,
@@ -29,10 +33,13 @@ export const Route = createFileRoute("/jq")({
 function RouteComponent() {
   const jqDataState = useAppSelector((state) => state.jq);
   const dispatch = useAppDispatch();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isGeneratingExpression, setIsGeneratingExpression] = useState(false);
 
-  const { setFilter, setJSONStr } = useJQ({
+  const { setFilter, setJSONStr, invoke } = useJQ({
     logJqVersion: true,
     invokeOnChange: true,
+    shouldInvoke: () => !isGeneratingExpression,
     onChange: (state) => {
       dispatch(JQActions.setFilter(state.filter));
       dispatch(JQActions.setJsonStr(state.jsonStr));
@@ -56,6 +63,11 @@ function RouteComponent() {
 
   return (
     <div className="h-full w-full flex flex-col">
+      <SettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        trigger={<span className="hidden" aria-hidden />}
+      />
       <Header title={titleContent} separator />
       <div
         className="h-full w-full grid grid-cols-2 gap-2 pt-0"
@@ -67,6 +79,25 @@ function RouteComponent() {
           onChange={setFilter}
           title="JQ"
           copyButton
+          showAiProcessingUI={isGeneratingExpression}
+          aiProcessingText="Generating JQ filter..."
+          headerActions={
+            <GenerateExpressionPopover
+              tool="jq"
+              jsonSample={jqDataState.jsonStr}
+              currentExpression={jqDataState.filter}
+              outputSample={jqDataState.result}
+              onGeneratingChange={setIsGeneratingExpression}
+              onStreamChunk={(partial) => {
+                setFilter(sanitizeGeneratedExpression(partial, "jq"));
+              }}
+              onGenerated={(expression) => {
+                setFilter(expression);
+                void invoke({ filter: expression });
+              }}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
+          }
         />
         <ResizablePanelGroup orientation="vertical">
           <ResizablePanel minSize={50}>

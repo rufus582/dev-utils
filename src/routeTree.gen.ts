@@ -9,34 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as JsonpathRouteImport } from './routes/jsonpath'
-import { Route as JsonTableRouteImport } from './routes/json-table'
-import { Route as JqRouteImport } from './routes/jq'
-import { Route as JmespathRouteImport } from './routes/jmespath'
-import { Route as CelRouteImport } from './routes/cel'
-import { Route as TextConverterRouteRouteImport } from './routes/text-converter/route'
-import { Route as SqlRouteRouteImport } from './routes/sql/route'
-import { Route as SnapshotsRouteRouteImport } from './routes/snapshots/route'
 import { Route as IndexRouteRouteImport } from './routes/index/route'
+import { Route as CelRouteImport } from './routes/cel'
+import { Route as JmespathRouteImport } from './routes/jmespath'
+import { Route as JqRouteImport } from './routes/jq'
+import { Route as JsonTableRouteImport } from './routes/json-table'
+import { Route as JsonpathRouteImport } from './routes/jsonpath'
+import { Route as SnapshotsRouteRouteImport } from './routes/snapshots/route'
+import { Route as SqlRouteRouteImport } from './routes/sql/route'
+import { Route as TextConverterRouteRouteImport } from './routes/text-converter/route'
+import { Route as ApiAiGenerateRouteImport } from './routes/api/ai/generate'
+import { Route as ApiChatgptSplatRouteImport } from './routes/api/chatgpt/$'
 
-const JsonpathRoute = JsonpathRouteImport.update({
-  id: '/jsonpath',
-  path: '/jsonpath',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JsonTableRoute = JsonTableRouteImport.update({
-  id: '/json-table',
-  path: '/json-table',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JqRoute = JqRouteImport.update({
-  id: '/jq',
-  path: '/jq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JmespathRoute = JmespathRouteImport.update({
-  id: '/jmespath',
-  path: '/jmespath',
+const IndexRouteRoute = IndexRouteRouteImport.update({
+  id: '/',
+  path: '',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CelRoute = CelRouteImport.update({
@@ -44,14 +31,24 @@ const CelRoute = CelRouteImport.update({
   path: '/cel',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TextConverterRouteRoute = TextConverterRouteRouteImport.update({
-  id: '/text-converter',
-  path: '/text-converter',
+const JmespathRoute = JmespathRouteImport.update({
+  id: '/jmespath',
+  path: '/jmespath',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SqlRouteRoute = SqlRouteRouteImport.update({
-  id: '/sql',
-  path: '/sql',
+const JqRoute = JqRouteImport.update({
+  id: '/jq',
+  path: '/jq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JsonTableRoute = JsonTableRouteImport.update({
+  id: '/json-table',
+  path: '/json-table',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JsonpathRoute = JsonpathRouteImport.update({
+  id: '/jsonpath',
+  path: '/jsonpath',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SnapshotsRouteRoute = SnapshotsRouteRouteImport.update({
@@ -59,9 +56,24 @@ const SnapshotsRouteRoute = SnapshotsRouteRouteImport.update({
   path: '/snapshots',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRouteRoute = IndexRouteRouteImport.update({
-  id: '/',
-  path: '',
+const SqlRouteRoute = SqlRouteRouteImport.update({
+  id: '/sql',
+  path: '/sql',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TextConverterRouteRoute = TextConverterRouteRouteImport.update({
+  id: '/text-converter',
+  path: '/text-converter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAiGenerateRoute = ApiAiGenerateRouteImport.update({
+  id: '/api/ai/generate',
+  path: '/api/ai/generate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatgptSplatRoute = ApiChatgptSplatRouteImport.update({
+  id: '/api/chatgpt/$',
+  path: '/api/chatgpt/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -75,6 +87,8 @@ export interface FileRoutesByFullPath {
   '/jq': typeof JqRoute
   '/json-table': typeof JsonTableRoute
   '/jsonpath': typeof JsonpathRoute
+  '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/chatgpt/$': typeof ApiChatgptSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRouteRoute
@@ -86,6 +100,8 @@ export interface FileRoutesByTo {
   '/jq': typeof JqRoute
   '/json-table': typeof JsonTableRoute
   '/jsonpath': typeof JsonpathRoute
+  '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/chatgpt/$': typeof ApiChatgptSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +114,8 @@ export interface FileRoutesById {
   '/jq': typeof JqRoute
   '/json-table': typeof JsonTableRoute
   '/jsonpath': typeof JsonpathRoute
+  '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/chatgpt/$': typeof ApiChatgptSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +129,8 @@ export interface FileRouteTypes {
     | '/jq'
     | '/json-table'
     | '/jsonpath'
+    | '/api/ai/generate'
+    | '/api/chatgpt/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +142,8 @@ export interface FileRouteTypes {
     | '/jq'
     | '/json-table'
     | '/jsonpath'
+    | '/api/ai/generate'
+    | '/api/chatgpt/$'
   id:
     | '__root__'
     | '/'
@@ -133,6 +155,8 @@ export interface FileRouteTypes {
     | '/jq'
     | '/json-table'
     | '/jsonpath'
+    | '/api/ai/generate'
+    | '/api/chatgpt/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,36 +169,17 @@ export interface RootRouteChildren {
   JqRoute: typeof JqRoute
   JsonTableRoute: typeof JsonTableRoute
   JsonpathRoute: typeof JsonpathRoute
+  ApiAiGenerateRoute: typeof ApiAiGenerateRoute
+  ApiChatgptSplatRoute: typeof ApiChatgptSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/jsonpath': {
-      id: '/jsonpath'
-      path: '/jsonpath'
-      fullPath: '/jsonpath'
-      preLoaderRoute: typeof JsonpathRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/json-table': {
-      id: '/json-table'
-      path: '/json-table'
-      fullPath: '/json-table'
-      preLoaderRoute: typeof JsonTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jq': {
-      id: '/jq'
-      path: '/jq'
-      fullPath: '/jq'
-      preLoaderRoute: typeof JqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/jmespath': {
-      id: '/jmespath'
-      path: '/jmespath'
-      fullPath: '/jmespath'
-      preLoaderRoute: typeof JmespathRouteImport
+    '/': {
+      id: '/'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cel': {
@@ -184,18 +189,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CelRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/text-converter': {
-      id: '/text-converter'
-      path: '/text-converter'
-      fullPath: '/text-converter'
-      preLoaderRoute: typeof TextConverterRouteRouteImport
+    '/jmespath': {
+      id: '/jmespath'
+      path: '/jmespath'
+      fullPath: '/jmespath'
+      preLoaderRoute: typeof JmespathRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sql': {
-      id: '/sql'
-      path: '/sql'
-      fullPath: '/sql'
-      preLoaderRoute: typeof SqlRouteRouteImport
+    '/jq': {
+      id: '/jq'
+      path: '/jq'
+      fullPath: '/jq'
+      preLoaderRoute: typeof JqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/json-table': {
+      id: '/json-table'
+      path: '/json-table'
+      fullPath: '/json-table'
+      preLoaderRoute: typeof JsonTableRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/jsonpath': {
+      id: '/jsonpath'
+      path: '/jsonpath'
+      fullPath: '/jsonpath'
+      preLoaderRoute: typeof JsonpathRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/snapshots': {
@@ -205,11 +224,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SnapshotsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteRouteImport
+    '/sql': {
+      id: '/sql'
+      path: '/sql'
+      fullPath: '/sql'
+      preLoaderRoute: typeof SqlRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/text-converter': {
+      id: '/text-converter'
+      path: '/text-converter'
+      fullPath: '/text-converter'
+      preLoaderRoute: typeof TextConverterRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/ai/generate': {
+      id: '/api/ai/generate'
+      path: '/api/ai/generate'
+      fullPath: '/api/ai/generate'
+      preLoaderRoute: typeof ApiAiGenerateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chatgpt/$': {
+      id: '/api/chatgpt/$'
+      path: '/api/chatgpt/$'
+      fullPath: '/api/chatgpt/$'
+      preLoaderRoute: typeof ApiChatgptSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -225,6 +265,8 @@ const rootRouteChildren: RootRouteChildren = {
   JqRoute: JqRoute,
   JsonTableRoute: JsonTableRoute,
   JsonpathRoute: JsonpathRoute,
+  ApiAiGenerateRoute: ApiAiGenerateRoute,
+  ApiChatgptSplatRoute: ApiChatgptSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

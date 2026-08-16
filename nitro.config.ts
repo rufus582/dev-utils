@@ -54,6 +54,18 @@ export default defineConfig({
       },
     },
 
+    "/api/chatgpt/**": {
+      headers: {
+        "Cache-Control": "no-store, must-revalidate",
+      },
+    },
+
+    "/api/ai/**": {
+      headers: {
+        "Cache-Control": "no-store, must-revalidate",
+      },
+    },
+
     "/*.wasm": {
       static: true,
       headers: {

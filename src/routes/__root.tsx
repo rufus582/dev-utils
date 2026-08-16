@@ -17,6 +17,7 @@ import { PWAProvider } from "#store/pwa-provider.tsx";
 import store from "#store/redux";
 import { ThemeProvider } from "#store/theme-provider";
 import { Toaster } from "#ui/sonner.tsx";
+import { ChatGPTAuthProvider } from "@/components/chatgpt/chatgpt-auth-provider";
 import appCss from "@/styles.css?url";
 
 const getSidebarState = createIsomorphicFn().server(() => {
@@ -88,15 +89,17 @@ function RootDocument() {
         <PWAProvider>
           <ReduxProvider store={store}>
             <ThemeProvider defaultTheme={theme ?? "dark"} storageKey="ui-theme">
-              <Toaster closeButton richColors />
-              {/* Mobile view */}
-              <div className="h-svh w-svw md:hidden select-none">
-                <HomePage layout="mobile" />
-              </div>
-              {/* Desktop view */}
-              <div className="h-screen w-screen hidden md:block">
-                <PageLayout />
-              </div>
+              <ChatGPTAuthProvider>
+                <Toaster closeButton richColors />
+                {/* Mobile view */}
+                <div className="h-svh w-svw md:hidden select-none">
+                  <HomePage layout="mobile" />
+                </div>
+                {/* Desktop view */}
+                <div className="h-screen w-screen hidden md:block">
+                  <PageLayout />
+                </div>
+              </ChatGPTAuthProvider>
             </ThemeProvider>
           </ReduxProvider>
         </PWAProvider>
