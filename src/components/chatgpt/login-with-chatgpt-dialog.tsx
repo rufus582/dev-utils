@@ -1,9 +1,8 @@
 import { ChatGPTMark } from "@opencoredev/loginwithchatgpt-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import AppLogo from "#icons/app-logo";
 import { Icon } from "#icons/huge-icon";
-import { ArrowRightIcon, CopyCheckIcon, CopyIcon } from "#icons/ui";
+import { CopyCheckIcon, CopyIcon } from "#icons/ui";
 import { Alert, AlertDescription, AlertTitle } from "#ui/alert";
 import { Button } from "#ui/button";
 import {
@@ -28,6 +27,22 @@ type LoginWithChatGPTDialogProps = {
 };
 
 type DialogStep = "consent" | "pending";
+
+function ConnectionLogos() {
+  return (
+    <div className="flex items-center justify-center gap-4 py-2" aria-hidden>
+      <img
+        src="/logo.svg"
+        alt=""
+        className="size-20 rounded-2xl object-contain"
+      />
+      <span className="text-lg font-light text-muted-foreground/70">×</span>
+      <div className="flex size-20 items-center justify-center rounded-2xl border bg-muted/30 p-2.5 shadow-sm">
+        <ChatGPTMark className="size-full" />
+      </div>
+    </div>
+  );
+}
 
 const LoginWithChatGPTDialog = ({
   open,
@@ -119,105 +134,98 @@ const LoginWithChatGPTDialog = ({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="gap-5 rounded-3xl sm:max-w-md" bgBlur>
-        <DialogHeader className="gap-3">
-          <DialogTitle>
-            {step === "consent"
-              ? "Connect your ChatGPT account"
-              : "Complete verification"}
-          </DialogTitle>
-          <DialogDescription className="leading-relaxed">
-            {step === "consent"
-              ? `Authorize ${CHATGPT_APP_NAME} to use your ChatGPT account for AI features.`
-              : "Enter the code below on the OpenAI verification page."}
-          </DialogDescription>
-          {step === "consent" ? (
-            <div
-              className="flex items-center justify-center gap-2.5 pt-0.5 sm:justify-start"
-              aria-hidden
-            >
-              <span className="inline-flex items-center gap-1.5 rounded-lg border bg-muted/40 px-2.5 py-1 text-xs font-medium text-foreground">
-                <AppLogo className="size-3.5 stroke-foreground" />
-                {CHATGPT_APP_NAME}
-              </span>
-              <Icon
-                icon={ArrowRightIcon}
-                className="size-3.5 text-muted-foreground/70"
-              />
-              <span className="inline-flex items-center gap-1.5 rounded-lg border bg-muted/40 px-2.5 py-1 text-xs font-medium text-foreground">
-                <ChatGPTMark className="size-3.5" />
-                ChatGPT
-              </span>
-            </div>
-          ) : null}
-        </DialogHeader>
-
         {step === "consent" ? (
-          <div className="flex flex-col gap-4">
-            <Alert className="rounded-xl">
-              <AlertTitle>Before you continue</AlertTitle>
-              <AlertDescription>
-                <ul className="mt-2 list-disc space-y-2 pl-4 text-sm">
-                  {getChatGPTConsentBullets().map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              <span className="font-medium text-foreground">
-                Click Continue
-              </span>{" "}
-              to copy your verification code and open OpenAI in a new tab.
-              You&apos;ll use this code to securely connect your ChatGPT account
-              to {CHATGPT_APP_NAME}.
-            </p>
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
-          </div>
+          <>
+            <DialogHeader className="items-center gap-4 text-center sm:text-center">
+              <DialogTitle>Connect your ChatGPT account</DialogTitle>
+              <ConnectionLogos />
+              <DialogDescription className="max-w-sm leading-relaxed">
+                Authorize {CHATGPT_APP_NAME} to use your ChatGPT plan for AI
+                features.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex flex-col gap-4">
+              <Alert className="rounded-2xl">
+                <AlertTitle>Before you continue</AlertTitle>
+                <AlertDescription>
+                  <ul className="mt-2 list-disc space-y-2 pl-4 text-sm text-left">
+                    {getChatGPTConsentBullets().map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+              <p className="text-left text-sm text-muted-foreground leading-relaxed">
+                <span className="font-medium text-foreground">
+                  Click Continue
+                </span>{" "}
+                to copy your verification code and open OpenAI in a new tab.
+                You&apos;ll use this code to securely connect your ChatGPT
+                account to {CHATGPT_APP_NAME}.
+              </p>
+              {error ? (
+                <p className="text-center text-sm text-destructive">{error}</p>
+              ) : null}
+            </div>
+          </>
         ) : (
-          <div className="flex flex-col gap-4">
-            {userCode ? (
-              <div className="flex flex-col items-center gap-3 rounded-2xl border bg-muted/40 p-4">
-                <p className="text-xs text-muted-foreground">
-                  Your verification code
-                </p>
-                <Kbd className="pointer-events-auto h-auto px-3 py-2 font-mono text-lg tracking-widest">
-                  {userCode}
-                </Kbd>
-                <div className="flex flex-wrap items-center justify-center gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full"
-                    onClick={() => void copyCode()}
-                  >
-                    <Icon icon={copied ? CopyCheckIcon : CopyIcon} />
-                    {copied ? "Copied" : "Copy code"}
-                  </Button>
-                  {verificationUrl ? (
+          <>
+            <DialogHeader className="items-center gap-4 text-center sm:text-center">
+              <DialogTitle>Complete verification</DialogTitle>
+              <ConnectionLogos />
+              <DialogDescription className="max-w-sm leading-relaxed">
+                Enter the code below on the OpenAI verification page.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex flex-col gap-4">
+              {userCode ? (
+                <div className="flex flex-col items-center gap-3 rounded-2xl border bg-muted/40 p-4">
+                  <p className="text-xs text-muted-foreground">
+                    Your verification code
+                  </p>
+                  <Kbd className="pointer-events-auto h-auto px-3 py-2 font-mono text-lg tracking-widest">
+                    {userCode}
+                  </Kbd>
+                  <div className="flex flex-wrap items-center justify-center gap-2">
                     <Button
                       type="button"
-                      variant="secondary"
+                      variant="outline"
                       size="sm"
                       className="rounded-full"
-                      onClick={reopen}
+                      onClick={() => void copyCode()}
                     >
-                      Open verification page
+                      <Icon icon={copied ? CopyCheckIcon : CopyIcon} />
+                      {copied ? "Copied" : "Copy code"}
                     </Button>
-                  ) : null}
+                    {verificationUrl ? (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        className="rounded-full"
+                        onClick={reopen}
+                      >
+                        Open verification page
+                      </Button>
+                    ) : null}
+                  </div>
+                  <p className="text-center text-xs text-muted-foreground">
+                    This updates automatically after you enter the code on
+                    OpenAI&apos;s page.
+                  </p>
                 </div>
-                <p className="text-center text-xs text-muted-foreground">
-                  This updates automatically after you enter the code on
-                  OpenAI&apos;s page.
-                </p>
-              </div>
-            ) : null}
+              ) : null}
 
-            {error ? <p className="text-sm text-destructive">{error}</p> : null}
-          </div>
+              {error ? (
+                <p className="text-center text-sm text-destructive">{error}</p>
+              ) : null}
+            </div>
+          </>
         )}
 
-        <DialogFooter className="gap-3 pt-1 sm:justify-between">
+        <DialogFooter className="gap-3 pt-1 *:flex-1">
           <Button
             type="button"
             variant="outline"
@@ -246,7 +254,7 @@ const LoginWithChatGPTDialog = ({
           ) : (
             <Button type="button" className="min-h-10 rounded-full" disabled>
               <Spinner />
-              Waiting for verification…
+              Waiting for verification
             </Button>
           )}
         </DialogFooter>
