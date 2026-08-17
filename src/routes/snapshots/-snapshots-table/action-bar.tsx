@@ -1,4 +1,4 @@
-import type { Table } from "@tanstack/react-table";
+import type { LegacyTable } from "@tanstack/react-table/legacy";
 import { AnimatePresence, motion } from "motion/react";
 import { useStore } from "react-redux";
 import { toast } from "sonner";
@@ -16,7 +16,7 @@ import { type SnapshotType, snapshotOps } from "@/store/indexed-db/snapshots";
 import { type AppStateType, RootActions } from "@/store/redux/root-reducer";
 
 interface ISelectedSnapshotsActionBarProps {
-  tableState: Table<SnapshotType>;
+  tableState: LegacyTable<SnapshotType>;
   resetSelectedRows: () => void;
 }
 

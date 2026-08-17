@@ -1,16 +1,17 @@
-import { Button } from "#ui/button";
-import type { SnapshotType } from "@/store/indexed-db/snapshots";
 import type { HeaderContext } from "@tanstack/react-table";
+import type { LegacyFeatures } from "@tanstack/react-table/legacy";
 import { Icon } from "#icons/huge-icon";
 import {
-  ArrowPointUpIcon,
   ArrowPointDownIcon,
+  ArrowPointUpIcon,
   ArrowUpDownIcon,
 } from "#icons/ui";
+import { Button } from "#ui/button";
+import type { SnapshotType } from "@/store/indexed-db/snapshots";
 
 interface IHeaderCellProps {
   name: string;
-  headerCtx: HeaderContext<SnapshotType, unknown>;
+  headerCtx: HeaderContext<LegacyFeatures, SnapshotType, unknown>;
   sorting?: boolean;
 }
 

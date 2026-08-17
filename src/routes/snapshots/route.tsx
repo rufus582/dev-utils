@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type {
+  ColumnFiltersState,
+  RowSelectionState,
+  SortingState,
+} from "@tanstack/react-table";
 import {
-  type ColumnFiltersState,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  type RowSelectionState,
-  type SortingState,
-  useReactTable,
-} from "@tanstack/react-table";
+  useLegacyTable,
+} from "@tanstack/react-table/legacy";
 import { useLiveQuery } from "dexie-react-hooks";
 import { motion } from "motion/react";
 import { customAlphabet } from "nanoid";
@@ -127,7 +129,7 @@ function RouteComponent() {
       desc: true,
     },
   ]);
-  const tableState = useReactTable({
+  const tableState = useLegacyTable({
     columns: columns,
     data: snapshots ?? defaultSnapshot,
     getCoreRowModel: getCoreRowModel(),

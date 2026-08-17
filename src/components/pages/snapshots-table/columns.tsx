@@ -1,10 +1,10 @@
+import type { LegacyColumnDef } from "@tanstack/react-table/legacy";
 import { Checkbox } from "#ui/checkbox";
-import { type SnapshotType } from "@/store/indexed-db/snapshots";
-import { type ColumnDef } from "@tanstack/react-table";
-import SnapshotActionsCell from "./actions-dropdown";
 import { DataCell, HeaderCell } from "#ui/data-table.tsx/data-table-cell";
+import type { SnapshotType } from "@/store/indexed-db/snapshots";
+import SnapshotActionsCell from "./actions-dropdown";
 
-export const columns: ColumnDef<SnapshotType>[] = [
+export const columns: LegacyColumnDef<SnapshotType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -35,27 +35,39 @@ export const columns: ColumnDef<SnapshotType>[] = [
   {
     accessorKey: "name",
     header: (headerCtx) => <HeaderCell name="Name" headerCtx={headerCtx} />,
-    cell: ({ getValue }) => <DataCell value={getValue() as string ?? ""} />,
-    sortingFn: "alphanumeric",
+    cell: ({ getValue }) => <DataCell value={(getValue() as string) ?? ""} />,
+    sortFn: "alphanumeric",
     size: 600,
   },
   {
     accessorKey: "createdAt",
-    header: (headerCtx) => <HeaderCell name="Created At" headerCtx={headerCtx} />,
+    header: (headerCtx) => (
+      <HeaderCell name="Created At" headerCtx={headerCtx} />
+    ),
     cell: ({ getValue }) => {
       const dateVal = getValue();
-      return <DataCell value={dateVal instanceof Date ? dateVal.toLocaleString() : ""} />;
+      return (
+        <DataCell
+          value={dateVal instanceof Date ? dateVal.toLocaleString() : ""}
+        />
+      );
     },
-    sortingFn: "datetime",
+    sortFn: "datetime",
   },
   {
     accessorKey: "updatedAt",
-    header: (headerCtx) => <HeaderCell name="Updated At" headerCtx={headerCtx} />,
+    header: (headerCtx) => (
+      <HeaderCell name="Updated At" headerCtx={headerCtx} />
+    ),
     cell: ({ getValue }) => {
       const dateVal = getValue();
-      return <DataCell value={dateVal instanceof Date ? dateVal.toLocaleString() : ""} />;
+      return (
+        <DataCell
+          value={dateVal instanceof Date ? dateVal.toLocaleString() : ""}
+        />
+      );
     },
-    sortingFn: "datetime",
+    sortFn: "datetime",
   },
   {
     id: "actions",

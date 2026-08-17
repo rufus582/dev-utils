@@ -1,10 +1,10 @@
+import { flexRender, type RowData } from "@tanstack/react-table";
 import {
-  type ColumnDef,
-  flexRender,
   getCoreRowModel,
-  type Table as TableType,
-  useReactTable,
-} from "@tanstack/react-table";
+  type LegacyColumnDef,
+  type LegacyTable,
+  useLegacyTable,
+} from "@tanstack/react-table/legacy";
 
 import {
   Table,
@@ -16,24 +16,24 @@ import {
 } from "#ui/table";
 import { getCommonPinningStyles } from "@/lib/data-table-utils";
 
-interface DataTableProps<TData, TValue> {
-  columns?: ColumnDef<TData, TValue>[];
+interface DataTableProps<TData extends RowData, TValue> {
+  columns?: LegacyColumnDef<TData, TValue>[];
   data?: TData[];
   emptyContent?: React.ReactNode;
-  tableState?: TableType<TData>;
+  tableState?: LegacyTable<TData>;
   viewTransitionName?: string;
 }
 
-export function DataTable<TData, TValue>({
+export function DataTable<TData extends RowData, TValue>({
   columns = [],
   data = [],
   emptyContent,
   viewTransitionName,
   ...props
 }: DataTableProps<TData, TValue>) {
-  const tableState = useReactTable({
+  const tableState = useLegacyTable({
     data,
-    columns,
+    columns: columns as LegacyColumnDef<TData>[],
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -59,7 +59,7 @@ export function DataTable<TData, TValue>({
                       ? null
                       : flexRender(
                           header.column.columnDef.header,
-                          header.getContext()
+                          header.getContext(),
                         )}
                   </TableHead>
                 );

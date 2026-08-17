@@ -1,30 +1,27 @@
 "use client";
 
-import { Icon } from "../../icons/huge-icon";
-import { CancelIcon, LoadingIcon } from "../../icons/ui";
-import type { Table } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { LegacyTable } from "@tanstack/react-table/legacy";
 import { AnimatePresence, motion } from "motion/react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { Button } from "#ui/button";
 import { Separator } from "#ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "#ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "#ui/tooltip";
 import { cn } from "@/lib/utils";
+import { Icon } from "../../icons/huge-icon";
+import { CancelIcon, LoadingIcon } from "../../icons/ui";
 import { Kbd } from "../kbd";
 
-interface DataTableActionBarProps<TData> extends React.ComponentProps<
-  typeof motion.div
-> {
-  table: Table<TData>;
+interface DataTableActionBarProps<
+  TData extends RowData,
+> extends React.ComponentProps<typeof motion.div> {
+  table: LegacyTable<TData>;
   visible?: boolean;
   container?: Element | DocumentFragment | null;
 }
 
-function DataTableActionBar<TData>({
+function DataTableActionBar<TData extends RowData>({
   table,
   visible: visibleProp,
   container: containerProp,
@@ -157,11 +154,11 @@ function DataTableActionBarAction({
   );
 }
 
-interface DataTableActionBarSelectionProps<TData> {
-  table: Table<TData>;
+interface DataTableActionBarSelectionProps<TData extends RowData> {
+  table: LegacyTable<TData>;
 }
 
-function DataTableActionBarSelection<TData>({
+function DataTableActionBarSelection<TData extends RowData>({
   table,
 }: DataTableActionBarSelectionProps<TData>) {
   const onClearSelection = React.useCallback(() => {

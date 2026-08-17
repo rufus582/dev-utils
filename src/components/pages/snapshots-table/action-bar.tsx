@@ -1,6 +1,10 @@
+import type { LegacyTable } from "@tanstack/react-table/legacy";
+import { AnimatePresence, motion } from "motion/react";
+import { useStore } from "react-redux";
+import { toast } from "sonner";
 import { Icon } from "#icons/huge-icon";
-import { DeleteIcon } from "#icons/ui";
 import { ArchiveRestoreIcon, EditIcon } from "#icons/pages";
+import { DeleteIcon } from "#icons/ui";
 import {
   DataTableActionBar,
   DataTableActionBarAction,
@@ -8,15 +12,11 @@ import {
 } from "#ui/data-table.tsx/data-table-action-bar";
 import { Separator } from "#ui/separator";
 import { useAppDispatch } from "@/hooks/hooks";
-import { snapshotOps, type SnapshotType } from "@/store/indexed-db/snapshots";
-import { RootActions, type AppStateType } from "@/store/redux/root-reducer";
-import type { Table } from "@tanstack/react-table";
-import { AnimatePresence, motion } from "motion/react";
-import { useStore } from "react-redux";
-import { toast } from "sonner";
+import { type SnapshotType, snapshotOps } from "@/store/indexed-db/snapshots";
+import { type AppStateType, RootActions } from "@/store/redux/root-reducer";
 
 interface ISelectedSnapshotsActionBarProps {
-  tableState: Table<SnapshotType>;
+  tableState: LegacyTable<SnapshotType>;
   resetSelectedRows: () => void;
 }
 
