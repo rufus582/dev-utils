@@ -21,7 +21,7 @@ const version = async () => {
         return path.endsWith("jq.wasm") ? "/jq.wasm" : prefix + path;
       },
     });
-    const jqVersion = await jq.version();
+    const jqVersion = await jq.invoke("", "", [ "--version" ]);
     return `Using JQ Version: '${jqVersion}'`;
   } catch (error) {
     return error ? `${error}` : "Unable to get JQ version";

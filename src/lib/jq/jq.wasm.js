@@ -1,14 +1,17 @@
 // This code implements the `-sMODULARIZE` settings by taking the generated
 // JS program code (INNER_JS_CODE) and wrapping it in a factory function.
 
-// When targetting node and ES6 we use `await import ..` in the generated code
-// so the outer function needs to be marked as async.
-async function newJQ(moduleArg = {}) {
-  var moduleRtn;
+// Single threaded MINIMAL_RUNTIME programs do not need access to
+// document.currentScript, so a simple export declaration is enough.
+var newJQ = (() => {
+  // When MODULARIZE this JS may be executed later,
+  // after document.currentScript is gone, so we save it.
+  // In EXPORT_ES6 mode we can just use 'import.meta.url'.
+  var _scriptName = typeof document != 'undefined' ? document.currentScript?.src : undefined;
+  return async function(moduleArg = {}) {
+    var moduleRtn;
 
 // include: shell.js
-// include: minimum_runtime_check.js
-// end include: minimum_runtime_check.js
 // The Module object: Our interface to the outside world. We import
 // and export values on it. There are various ways Module can be used:
 // 1. Not defined. We create it here
@@ -27,24 +30,17 @@ var Module = moduleArg;
 // Determine the runtime environment we are in. You can customize this by
 // setting the ENVIRONMENT setting at compile time (see settings.js).
 // Attempt to auto-detect the environment
-var ENVIRONMENT_IS_WEB = !!globalThis.window;
+var ENVIRONMENT_IS_WEB = typeof window == "object";
 
-var ENVIRONMENT_IS_WORKER = !!globalThis.WorkerGlobalScope;
+var ENVIRONMENT_IS_WORKER = typeof WorkerGlobalScope != "undefined";
 
 // N.b. Electron.js environment is simultaneously a NODE-environment, but
 // also a web environment.
-var ENVIRONMENT_IS_NODE = globalThis.process?.versions?.node && globalThis.process?.type != "renderer";
-
-if (ENVIRONMENT_IS_NODE) {
-  // When building an ES module `require` is not normally available.
-  // We need to use `createRequire()` to construct the require()` function.
-  const {createRequire} = await import("module");
-  /** @suppress{duplicate} */ var require = createRequire(import.meta.url);
-}
+var ENVIRONMENT_IS_NODE = typeof process == "object" && process.versions?.node && process.type != "renderer";
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /Users/rufus/Documents/Repos/jq-wasm/pre.js
+// include: /src/pre.js
 // Receive a byte at a time and convert the result to a string
 const OutputBuffer = function() {
   var module = {};
@@ -79,7 +75,7 @@ Module["preRun"] = function() {
 // echo {jsonString} > INPUT && jq {options} {filter} INPUT
 const JQ_INPUT = "input.json";
 
-function invokeJQ(jsonString, filter, options = []) {
+Module["invoke"] = function(jsonString, filter, options = []) {
   return new Promise(function(resolve, reject) {
     try {
       FS.writeFile(JQ_INPUT, jsonString);
@@ -97,15 +93,7 @@ function invokeJQ(jsonString, filter, options = []) {
       stderr.flush();
     }
   });
-}
-
-function jqVersion() {
-  return invokeJQ("", "", [ "--version" ]);
-}
-
-Module["invoke"] = invokeJQ;
-
-Module["version"] = jqVersion;
+};
 
 // prevent running main at startup
 Module["noInitialRun"] = true;
@@ -115,7 +103,7 @@ if (!Module.hasOwnProperty("noExitRuntime")) {
   Module["noExitRuntime"] = true;
 }
 
-// end include: /Users/rufus/Documents/Repos/jq-wasm/pre.js
+// end include: /src/pre.js
 var arguments_ = [];
 
 var thisProgram = "./this.program";
@@ -124,7 +112,12 @@ var quit_ = (status, toThrow) => {
   throw toThrow;
 };
 
-var _scriptName = import.meta.url;
+if (typeof __filename != "undefined") {
+  // Node
+  _scriptName = __filename;
+} else if (ENVIRONMENT_IS_WORKER) {
+  _scriptName = self.location.href;
+}
 
 // `/` should be present at the end if `scriptDirectory` is not empty
 var scriptDirectory = "";
@@ -143,9 +136,7 @@ if (ENVIRONMENT_IS_NODE) {
   // These modules will usually be used on Node.js. Load them eagerly to avoid
   // the complexity of lazy-loading.
   var fs = require("fs");
-  if (_scriptName.startsWith("file:")) {
-    scriptDirectory = require("path").dirname(require("url").fileURLToPath(_scriptName)) + "/";
-  }
+  scriptDirectory = __dirname + "/";
   // include: node_shell_read.js
   readBinary = filename => {
     // We need to re-wrap `file://` strings to URLs.
@@ -263,6 +254,8 @@ var EXITSTATUS;
 var readyPromiseResolve, readyPromiseReject;
 
 // Memory management
+var wasmMemory;
+
 var /** @type {!Int8Array} */ HEAP8, /** @type {!Uint8Array} */ HEAPU8, /** @type {!Int16Array} */ HEAP16, /** @type {!Uint16Array} */ HEAPU16, /** @type {!Int32Array} */ HEAP32, /** @type {!Uint32Array} */ HEAPU32, /** @type {!Float32Array} */ HEAPF32, /** @type {!Float64Array} */ HEAPF64;
 
 // BigInt64Array type is not correctly defined in closure
@@ -307,7 +300,7 @@ function initRuntime() {
   if (!Module["noFSInit"] && !FS.initialized) FS.init();
   TTY.init();
   // End ATINITS hooks
-  wasmExports["F"]();
+  wasmExports["G"]();
   // Begin ATPOSTCTORS hooks
   FS.ignorePermissions = false;
 }
@@ -335,6 +328,35 @@ function postRun() {
   }
   // Begin ATPOSTRUNS hooks
   callRuntimeCallbacks(onPostRuns);
+}
+
+// A counter of dependencies for calling run(). If we need to
+// do asynchronous work before running, increment this and
+// decrement it. Incrementing must happen in a place like
+// Module.preRun (used by emcc to add file preloading).
+// Note that you can add dependencies in preRun, even though
+// it happens right before run - run will be postponed until
+// the dependencies are met.
+var runDependencies = 0;
+
+var dependenciesFulfilled = null;
+
+// overridden to take different actions when all run dependencies are fulfilled
+function addRunDependency(id) {
+  runDependencies++;
+  Module["monitorRunDependencies"]?.(runDependencies);
+}
+
+function removeRunDependency(id) {
+  runDependencies--;
+  Module["monitorRunDependencies"]?.(runDependencies);
+  if (runDependencies == 0) {
+    if (dependenciesFulfilled) {
+      var callback = dependenciesFulfilled;
+      dependenciesFulfilled = null;
+      callback();
+    }
+  }
 }
 
 /** @param {string|number=} what */ function abort(what) {
@@ -368,11 +390,7 @@ function postRun() {
 var wasmBinaryFile;
 
 function findWasmBinary() {
-  if (Module["locateFile"]) {
-    return locateFile("jq.wasm");
-  }
-  // Use bundler-friendly `new URL(..., import.meta.url)` pattern; works in browsers too.
-  return new URL("jq.wasm", import.meta.url).href;
+  return locateFile("jq.wasm");
 }
 
 function getBinarySync(file) {
@@ -382,8 +400,6 @@ function getBinarySync(file) {
   if (readBinary) {
     return readBinary(file);
   }
-  // Throwing a plain string here, even though it not normally adviables since
-  // this gets turning into an `abort` in instantiateArrayBuffer.
   throw "both async and sync fetching of the wasm failed";
 }
 
@@ -431,10 +447,9 @@ async function instantiateAsync(binary, binaryFile, imports) {
 
 function getWasmImports() {
   // prepare imports
-  var imports = {
+  return {
     "a": wasmImports
   };
-  return imports;
 }
 
 // Create the wasm instance.
@@ -445,10 +460,15 @@ async function createWasm() {
   // performing other necessary setup
   /** @param {WebAssembly.Module=} module*/ function receiveInstance(instance, module) {
     wasmExports = instance.exports;
-    assignWasmExports(wasmExports);
+    wasmMemory = wasmExports["F"];
     updateMemoryViews();
+    wasmTable = wasmExports["J"];
+    assignWasmExports(wasmExports);
+    removeRunDependency("wasm-instantiate");
     return wasmExports;
   }
+  // wait for the pthread pool (if any)
+  addRunDependency("wasm-instantiate");
   // Prefer streaming instantiation if available.
   function receiveInstantiationResult(result) {
     // 'result' is a ResultObject object which has both the module and instance.
@@ -466,8 +486,8 @@ async function createWasm() {
   // path.
   if (Module["instantiateWasm"]) {
     return new Promise((resolve, reject) => {
-      Module["instantiateWasm"](info, (inst, mod) => {
-        resolve(receiveInstance(inst, mod));
+      Module["instantiateWasm"](info, (mod, inst) => {
+        resolve(receiveInstance(mod, inst));
       });
     });
   }
@@ -504,7 +524,7 @@ var addOnPreRun = cb => onPreRuns.push(cb);
 
 var noExitRuntime = false;
 
-var UTF8Decoder = globalThis.TextDecoder && new TextDecoder;
+var UTF8Decoder = typeof TextDecoder != "undefined" ? new TextDecoder : undefined;
 
 var findStringEnd = (heapOrArray, idx, maxBytesToRead, ignoreNul) => {
   var maxIdx = idx + maxBytesToRead;
@@ -582,6 +602,8 @@ var ___assert_fail = (condition, filename, line, func) => abort(`Assertion faile
 
 var wasmTableMirror = [];
 
+/** @type {WebAssembly.Table} */ var wasmTable;
+
 var getWasmTableEntry = funcPtr => {
   var func = wasmTableMirror[funcPtr];
   if (!func) {
@@ -592,7 +614,7 @@ var getWasmTableEntry = funcPtr => {
 
 var ___call_sighandler = (fp, sig) => getWasmTableEntry(fp)(sig);
 
-var syscallGetVarargI = () => {
+/** @suppress {duplicate } */ var syscallGetVarargI = () => {
   // the `+` prepended here is necessary to convince the JSCompiler that varargs is indeed a number.
   var ret = HEAP32[((+SYSCALLS.varargs) >> 2)];
   SYSCALLS.varargs += 4;
@@ -825,7 +847,7 @@ var FS_stdin_getChar = () => {
       if (bytesRead > 0) {
         result = buf.slice(0, bytesRead).toString("utf-8");
       }
-    } else if (globalThis.window?.prompt) {
+    } else if (typeof window != "undefined" && typeof window.prompt == "function") {
       // Browser.
       result = window.prompt("Input: ");
       // returns null on cancel
@@ -1333,27 +1355,6 @@ var FS_createDataFile = (...args) => FS.createDataFile(...args);
 
 var getUniqueRunDependency = id => id;
 
-var runDependencies = 0;
-
-var dependenciesFulfilled = null;
-
-var removeRunDependency = id => {
-  runDependencies--;
-  Module["monitorRunDependencies"]?.(runDependencies);
-  if (runDependencies == 0) {
-    if (dependenciesFulfilled) {
-      var callback = dependenciesFulfilled;
-      dependenciesFulfilled = null;
-      callback();
-    }
-  }
-};
-
-var addRunDependency = id => {
-  runDependencies++;
-  Module["monitorRunDependencies"]?.(runDependencies);
-};
-
 var preloadPlugins = [];
 
 var FS_handledByPreloadPlugin = async (byteArray, fullname) => {
@@ -1836,13 +1837,12 @@ var FS = {
       }
     }
     // sync all mounts
-    for (var mount of mounts) {
-      if (mount.type.syncfs) {
-        mount.type.syncfs(mount, populate, done);
-      } else {
-        done(null);
+    mounts.forEach(mount => {
+      if (!mount.type.syncfs) {
+        return done(null);
       }
-    }
+      mount.type.syncfs(mount, populate, done);
+    });
   },
   mount(type, opts, mountpoint) {
     var root = mountpoint === "/";
@@ -1897,7 +1897,8 @@ var FS = {
     var node = lookup.node;
     var mount = node.mounted;
     var mounts = FS.getMounts(mount);
-    for (var [hash, current] of Object.entries(FS.nameTable)) {
+    Object.keys(FS.nameTable).forEach(hash => {
+      var current = FS.nameTable[hash];
       while (current) {
         var next = current.name_next;
         if (mounts.includes(current.mount)) {
@@ -1905,7 +1906,7 @@ var FS = {
         }
         current = next;
       }
-    }
+    });
     // no longer a mountpoint
     node.mounted = null;
     // remove this mount from the child mounts
@@ -2514,7 +2515,7 @@ var FS = {
     opts.flags = opts.flags || 0;
     opts.encoding = opts.encoding || "binary";
     if (opts.encoding !== "utf8" && opts.encoding !== "binary") {
-      abort(`Invalid encoding type "${opts.encoding}"`);
+      throw new Error(`Invalid encoding type "${opts.encoding}"`);
     }
     var stream = FS.open(path, opts.flags);
     var stat = FS.stat(path);
@@ -2536,7 +2537,7 @@ var FS = {
     if (ArrayBuffer.isView(data)) {
       FS.write(stream, data, 0, data.byteLength, undefined, opts.canOwn);
     } else {
-      abort("Unsupported data type");
+      throw new Error("Unsupported data type");
     }
     FS.close(stream);
   },
@@ -2837,12 +2838,13 @@ var FS = {
   },
   forceLoadFile(obj) {
     if (obj.isDevice || obj.isFolder || obj.link || obj.contents) return true;
-    if (globalThis.XMLHttpRequest) {
-      abort("Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.");
+    if (typeof XMLHttpRequest != "undefined") {
+      throw new Error("Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.");
     } else {
       // Command-line.
       try {
         obj.contents = readBinary(obj.url);
+        obj.usedBytes = obj.contents.length;
       } catch (e) {
         throw new FS.ErrnoError(29);
       }
@@ -2871,7 +2873,7 @@ var FS = {
         var xhr = new XMLHttpRequest;
         xhr.open("HEAD", url, false);
         xhr.send(null);
-        if (!(xhr.status >= 200 && xhr.status < 300 || xhr.status === 304)) abort("Couldn't load " + url + ". Status: " + xhr.status);
+        if (!(xhr.status >= 200 && xhr.status < 300 || xhr.status === 304)) throw new Error("Couldn't load " + url + ". Status: " + xhr.status);
         var datalength = Number(xhr.getResponseHeader("Content-length"));
         var header;
         var hasByteServing = (header = xhr.getResponseHeader("Accept-Ranges")) && header === "bytes";
@@ -2881,8 +2883,8 @@ var FS = {
         if (!hasByteServing) chunkSize = datalength;
         // Function to get a range from the remote URL.
         var doXHR = (from, to) => {
-          if (from > to) abort("invalid range (" + from + ", " + to + ") or no bytes requested!");
-          if (to > datalength - 1) abort("only " + datalength + " bytes available! programmer error!");
+          if (from > to) throw new Error("invalid range (" + from + ", " + to + ") or no bytes requested!");
+          if (to > datalength - 1) throw new Error("only " + datalength + " bytes available! programmer error!");
           // TODO: Use mozResponseArrayBuffer, responseStream, etc. if available.
           var xhr = new XMLHttpRequest;
           xhr.open("GET", url, false);
@@ -2893,7 +2895,7 @@ var FS = {
             xhr.overrideMimeType("text/plain; charset=x-user-defined");
           }
           xhr.send(null);
-          if (!(xhr.status >= 200 && xhr.status < 300 || xhr.status === 304)) abort("Couldn't load " + url + ". Status: " + xhr.status);
+          if (!(xhr.status >= 200 && xhr.status < 300 || xhr.status === 304)) throw new Error("Couldn't load " + url + ". Status: " + xhr.status);
           if (xhr.response !== undefined) {
             return new Uint8Array(/** @type{Array<number>} */ (xhr.response || []));
           }
@@ -2909,7 +2911,7 @@ var FS = {
           if (typeof lazyArray.chunks[chunkNum] == "undefined") {
             lazyArray.chunks[chunkNum] = doXHR(start, end);
           }
-          if (typeof lazyArray.chunks[chunkNum] == "undefined") abort("doXHR failed!");
+          if (typeof lazyArray.chunks[chunkNum] == "undefined") throw new Error("doXHR failed!");
           return lazyArray.chunks[chunkNum];
         });
         if (usesGzip || !datalength) {
@@ -2937,8 +2939,8 @@ var FS = {
         return this._chunkSize;
       }
     }
-    if (globalThis.XMLHttpRequest) {
-      if (!ENVIRONMENT_IS_WORKER) abort("Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc");
+    if (typeof XMLHttpRequest != "undefined") {
+      if (!ENVIRONMENT_IS_WORKER) throw "Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc";
       var lazyArray = new LazyUint8Array;
       var properties = {
         isDevice: false,
@@ -2970,12 +2972,14 @@ var FS = {
     });
     // override each stream op with one that tries to force load the lazy file first
     var stream_ops = {};
-    for (const [key, fn] of Object.entries(node.stream_ops)) {
+    var keys = Object.keys(node.stream_ops);
+    keys.forEach(key => {
+      var fn = node.stream_ops[key];
       stream_ops[key] = (...args) => {
         FS.forceLoadFile(node);
         return fn(...args);
       };
-    }
+    });
     function writeChunks(stream, buffer, offset, length, position) {
       var contents = stream.node.contents;
       if (position >= contents.length) return 0;
@@ -3663,7 +3667,7 @@ var _proc_exit = code => {
   quit_(code, new ExitStatus(code));
 };
 
-/** @param {boolean|number=} implicit */ var exitJS = (status, implicit) => {
+/** @suppress {duplicate } */ /** @param {boolean|number=} implicit */ var exitJS = (status, implicit) => {
   EXITSTATUS = status;
   if (!keepRuntimeAlive()) {
     exitRuntime();
@@ -3777,6 +3781,16 @@ function _fd_write(fd, iov, iovcnt, pnum) {
     var stream = SYSCALLS.getStreamFromFD(fd);
     var num = doWritev(stream, iov, iovcnt);
     HEAPU32[((pnum) >> 2)] = num;
+    return 0;
+  } catch (e) {
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return e.errno;
+  }
+}
+
+function _random_get(buffer, size) {
+  try {
+    randomFill(HEAPU8.subarray(buffer, buffer + size));
     return 0;
   } catch (e) {
     if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
@@ -4118,12 +4132,6 @@ FS.staticInit();
   // End ATMODULES hooks
   if (Module["arguments"]) arguments_ = Module["arguments"];
   if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
-  if (Module["preInit"]) {
-    if (typeof Module["preInit"] == "function") Module["preInit"] = [ Module["preInit"] ];
-    while (Module["preInit"].length > 0) {
-      Module["preInit"].shift()();
-    }
-  }
 }
 
 // Begin runtime exports
@@ -4132,29 +4140,27 @@ FS.staticInit();
 // End JS library exports
 // end include: postlibrary.js
 // Imports from the Wasm binary.
-var _main, _fflush, ___funcs_on_exit, __emscripten_stack_alloc, memory, __indirect_function_table, wasmMemory, wasmTable;
+var _main, _fflush, ___funcs_on_exit, __emscripten_stack_alloc;
 
 function assignWasmExports(wasmExports) {
-  _main = Module["_main"] = wasmExports["G"];
-  _fflush = wasmExports["H"];
-  ___funcs_on_exit = wasmExports["J"];
-  __emscripten_stack_alloc = wasmExports["K"];
-  memory = wasmMemory = wasmExports["E"];
-  __indirect_function_table = wasmTable = wasmExports["I"];
+  Module["_main"] = _main = wasmExports["H"];
+  _fflush = wasmExports["I"];
+  ___funcs_on_exit = wasmExports["K"];
+  __emscripten_stack_alloc = wasmExports["L"];
 }
 
 var wasmImports = {
   /** @export */ a: ___assert_fail,
-  /** @export */ D: ___call_sighandler,
+  /** @export */ E: ___call_sighandler,
   /** @export */ g: ___syscall_fcntl64,
-  /** @export */ C: ___syscall_fstat64,
-  /** @export */ B: ___syscall_getcwd,
-  /** @export */ A: ___syscall_ioctl,
-  /** @export */ z: ___syscall_lstat64,
-  /** @export */ y: ___syscall_newfstatat,
+  /** @export */ D: ___syscall_fstat64,
+  /** @export */ C: ___syscall_getcwd,
+  /** @export */ B: ___syscall_ioctl,
+  /** @export */ A: ___syscall_lstat64,
+  /** @export */ z: ___syscall_newfstatat,
   /** @export */ f: ___syscall_openat,
-  /** @export */ x: ___syscall_readlinkat,
-  /** @export */ w: ___syscall_stat64,
+  /** @export */ y: ___syscall_readlinkat,
+  /** @export */ x: ___syscall_stat64,
   /** @export */ p: __abort_js,
   /** @export */ o: __emscripten_runtime_keepalive_clear,
   /** @export */ n: __gmtime_js,
@@ -4164,17 +4170,20 @@ var wasmImports = {
   /** @export */ j: __tzset_js,
   /** @export */ d: _emscripten_date_now,
   /** @export */ i: _emscripten_resize_heap,
-  /** @export */ v: _environ_get,
-  /** @export */ u: _environ_sizes_get,
+  /** @export */ w: _environ_get,
+  /** @export */ v: _environ_sizes_get,
   /** @export */ b: _exit,
   /** @export */ c: _fd_close,
-  /** @export */ t: _fd_fdstat_get,
-  /** @export */ s: _fd_read,
-  /** @export */ r: _fd_seek,
+  /** @export */ u: _fd_fdstat_get,
+  /** @export */ t: _fd_read,
+  /** @export */ s: _fd_seek,
   /** @export */ e: _fd_write,
-  /** @export */ q: _proc_exit,
+  /** @export */ r: _proc_exit,
+  /** @export */ q: _random_get,
   /** @export */ h: _strptime
 };
+
+var wasmExports = await createWasm();
 
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
@@ -4184,10 +4193,10 @@ function callMain(args = []) {
   var argc = args.length;
   var argv = stackAlloc((argc + 1) * 4);
   var argv_ptr = argv;
-  for (var arg of args) {
+  args.forEach(arg => {
     HEAPU32[((argv_ptr) >> 2)] = stringToUTF8OnStack(arg);
     argv_ptr += 4;
-  }
+  });
   HEAPU32[((argv_ptr) >> 2)] = 0;
   try {
     var ret = entryFunction(argc, argv);
@@ -4234,11 +4243,16 @@ function run(args = arguments_) {
   }
 }
 
-var wasmExports;
+function preInit() {
+  if (Module["preInit"]) {
+    if (typeof Module["preInit"] == "function") Module["preInit"] = [ Module["preInit"] ];
+    while (Module["preInit"].length > 0) {
+      Module["preInit"].shift()();
+    }
+  }
+}
 
-// In modularize mode the generated code is within a factory function so we
-// can use await here (since it's not top-level-await).
-wasmExports = await (createWasm());
+preInit();
 
 run();
 
@@ -4259,9 +4273,17 @@ if (runtimeInitialized) {
 }
 
 
-  return moduleRtn;
-}
+    return moduleRtn;
+  };
+})();
 
 // Export using a UMD style export, or ES6 exports if selected
-export default newJQ;
+if (typeof exports === 'object' && typeof module === 'object') {
+  module.exports = newJQ;
+  // This default export looks redundant, but it allows TS to import this
+  // commonjs style module.
+  module.exports.default = newJQ;
+} else if (typeof define === 'function' && define['amd'])
+  define([], () => newJQ);
 
+export default newJQ;
