@@ -6,6 +6,7 @@ import { Spinner } from "#ui/spinner";
 import LoginWithChatGPTDialog from "@/components/chatgpt/login-with-chatgpt-dialog";
 import { useChatGPTSession } from "@/hooks/use-chatgpt-session";
 import { CheckmarkCircleIcon } from "../icons/ui";
+import { Skeleton } from "#ui/skeleton.tsx";
 
 const LoginWithChatGPTSettings = () => {
   const { status, user, isSignedIn, logout } = useChatGPTSession();
@@ -25,7 +26,9 @@ const LoginWithChatGPTSettings = () => {
         <div className="flex flex-col gap-1 w-full">
           <FieldLabel htmlFor="chatgpt">ChatGPT</FieldLabel>
           <FieldDescription>
-            {isSignedIn ? (
+            {status === "loading" ? (
+              <Skeleton className="w-1/3 h-full rounded-3xl" />
+            ) : isSignedIn ? (
               <div className="flex flex-row items-center gap-1">
                 <Icon icon={CheckmarkCircleIcon} className="text-green-500" />
                 <p>
@@ -41,7 +44,17 @@ const LoginWithChatGPTSettings = () => {
         </div>
         <div className="ml-auto flex flex-2 items-center gap-2 *:ml-auto w-fit my-auto">
           {status === "loading" ? (
-            <Spinner />
+            <Button
+              id="chatgpt"
+              type="button"
+              variant="secondary"
+              size="sm"
+              className="rounded-full"
+              disabled
+            >
+              <Spinner />
+              Checking
+            </Button>
           ) : isSignedIn ? (
             <Button
               id="chatgpt"
@@ -49,7 +62,7 @@ const LoginWithChatGPTSettings = () => {
               variant="ghost"
               size="sm"
               className="rounded-full text-destructive hover:bg-destructive/10! hover:text-destructive"
-              onClick={() => void handleDisconnect()}
+              onClick={handleDisconnect}
             >
               Disconnect
             </Button>

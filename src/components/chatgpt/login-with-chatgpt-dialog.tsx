@@ -248,7 +248,7 @@ const LoginWithChatGPTDialog = ({
                   Connecting…
                 </>
               ) : (
-                "Continue"
+                "Connect"
               )}
             </Button>
           ) : (
