@@ -21,7 +21,7 @@ export const Route = createFileRoute("/cel")({
       icon: <CELLogo />,
       place: "content",
       category: "Playground",
-      order: 6,
+      routeMatch: { to: "/cel" },
     },
   },
   ssr: false,

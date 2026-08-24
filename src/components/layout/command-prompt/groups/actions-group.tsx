@@ -1,14 +1,14 @@
 import { type JSX, useState } from "react";
-import SettingsDialog from "#components/layout/header/settings-dialog";
+import CreateSnapshotDialog from "#/routes/settings/-tabs/snapshots/create-snapshot-dialog";
 import { Icon } from "#icons/huge-icon";
-import { SaveIcon, SettingsIcon } from "#icons/pages";
-import CreateSnapshotDialog from "@/routes/snapshots/-create-snapshot-dialog";
+import { SaveIcon } from "#icons/pages";
 import { CommandGroup, CommandItem } from "#ui/command";
 
 interface IActionItem {
   name: string;
   icon: JSX.Element;
   element: (item: Omit<IActionItem, "element">) => JSX.Element;
+  keywords?: string[];
 }
 
 const ActionsCommandGroup = ({
@@ -27,21 +27,10 @@ const ActionsCommandGroup = ({
     {
       name: "Create Snapshot",
       icon: <Icon icon={SaveIcon} />,
+      keywords: ["snapshot", "save"],
       element: (item) => {
         return (
           <CreateSnapshotDialog
-            open={currentItem === item.name}
-            onOpenChange={onActionDialogOpenChange}
-          />
-        );
-      },
-    },
-    {
-      name: "Settings",
-      icon: <Icon icon={SettingsIcon} />,
-      element: (item) => {
-        return (
-          <SettingsDialog
             open={currentItem === item.name}
             onOpenChange={onActionDialogOpenChange}
           />
@@ -56,6 +45,7 @@ const ActionsCommandGroup = ({
         <CommandItem
           key={action.name}
           onSelect={() => setCurrentItem(action.name)}
+          keywords={action.keywords}
         >
           {action.element(action)}
           {action.icon}

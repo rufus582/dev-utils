@@ -15,7 +15,7 @@ import { Route as JmespathRouteImport } from './routes/jmespath'
 import { Route as JqRouteImport } from './routes/jq'
 import { Route as JsonTableRouteImport } from './routes/json-table'
 import { Route as JsonpathRouteImport } from './routes/jsonpath'
-import { Route as SnapshotsRouteRouteImport } from './routes/snapshots/route'
+import { Route as SettingsRouteRouteImport } from './routes/settings/route'
 import { Route as SqlRouteRouteImport } from './routes/sql/route'
 import { Route as TextConverterRouteRouteImport } from './routes/text-converter/route'
 import { Route as ApiAiGenerateRouteImport } from './routes/api/ai/generate'
@@ -51,9 +51,9 @@ const JsonpathRoute = JsonpathRouteImport.update({
   path: '/jsonpath',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SnapshotsRouteRoute = SnapshotsRouteRouteImport.update({
-  id: '/snapshots',
-  path: '/snapshots',
+const SettingsRouteRoute = SettingsRouteRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SqlRouteRoute = SqlRouteRouteImport.update({
@@ -79,7 +79,7 @@ const ApiChatgptSplatRoute = ApiChatgptSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRouteRoute
-  '/snapshots': typeof SnapshotsRouteRoute
+  '/settings': typeof SettingsRouteRoute
   '/sql': typeof SqlRouteRoute
   '/text-converter': typeof TextConverterRouteRoute
   '/cel': typeof CelRoute
@@ -92,7 +92,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRouteRoute
-  '/snapshots': typeof SnapshotsRouteRoute
+  '/settings': typeof SettingsRouteRoute
   '/sql': typeof SqlRouteRoute
   '/text-converter': typeof TextConverterRouteRoute
   '/cel': typeof CelRoute
@@ -106,7 +106,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRouteRoute
-  '/snapshots': typeof SnapshotsRouteRoute
+  '/settings': typeof SettingsRouteRoute
   '/sql': typeof SqlRouteRoute
   '/text-converter': typeof TextConverterRouteRoute
   '/cel': typeof CelRoute
@@ -121,7 +121,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/snapshots'
+    | '/settings'
     | '/sql'
     | '/text-converter'
     | '/cel'
@@ -134,7 +134,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/snapshots'
+    | '/settings'
     | '/sql'
     | '/text-converter'
     | '/cel'
@@ -147,7 +147,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/snapshots'
+    | '/settings'
     | '/sql'
     | '/text-converter'
     | '/cel'
@@ -161,7 +161,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRouteRoute: typeof IndexRouteRoute
-  SnapshotsRouteRoute: typeof SnapshotsRouteRoute
+  SettingsRouteRoute: typeof SettingsRouteRoute
   SqlRouteRoute: typeof SqlRouteRoute
   TextConverterRouteRoute: typeof TextConverterRouteRoute
   CelRoute: typeof CelRoute
@@ -217,11 +217,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JsonpathRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/snapshots': {
-      id: '/snapshots'
-      path: '/snapshots'
-      fullPath: '/snapshots'
-      preLoaderRoute: typeof SnapshotsRouteRouteImport
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sql': {
@@ -257,7 +257,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRouteRoute: IndexRouteRoute,
-  SnapshotsRouteRoute: SnapshotsRouteRoute,
+  SettingsRouteRoute: SettingsRouteRoute,
   SqlRouteRoute: SqlRouteRoute,
   TextConverterRouteRoute: TextConverterRouteRoute,
   CelRoute: CelRoute,

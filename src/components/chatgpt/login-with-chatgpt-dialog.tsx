@@ -158,7 +158,7 @@ const LoginWithChatGPTDialog = ({
               </Alert>
               <p className="text-left text-sm text-muted-foreground leading-relaxed">
                 <span className="font-medium text-foreground">
-                  Click Continue
+                  Click Connect
                 </span>{" "}
                 to copy your verification code and open OpenAI in a new tab.
                 You&apos;ll use this code to securely connect your ChatGPT

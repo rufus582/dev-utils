@@ -8,10 +8,7 @@ import { Icon } from "#icons/huge-icon";
 import { PlayIcon, TypeCursorIcon } from "#icons/pages";
 import { DatabaseIcon } from "#icons/routes";
 import { CancelIcon, PasteIcon, TickIcon } from "#icons/ui";
-import Header from "@/components/layout/header/page-header";
-import CodeEditor, {
-  type CodeEditorRefType,
-} from "#ui/code/code-editor";
+import CodeEditor, { type CodeEditorRefType } from "#ui/code/code-editor";
 import type {
   JSONGridTabDataProps,
   JSONGridTabsRefType,
@@ -33,6 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "#ui/select";
+import Header from "@/components/layout/header/page-header";
 import {
   DatabaseLibs,
   type DatabaseType,
@@ -66,7 +64,7 @@ export const Route = createFileRoute("/sql")({
       icon: <Icon icon={DatabaseIcon} />,
       place: "content",
       category: "Playground",
-      order: 5,
+      routeMatch: { to: "/sql" },
     },
   },
 });

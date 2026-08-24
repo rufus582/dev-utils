@@ -18,6 +18,7 @@ export {
   PlayIcon,
   SaveIcon,
   Settings03Icon as SettingsIcon,
+  Settings05Icon as GeneralSettingsIcon,
   Sun03Icon as SunIcon,
   TaskDone01Icon as TaskDoneIcon,
   TypeCursorIcon,

@@ -25,7 +25,7 @@ export const Route = createFileRoute("/jmespath")({
       ),
       place: "content",
       category: "Playground",
-      order: 3,
+      routeMatch: { to: "/jmespath" },
     },
   },
   ssr: false,

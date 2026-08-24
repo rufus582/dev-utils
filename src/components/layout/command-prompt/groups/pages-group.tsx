@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
-import { useRouteCatalog } from "#hooks/use-route-catalog";
+import { useCommandCatalog } from "#hooks/use-command-catalog";
 import { Icon } from "#icons/huge-icon";
 import { HomeIcon } from "#icons/sidebar";
 import { CommandGroup, CommandItem } from "#ui/command";
@@ -9,12 +9,13 @@ import { settingsOps } from "@/store/indexed-db/settings";
 const PagesCommandGroup = ({ closeCommand }: { closeCommand: () => void }) => {
   const settings = useLiveQuery(settingsOps.get);
   const navigate = useNavigate();
-  const routeCatalog = useRouteCatalog();
-  routeCatalog.sort((a, b) => (a.title ?? "").localeCompare(b.title ?? ""));
+  const commandCatalog = useCommandCatalog();
+  commandCatalog.sort((a, b) => a.label.localeCompare(b.label));
 
-  const navigateCommand = (path: string) => {
+  const navigateCommand = (to: string, search?: object) => {
     navigate({
-      to: path,
+      to,
+      search,
       viewTransition: settings?.pageTransition,
     });
     closeCommand();
@@ -25,14 +26,14 @@ const PagesCommandGroup = ({ closeCommand }: { closeCommand: () => void }) => {
       <CommandItem onSelect={() => navigateCommand("/")}>
         <Icon icon={HomeIcon} /> Home Page
       </CommandItem>
-      {routeCatalog.map((route) => {
+      {commandCatalog.map((item) => {
         return (
           <CommandItem
-            key={route.routeId}
-            onSelect={() => navigateCommand(route.fullPath)}
-            keywords={route.sidebar?.keywords}
+            key={item.id}
+            onSelect={() => navigateCommand(item.to, item.search)}
+            keywords={item.keywords}
           >
-            {route.sidebar?.icon} {route.title}
+            {item.icon} {item.label}
           </CommandItem>
         );
       })}

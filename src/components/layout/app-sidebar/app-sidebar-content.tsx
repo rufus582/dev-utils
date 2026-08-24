@@ -24,15 +24,15 @@ import sidebarStyles from "./app-sidebar-content.module.css";
 
 interface IAppSidebarContentProps {
   sidebarContentRoutes: RouteCatalogItem[];
-  activeRouteId: string;
-  navigate: (routeDefinition: Partial<RouteCatalogItem>) => void;
+  checkRouteMatch: (route: RouteCatalogItem) => boolean;
+  navigate: (routeDefinition: RouteCatalogItem) => void;
 }
 
 const CATEGORY_UNCATEGORISED = "Uncategorised";
 
 const AppSidebarContent = ({
   sidebarContentRoutes,
-  activeRouteId,
+  checkRouteMatch,
   navigate: handleNavigation,
 }: IAppSidebarContentProps) => {
   const { open: sidebarOpen } = useSidebar();
@@ -154,7 +154,7 @@ const AppSidebarContent = ({
                           <SidebarMenuButton
                             className="cursor-pointer transition-all"
                             onClick={() => handleNavigation(contentItem)}
-                            isActive={activeRouteId === contentItem.routeId}
+                            isActive={checkRouteMatch(contentItem)}
                           >
                             {contentItem.sidebar?.icon}
                             <span>{contentItem.sidebar?.label}</span>

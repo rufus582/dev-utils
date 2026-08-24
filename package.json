@@ -69,6 +69,7 @@
     "@types/papaparse": "^5.5.2",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/sql.js": "^1.4.11",
+    "@upstash/redis": "^1.38.2",
     "ai": "^7.0.26",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -1,6 +1,6 @@
-import { type EntityTable, type InsertType, type UpdateSpec } from "dexie";
-import { db } from ".";
+import type { EntityTable, InsertType, UpdateSpec } from "dexie";
 import z from "zod";
+import { db } from ".";
 
 export const settingsSchema = z.object({
   id: z.number(),
@@ -52,5 +52,5 @@ const settingsOps = {
   update: updateSettings,
 };
 
-export type { SettingsType, SettingsTableType };
+export type { SettingsTableType, SettingsType };
 export { settingsOps };

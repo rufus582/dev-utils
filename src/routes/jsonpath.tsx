@@ -22,7 +22,7 @@ export const Route = createFileRoute("/jsonpath")({
       icon: <Icon icon={FileBracesIcon} />,
       place: "content",
       category: "Playground",
-      order: 7,
+      routeMatch: { to: "/jsonpath" },
     },
   },
 });

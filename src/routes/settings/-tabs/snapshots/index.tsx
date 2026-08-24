@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import type {
   ColumnFiltersState,
   RowSelectionState,
@@ -11,17 +10,15 @@ import {
   useLegacyTable,
 } from "@tanstack/react-table/legacy";
 import { useLiveQuery } from "dexie-react-hooks";
-import { motion } from "motion/react";
 import { customAlphabet } from "nanoid";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "#icons/huge-icon";
 import { DownloadIcon, SaveIcon, UploadIcon } from "#icons/pages";
-import { AddIcon, ArchiveIcon } from "#icons/routes";
+import { ArchiveIcon } from "#icons/routes";
 import { CancelIcon } from "#icons/ui";
-import { cn, sleep } from "#lib/utils";
+import { sleep } from "#lib/utils";
 import { type SnapshotType, snapshotOps } from "#store/indexed-db/snapshots";
-import { Button as NormalButton } from "#ui/button";
 import { ButtonGroup } from "#ui/button-group";
 import { Button } from "#ui/custom-components/animated-button";
 import { DataTable } from "#ui/data-table.tsx/data-table";
@@ -39,46 +36,10 @@ import {
   InputButtonProvider,
   InputButtonSubmit,
 } from "#ui/input-button";
-import Header from "@/components/layout/header/page-header";
-import CreateSnapshotDialog from "./-create-snapshot-dialog";
-import { ImportSnapshotsForm } from "./-import-snapshots-form";
-import SelectedSnapshotsActionBar from "./-snapshots-table/action-bar";
-import { columns } from "./-snapshots-table/columns";
-
-const MotionNormalButton = motion.create(NormalButton);
-
-export const Route = createFileRoute("/snapshots")({
-  component: RouteComponent,
-  staticData: {
-    title: "Saved Snapshots",
-    sidebar: {
-      label: "Saved Snapshots",
-      icon: <Icon icon={ArchiveIcon} />,
-      place: "footer",
-      order: 8,
-      keywords: ["data"],
-      action: ({ isActive }) => (
-        <CreateSnapshotDialog
-          trigger={
-            <MotionNormalButton
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              size="icon"
-              className={cn(
-                "rounded-xl duration-150 transition-all shadow-primary",
-                "active:scale-90 hover:scale-110 hover:shadow-[0px_0_15px]",
-                "absolute top-1.5 right-1 flex after:absolute group-data-[collapsible=icon]:hidden",
-                isActive && "shadow-[-10px_0_50px]",
-              )}
-            >
-              <Icon icon={AddIcon} strokeWidth={7} />
-            </MotionNormalButton>
-          }
-        />
-      ),
-    },
-  },
-});
+import CreateSnapshotDialog from "./create-snapshot-dialog";
+import { ImportSnapshotsForm } from "./import-snapshots-form";
+import SelectedSnapshotsActionBar from "./snapshots-table/action-bar";
+import { columns } from "./snapshots-table/columns";
 
 const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 5);
 const defaultSnapshot: SnapshotType[] = [];
@@ -97,7 +58,7 @@ const NoSnapshots = () => {
   );
 };
 
-function RouteComponent() {
+export function SnapshotsTab() {
   const snapshots = useLiveQuery(snapshotOps.readAll);
 
   const [showSearchInput, setShowSearchInput] = useState(false);
@@ -163,7 +124,6 @@ function RouteComponent() {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <Header separator />
       <div className="flex justify-between gap-2 px-4 mb-4 w-full">
         <InputButtonProvider
           setShowInput={setShowSearchInput}

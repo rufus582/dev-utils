@@ -26,8 +26,10 @@ export const Route = createFileRoute("/text-converter")({
       icon: <Icon icon={TextIcon} />,
       place: "content",
       category: "JSON",
+      routeMatch: { to: "/text-converter" },
+    },
+    command: {
       keywords: ["base64", "json", "yaml", "toml"],
-      order: 1,
     },
   },
 });

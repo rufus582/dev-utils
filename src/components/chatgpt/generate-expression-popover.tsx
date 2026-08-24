@@ -1,4 +1,5 @@
 import { Arrow } from "@radix-ui/react-popover";
+import { useNavigate } from "@tanstack/react-router";
 import { motion, Reorder } from "motion/react";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -33,7 +34,6 @@ type GenerateExpressionPopoverProps = {
   outputSample?: string;
   onGenerated: (expression: string) => void;
   trigger?: ReactNode;
-  onOpenSettings?: () => void;
   onGeneratingChange?: (isGenerating: boolean) => void;
   onStreamChunk?: (partial: string) => void;
 };
@@ -200,7 +200,6 @@ const GenerateExpressionPopover = ({
   outputSample,
   onGenerated,
   trigger,
-  onOpenSettings,
   onGeneratingChange,
   onStreamChunk,
 }: GenerateExpressionPopoverProps) => {
@@ -269,7 +268,6 @@ const GenerateExpressionPopover = ({
 
     if (!isSignedIn) {
       toast.error("Connect ChatGPT in Settings to use AI generation.");
-      onOpenSettings?.();
       return;
     }
 
@@ -337,6 +335,8 @@ const GenerateExpressionPopover = ({
     });
   };
 
+  const navigate = useNavigate();
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -376,17 +376,15 @@ const GenerateExpressionPopover = ({
             <Alert className="rounded-xl">
               <AlertDescription className="flex flex-col gap-2">
                 <span>Connect ChatGPT in Settings to use AI generation.</span>
-                {onOpenSettings && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="w-fit rounded-full"
-                    onClick={onOpenSettings}
-                  >
-                    Open Settings
-                  </Button>
-                )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-fit rounded-full"
+                  onClick={() => navigate({ to: "/settings" })}
+                >
+                  Open Settings
+                </Button>
               </AlertDescription>
             </Alert>
           )}

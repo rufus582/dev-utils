@@ -9,7 +9,6 @@ import {
 } from "#ui/resizable";
 import GenerateExpressionPopover from "@/components/chatgpt/generate-expression-popover";
 import Header from "@/components/layout/header/page-header";
-import SettingsDialog from "@/components/layout/header/settings-dialog";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { useJQ } from "@/hooks/use-jq";
 import { sanitizeGeneratedExpression } from "@/lib/chatgpt/generation-tools";
@@ -24,7 +23,7 @@ export const Route = createFileRoute("/jq")({
       icon: <JQLogo />,
       place: "content",
       category: "Playground",
-      order: 2,
+      routeMatch: { to: "/jq" },
     },
   },
   ssr: false,
@@ -63,11 +62,6 @@ function RouteComponent() {
 
   return (
     <div className="h-full w-full flex flex-col">
-      <SettingsDialog
-        open={settingsOpen}
-        onOpenChange={setSettingsOpen}
-        trigger={<span className="hidden" aria-hidden />}
-      />
       <Header title={titleContent} separator />
       <div
         className="h-full w-full grid grid-cols-2 gap-2 pt-0"
@@ -95,7 +89,6 @@ function RouteComponent() {
                 setFilter(expression);
                 void invoke({ filter: expression });
               }}
-              onOpenSettings={() => setSettingsOpen(true)}
             />
           }
         />

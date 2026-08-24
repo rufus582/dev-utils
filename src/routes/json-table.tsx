@@ -41,8 +41,10 @@ export const Route = createFileRoute("/json-table")({
       icon: <Icon icon={TableIcon} strokeWidth={1.5} />,
       place: "content",
       category: "JSON",
+      routeMatch: { to: "/json-table" },
+    },
+    command: {
       keywords: ["csv", "parquet"],
-      order: 4,
     },
   },
   ssr: false,

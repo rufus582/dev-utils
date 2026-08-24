@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "@tanstack/react-router";
+import { useMatchRoute, useNavigate } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { AnimatePresence, motion } from "motion/react";
 import DevUtilsCommandPrompt from "#components/layout/command-prompt/command";
@@ -36,10 +36,6 @@ const MotionSidebarMenuBadge = motion.create(SidebarMenuBadge);
 const AppSidebar = () => {
   const routeCatalog = useRouteCatalog();
 
-  const curPath = useLocation({
-    select: (loc) => loc.pathname,
-  });
-
   const sidebarContentRoutes = routeCatalog.filter(
     (r) => r.sidebar?.place === "content",
   );
@@ -52,10 +48,16 @@ const AppSidebar = () => {
   const navigate = useNavigate();
   const { open: sidebarOpen } = useSidebar();
 
-  const handleNavigation = (route: Partial<RouteCatalogItem>) => {
+  const matchRoute = useMatchRoute();
+  const checkRouteMatch = (route: RouteCatalogItem) => {
+    return Boolean(route.sidebar && matchRoute(route.sidebar?.routeMatch));
+  };
+
+  const handleNavigation = (route: RouteCatalogItem) => {
     navigate({
       to: route.fullPath,
       viewTransition: settings?.pageTransition,
+      search: route.sidebar?.search,
     });
   };
 
@@ -122,7 +124,7 @@ const AppSidebar = () => {
         </SidebarMenu>
         <AppSidebarContent
           navigate={handleNavigation}
-          activeRouteId={curPath}
+          checkRouteMatch={checkRouteMatch}
           sidebarContentRoutes={sidebarContentRoutes}
         />
       </SidebarContent>
@@ -141,7 +143,7 @@ const AppSidebar = () => {
                 <SidebarMenuButton
                   className="rounded-xl cursor-pointer active:scale-98 transition-transform"
                   size={sidebarOpen ? "lg" : "default"}
-                  isActive={curPath === sidebarFooterRoutes.routeId}
+                  isActive={checkRouteMatch(sidebarFooterRoutes)}
                   onClick={() => handleNavigation(sidebarFooterRoutes)}
                 >
                   {sidebarFooterRoutes.sidebar?.icon}
@@ -155,7 +157,7 @@ const AppSidebar = () => {
                       {sidebarFooterRoutes.sidebar?.action?.({
                         fullPath: sidebarFooterRoutes.fullPath,
                         routeId: sidebarFooterRoutes.routeId,
-                        isActive: curPath === sidebarFooterRoutes.routeId,
+                        isActive: checkRouteMatch(sidebarFooterRoutes),
                       })}
                     </SidebarMenuAction>
                   )}
