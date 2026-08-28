@@ -1,18 +1,20 @@
 import { Arrow } from "@radix-ui/react-popover";
 import { useNavigate } from "@tanstack/react-router";
-import { motion, Reorder } from "motion/react";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Icon } from "#icons/huge-icon";
 import { AiBeautifyIcon, AiGenerativeIcon } from "#icons/pages";
 import { Alert, AlertDescription } from "#ui/alert";
 import { Button } from "#ui/button";
 import { Button as AnimatedButton } from "#ui/custom-components/animated-button";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "#ui/custom-components/pill-toggle-group";
 import { FieldLabel } from "#ui/field";
 import { InputGroup, InputGroupTextarea } from "#ui/input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "#ui/popover";
 import { Spinner } from "#ui/spinner";
-import { Toggle } from "#ui/toggle";
 import { useChatGPTSession } from "@/hooks/use-chatgpt-session";
 import {
   GenerateExpressionError,
@@ -64,38 +66,7 @@ const CONTEXT_OPTIONS: Record<
   ],
 };
 
-type ContextOption = { id: ContextToggleId; label: string };
-
-const CONTEXT_TOGGLE_SPRING = {
-  type: "spring" as const,
-  bounce: 0.2,
-};
-
-const CONTEXT_TOGGLE_GAP = 8;
-
-const CONTEXT_TOGGLE_PILL_RADIUS = 24;
-
 const DEFAULT_JQ_EXPRESSION = ".";
-
-const contextToggleItemClassName =
-  "w-full rounded-none text-xs px-2 data-[state=on]:bg-foreground data-[state=on]:text-background data-[state=on]:border-muted";
-
-function clusterContextToggleOrder(
-  options: ContextOption[],
-  activeIds: ContextToggleId[],
-  isAvailable: (id: ContextToggleId) => boolean,
-): ContextToggleId[] {
-  const order = options.map((option) => option.id);
-  const activeSet = new Set(activeIds);
-
-  const availableActive = activeIds.filter((id) => isAvailable(id));
-  const availableInactive = order.filter(
-    (id) => isAvailable(id) && !activeSet.has(id),
-  );
-  const unavailable = order.filter((id) => !isAvailable(id));
-
-  return [...availableActive, ...availableInactive, ...unavailable];
-}
 
 function isMeaningfulExpression(expression?: string): boolean {
   const trimmed = expression?.trim();
@@ -116,81 +87,6 @@ function isContextAvailable(
     case "output":
       return Boolean(outputSample?.trim());
   }
-}
-
-function getContextToggleMarginLeft(
-  index: number,
-  displayOrder: ContextToggleId[],
-  activeIds: ContextToggleId[],
-): number {
-  if (index === 0) {
-    return 0;
-  }
-
-  const id = displayOrder[index];
-  const prevId = displayOrder[index - 1];
-  const isActive = activeIds.includes(id);
-  const prevActive = activeIds.includes(prevId);
-
-  if (isActive && prevActive) {
-    return 0;
-  }
-
-  return CONTEXT_TOGGLE_GAP;
-}
-
-function getContextToggleRadiusAnimation(
-  isActive: boolean,
-  connectLeft: boolean,
-  connectRight: boolean,
-) {
-  if (!isActive) {
-    return {
-      borderTopLeftRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderTopRightRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderBottomLeftRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderBottomRightRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderLeftWidth: "1px",
-    };
-  }
-
-  if (connectLeft && connectRight) {
-    return {
-      borderTopLeftRadius: 0,
-      borderTopRightRadius: 0,
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0,
-      borderLeftWidth: "0px",
-    };
-  }
-
-  if (connectLeft) {
-    return {
-      borderTopLeftRadius: 0,
-      borderTopRightRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderBottomLeftRadius: 0,
-      borderBottomRightRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderLeftWidth: "0px",
-    };
-  }
-
-  if (connectRight) {
-    return {
-      borderTopLeftRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderTopRightRadius: 0,
-      borderBottomLeftRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-      borderBottomRightRadius: 0,
-      borderLeftWidth: "1px",
-    };
-  }
-
-  return {
-    borderTopLeftRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-    borderTopRightRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-    borderBottomLeftRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-    borderBottomRightRadius: CONTEXT_TOGGLE_PILL_RADIUS,
-    borderLeftWidth: "1px",
-  };
 }
 
 const GenerateExpressionPopover = ({
@@ -297,44 +193,6 @@ const GenerateExpressionPopover = ({
   const canSubmit = isSignedIn && !isGenerating && !isLoadingSession;
   const isMac = navigator.platform.includes("Mac");
 
-  const naturalContextOrder = useMemo(
-    () => contextOptions.map((option) => option.id),
-    [contextOptions],
-  );
-
-  const clusteredContextOrder = useMemo(
-    () =>
-      clusterContextToggleOrder(contextOptions, contextToggles, (id) =>
-        isContextAvailable(id, jsonSample, currentExpression, outputSample),
-      ),
-    [
-      contextOptions,
-      contextToggles,
-      jsonSample,
-      currentExpression,
-      outputSample,
-    ],
-  );
-
-  const [displayOrder, setDisplayOrder] =
-    useState<ContextToggleId[]>(naturalContextOrder);
-
-  useEffect(() => {
-    setDisplayOrder((prev) => {
-      const next = clusteredContextOrder;
-      return prev.join() === next.join() ? prev : next;
-    });
-  }, [clusteredContextOrder]);
-
-  const setContextToggle = (id: ContextToggleId, pressed: boolean) => {
-    setContextToggles((prev) => {
-      if (pressed) {
-        return prev.includes(id) ? prev : [...prev, id];
-      }
-      return prev.filter((item) => item !== id);
-    });
-  };
-
   const navigate = useNavigate();
 
   return (
@@ -414,99 +272,29 @@ const GenerateExpressionPopover = ({
             <FieldLabel className="text-xs font-normal text-muted-foreground">
               Include as context
             </FieldLabel>
-            <Reorder.Group
-              as="div"
-              axis="x"
-              values={displayOrder}
-              onReorder={setDisplayOrder}
-              className="flex w-full items-stretch"
+            <ToggleGroup
+              type="multiple"
+              value={contextToggles}
+              onValueChange={setContextToggles}
+              disabled={isGenerating}
             >
-              {displayOrder.map((id, index) => {
-                const option = contextOptions.find((item) => item.id === id);
-                if (!option) {
-                  return null;
-                }
-
-                const isAvailable = isContextAvailable(
-                  option.id,
-                  jsonSample,
-                  currentExpression,
-                  outputSample,
-                );
-                const isActive = contextToggles.includes(id);
-                const prevId = displayOrder[index - 1];
-                const nextId = displayOrder[index + 1];
-                const connectLeft =
-                  isActive &&
-                  isAvailable &&
-                  prevId !== undefined &&
-                  contextToggles.includes(prevId) &&
-                  isContextAvailable(
-                    prevId,
-                    jsonSample,
-                    currentExpression,
-                    outputSample,
-                  );
-                const connectRight =
-                  isActive &&
-                  isAvailable &&
-                  nextId !== undefined &&
-                  contextToggles.includes(nextId) &&
-                  isContextAvailable(
-                    nextId,
-                    jsonSample,
-                    currentExpression,
-                    outputSample,
-                  );
-
-                const toggle = (
-                  <Toggle
-                    asChild
-                    variant="outline"
-                    size="sm"
-                    pressed={isActive}
-                    disabled={!isAvailable || isGenerating}
-                    onPressedChange={(pressed) =>
-                      setContextToggle(option.id, pressed)
-                    }
-                  >
-                    <motion.button
-                      type="button"
-                      initial={false}
-                      animate={getContextToggleRadiusAnimation(
-                        isActive,
-                        connectLeft,
-                        connectRight,
-                      )}
-                      transition={CONTEXT_TOGGLE_SPRING}
-                      className={contextToggleItemClassName}
-                    >
-                      {option.label}
-                    </motion.button>
-                  </Toggle>
-                );
-
-                return (
-                  <Reorder.Item
-                    key={id}
-                    value={id}
-                    as="div"
-                    dragListener={false}
-                    transition={CONTEXT_TOGGLE_SPRING}
-                    className="flex min-w-0 flex-1 list-none"
-                    style={{
-                      marginLeft: getContextToggleMarginLeft(
-                        index,
-                        displayOrder,
-                        contextToggles,
-                      ),
-                    }}
-                  >
-                    {toggle}
-                  </Reorder.Item>
-                );
-              })}
-            </Reorder.Group>
+              {contextOptions.map((option) => (
+                <ToggleGroupItem
+                  key={option.id}
+                  value={option.id}
+                  disabled={
+                    !isContextAvailable(
+                      option.id,
+                      jsonSample,
+                      currentExpression,
+                      outputSample,
+                    )
+                  }
+                >
+                  {option.label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
           </div>
 
           <Button
