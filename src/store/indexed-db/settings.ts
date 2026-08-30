@@ -5,10 +5,12 @@ import { db } from ".";
 export const settingsSchema = z.object({
   id: z.number(),
   pageTransition: z.boolean().optional(),
-  theme: z.literal(["light", "dark", "system"])
-})
+  theme: z.literal(["light", "dark", "system"]),
+  aiProviderId: z.string().optional(),
+  aiModelId: z.string().optional(),
+});
 
-type SettingsType = z.output<typeof settingsSchema>
+type SettingsType = z.output<typeof settingsSchema>;
 
 type SettingsTableType = {
   settings: EntityTable<SettingsType, "id">;
@@ -19,10 +21,12 @@ type SettingsTableInsertType = InsertType<SettingsType, "id">;
 const defaultSettings: SettingsTableInsertType = {
   pageTransition: false,
   theme: "system",
+  aiProviderId: undefined,
+  aiModelId: undefined,
 };
 
 const updateSettings = async (
-  settings: UpdateSpec<SettingsTableInsertType>
+  settings: UpdateSpec<SettingsTableInsertType>,
 ) => {
   const fetchedSettings = await createAndGetSettings();
   if (fetchedSettings.id)
@@ -52,5 +56,5 @@ const settingsOps = {
   update: updateSettings,
 };
 
-export type { SettingsTableType, SettingsType };
+export type { SettingsTableInsertType, SettingsTableType, SettingsType };
 export { settingsOps };

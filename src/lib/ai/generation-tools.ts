@@ -103,7 +103,7 @@ function looksLikeProseLine(line: string): boolean {
     return true;
   }
   if (
-    /^[A-Za-z][^|{\[.".]*[.!?]$/.test(trimmed) &&
+    /^[A-Za-z][^|{[.".]*[.!?]$/.test(trimmed) &&
     !trimmed.includes("|") &&
     !trimmed.startsWith(".") &&
     !trimmed.startsWith("[") &&

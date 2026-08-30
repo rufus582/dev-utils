@@ -11,7 +11,7 @@ import GenerateExpressionPopover from "@/components/chatgpt/generate-expression-
 import Header from "@/components/layout/header/page-header";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { useJQ } from "@/hooks/use-jq";
-import { sanitizeGeneratedExpression } from "@/lib/chatgpt/generation-tools";
+import { sanitizeGeneratedExpression } from "@/lib/ai/generation-tools";
 import { JQActions } from "@/store/redux/jq-slice";
 
 export const Route = createFileRoute("/jq")({
@@ -32,7 +32,6 @@ export const Route = createFileRoute("/jq")({
 function RouteComponent() {
   const jqDataState = useAppSelector((state) => state.jq);
   const dispatch = useAppDispatch();
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [isGeneratingExpression, setIsGeneratingExpression] = useState(false);
 
   const { setFilter, setJSONStr, invoke } = useJQ({

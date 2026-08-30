@@ -1,39 +1,25 @@
-import { createChatGPTProxyProvider } from "@opencoredev/loginwithchatgpt-ai";
 import { createFileRoute } from "@tanstack/react-router";
 import { createTextStreamResponse, streamText, toTextStream } from "ai";
-import { chatgptAuth } from "@/lib/chatgpt/auth";
 import {
   buildGenerationUserContent,
   GENERATION_TOOLS,
   isGenerationToolId,
-} from "@/lib/chatgpt/generation-tools";
+} from "@/lib/ai/generation-tools";
+import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
+import { pickPreferredLwcModel } from "@/lib/ai/providers/lwc/lwc.server";
+import { getAiProviderServer } from "@/lib/ai/providers/registry.server";
 
 type GenerateExpressionRequest = {
   tool?: string;
   prompt?: string;
+  providerId?: string;
+  model?: string;
   context?: {
     jsonSample?: string;
     currentExpression?: string;
     outputSample?: string;
   };
 };
-
-function pickModel(
-  availableModels: string[] | undefined,
-  allowedModels: readonly string[],
-): string | undefined {
-  if (!availableModels?.length) {
-    return undefined;
-  }
-
-  for (const model of allowedModels) {
-    if (availableModels.includes(model)) {
-      return model;
-    }
-  }
-
-  return availableModels[0];
-}
 
 export const Route = createFileRoute("/api/ai/generate")({
   server: {
@@ -46,7 +32,8 @@ export const Route = createFileRoute("/api/ai/generate")({
           return Response.json({ error: "invalid_json" }, { status: 400 });
         }
 
-        const { tool, prompt, context } = body;
+        const { tool, prompt, context, model: requestedModel } = body;
+        const providerId = body.providerId?.trim() || LWC_PROVIDER_ID;
 
         if (!tool || !isGenerationToolId(tool)) {
           return Response.json({ error: "invalid_tool" }, { status: 400 });
@@ -56,27 +43,51 @@ export const Route = createFileRoute("/api/ai/generate")({
           return Response.json({ error: "prompt_required" }, { status: 400 });
         }
 
-        const session = await chatgptAuth.getSession(request);
-        if (session.status !== "authenticated") {
+        const provider = getAiProviderServer(providerId);
+        if (!provider) {
+          return Response.json({ error: "unknown_provider" }, { status: 400 });
+        }
+
+        if (!(await provider.isReady(request))) {
           return Response.json({ error: "not_authenticated" }, { status: 401 });
         }
 
-        const toolConfig = GENERATION_TOOLS[tool];
-        const availableModels = await chatgptAuth.getModels(request);
-        const allowedModels = ["gpt-5.5", "gpt-5.4", "gpt-5.4-mini"] as const;
-        const model = pickModel(availableModels, allowedModels);
-
-        if (!model) {
-          return Response.json({ error: "models_unavailable" }, { status: 503 });
+        const availableModels = await provider.listModels(request);
+        if (!availableModels.length) {
+          return Response.json(
+            { error: "models_unavailable" },
+            { status: 503 },
+          );
         }
 
-        const chatgpt = createChatGPTProxyProvider({
-          fetch: chatgptAuth.proxyFetch(request),
-        });
+        let selected = requestedModel?.trim()
+          ? availableModels.find((entry) => entry.id === requestedModel.trim())
+          : undefined;
+
+        if (requestedModel?.trim() && !selected) {
+          return Response.json({ error: "model_not_allowed" }, { status: 403 });
+        }
+
+        if (!selected) {
+          selected =
+            provider.id === LWC_PROVIDER_ID
+              ? pickPreferredLwcModel(availableModels)
+              : availableModels[0];
+        }
+
+        if (!selected) {
+          return Response.json(
+            { error: "models_unavailable" },
+            { status: 503 },
+          );
+        }
+
+        const toolConfig = GENERATION_TOOLS[tool];
 
         try {
+          const model = await provider.getModel(request, selected.id);
           const result = streamText({
-            model: chatgpt(model),
+            model,
             system: toolConfig.systemPrompt,
             prompt: buildGenerationUserContent(prompt, context),
           });

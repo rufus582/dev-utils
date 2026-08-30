@@ -19,6 +19,7 @@ import { Route as SettingsRouteRouteImport } from './routes/settings/route'
 import { Route as SqlRouteRouteImport } from './routes/sql/route'
 import { Route as TextConverterRouteRouteImport } from './routes/text-converter/route'
 import { Route as ApiAiGenerateRouteImport } from './routes/api/ai/generate'
+import { Route as ApiAiModelsRouteImport } from './routes/api/ai/models'
 import { Route as ApiChatgptSplatRouteImport } from './routes/api/chatgpt/$'
 
 const IndexRouteRoute = IndexRouteRouteImport.update({
@@ -71,6 +72,11 @@ const ApiAiGenerateRoute = ApiAiGenerateRouteImport.update({
   path: '/api/ai/generate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAiModelsRoute = ApiAiModelsRouteImport.update({
+  id: '/api/ai/models',
+  path: '/api/ai/models',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatgptSplatRoute = ApiChatgptSplatRouteImport.update({
   id: '/api/chatgpt/$',
   path: '/api/chatgpt/$',
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/json-table': typeof JsonTableRoute
   '/jsonpath': typeof JsonpathRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/ai/models': typeof ApiAiModelsRoute
   '/api/chatgpt/$': typeof ApiChatgptSplatRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/json-table': typeof JsonTableRoute
   '/jsonpath': typeof JsonpathRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/ai/models': typeof ApiAiModelsRoute
   '/api/chatgpt/$': typeof ApiChatgptSplatRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/json-table': typeof JsonTableRoute
   '/jsonpath': typeof JsonpathRoute
   '/api/ai/generate': typeof ApiAiGenerateRoute
+  '/api/ai/models': typeof ApiAiModelsRoute
   '/api/chatgpt/$': typeof ApiChatgptSplatRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/json-table'
     | '/jsonpath'
     | '/api/ai/generate'
+    | '/api/ai/models'
     | '/api/chatgpt/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/json-table'
     | '/jsonpath'
     | '/api/ai/generate'
+    | '/api/ai/models'
     | '/api/chatgpt/$'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/json-table'
     | '/jsonpath'
     | '/api/ai/generate'
+    | '/api/ai/models'
     | '/api/chatgpt/$'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   JsonTableRoute: typeof JsonTableRoute
   JsonpathRoute: typeof JsonpathRoute
   ApiAiGenerateRoute: typeof ApiAiGenerateRoute
+  ApiAiModelsRoute: typeof ApiAiModelsRoute
   ApiChatgptSplatRoute: typeof ApiChatgptSplatRoute
 }
 
@@ -245,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAiGenerateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ai/models': {
+      id: '/api/ai/models'
+      path: '/api/ai/models'
+      fullPath: '/api/ai/models'
+      preLoaderRoute: typeof ApiAiModelsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chatgpt/$': {
       id: '/api/chatgpt/$'
       path: '/api/chatgpt/$'
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   JsonTableRoute: JsonTableRoute,
   JsonpathRoute: JsonpathRoute,
   ApiAiGenerateRoute: ApiAiGenerateRoute,
+  ApiAiModelsRoute: ApiAiModelsRoute,
   ApiChatgptSplatRoute: ApiChatgptSplatRoute,
 }
 export const routeTree = rootRouteImport

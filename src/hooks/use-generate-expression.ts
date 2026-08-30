@@ -4,7 +4,9 @@ import {
   type GenerationContext,
   type GenerationToolId,
   sanitizeGeneratedExpression,
-} from "@/lib/chatgpt/generation-tools";
+} from "@/lib/ai/generation-tools";
+import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
+import { settingsOps } from "@/store/indexed-db/settings";
 
 export type GenerateExpressionErrorCode =
   | "not_authenticated"
@@ -56,7 +58,9 @@ async function parseGenerateError(
   response: Response,
 ): Promise<GenerateExpressionError> {
   const retryAfter = response.headers.get("retry-after");
-  const retryAfterSeconds = retryAfter ? Number.parseInt(retryAfter, 10) : undefined;
+  const retryAfterSeconds = retryAfter
+    ? Number.parseInt(retryAfter, 10)
+    : undefined;
 
   let code: GenerateExpressionErrorCode = "unknown";
   try {
@@ -141,11 +145,14 @@ export function useGenerateExpression({ tool }: UseGenerateExpressionOptions) {
   const toolConfig = GENERATION_TOOLS[tool];
 
   const generate = useCallback(
-    async (input: GenerateExpressionInput): Promise<GenerateExpressionResult> => {
+    async (
+      input: GenerateExpressionInput,
+    ): Promise<GenerateExpressionResult> => {
       setIsGenerating(true);
       setError(null);
 
       try {
+        const settings = await settingsOps.get();
         const response = await fetch("/api/ai/generate", {
           method: "POST",
           credentials: "include",
@@ -156,6 +163,8 @@ export function useGenerateExpression({ tool }: UseGenerateExpressionOptions) {
             tool,
             prompt: input.prompt,
             context: input.context,
+            providerId: settings.aiProviderId ?? LWC_PROVIDER_ID,
+            model: settings.aiModelId,
           }),
         });
 

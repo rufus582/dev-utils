@@ -15,7 +15,6 @@ import { FieldLabel } from "#ui/field";
 import { InputGroup, InputGroupTextarea } from "#ui/input-group";
 import { Popover, PopoverContent, PopoverTrigger } from "#ui/popover";
 import { Spinner } from "#ui/spinner";
-import { useChatGPTSession } from "@/hooks/use-chatgpt-session";
 import {
   GenerateExpressionError,
   getGenerateExpressionErrorMessage,
@@ -25,7 +24,9 @@ import {
   GENERATION_TOOLS,
   type GenerationContext,
   type GenerationToolId,
-} from "@/lib/chatgpt/generation-tools";
+} from "@/lib/ai/generation-tools";
+import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
+import { getAiProviderClient } from "@/lib/ai/providers/registry";
 
 type ContextToggleId = "json" | "expression" | "output";
 
@@ -101,7 +102,13 @@ const GenerateExpressionPopover = ({
 }: GenerateExpressionPopoverProps) => {
   const toolConfig = GENERATION_TOOLS[tool];
   const contextOptions = CONTEXT_OPTIONS[tool];
-  const { isSignedIn, status } = useChatGPTSession();
+  const lwcProvider = getAiProviderClient(LWC_PROVIDER_ID);
+  if (!lwcProvider) {
+    throw new Error("LWC AI provider is not registered");
+  }
+  const connection = lwcProvider.useConnection();
+  const isReady = connection.status === "ready";
+  const isConnectionLoading = connection.status === "loading";
   const { generate, isGenerating } = useGenerateExpression({ tool });
 
   const [open, setOpen] = useState(false);
@@ -162,7 +169,7 @@ const GenerateExpressionPopover = ({
       return;
     }
 
-    if (!isSignedIn) {
+    if (!isReady) {
       toast.error("Connect ChatGPT in Settings to use AI generation.");
       return;
     }
@@ -189,8 +196,7 @@ const GenerateExpressionPopover = ({
     }
   };
 
-  const isLoadingSession = status === "loading";
-  const canSubmit = isSignedIn && !isGenerating && !isLoadingSession;
+  const canSubmit = isReady && !isGenerating && !isConnectionLoading;
   const isMac = navigator.platform.includes("Mac");
 
   const navigate = useNavigate();
@@ -230,7 +236,7 @@ const GenerateExpressionPopover = ({
             </p>
           </div>
 
-          {!isSignedIn && !isLoadingSession && (
+          {!isReady && !isConnectionLoading && (
             <Alert className="rounded-xl">
               <AlertDescription className="flex flex-col gap-2">
                 <span>Connect ChatGPT in Settings to use AI generation.</span>

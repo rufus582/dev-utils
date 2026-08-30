@@ -1,9 +1,9 @@
-import { type EntityTable } from "dexie";
-import type { AppStateType } from "../redux";
-import { db } from ".";
-import { incrementName } from "@/lib/utils";
+import type { EntityTable } from "dexie";
 import z from "zod";
+import { incrementName } from "@/lib/utils";
+import type { AppStateType } from "../redux";
 import { appStateSchema } from "../redux/root-reducer";
+import { db } from ".";
 
 export const snapshotSchema = z.object({
   id: z.number(),
@@ -13,7 +13,7 @@ export const snapshotSchema = z.object({
   updatedAt: z.union([z.date(), z.string()]),
 });
 
-type SnapshotType = z.output<typeof snapshotSchema>
+type SnapshotType = z.output<typeof snapshotSchema>;
 
 interface IFailedSnapshot extends SnapshotType {
   error?: string;
@@ -123,5 +123,5 @@ const snapshotOps = {
   deleteAll: deleteAllSnapshots,
 };
 
-export type { SnapshotType, SnapshotTableType };
+export type { SnapshotTableType, SnapshotType };
 export { snapshotOps };
