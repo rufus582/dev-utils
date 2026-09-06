@@ -9,6 +9,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { createIsomorphicFn } from "@tanstack/react-start";
 import { getCookie } from "@tanstack/react-start/server";
 import { Provider as ReduxProvider } from "react-redux";
+import { ChatGPTAuthProvider } from "#/ai/providers/lwc/components/auth-provider";
 import PageLayout from "#/components/layout/page-layout/page-layout";
 import { HomePage } from "#/routes/index/-layout";
 import AppError from "#components/layout/page-layout/app-error.tsx";
@@ -17,7 +18,6 @@ import { PWAProvider } from "#store/pwa-provider.tsx";
 import store from "#store/redux";
 import { ThemeProvider } from "#store/theme-provider";
 import { Toaster } from "#ui/sonner.tsx";
-import { ChatGPTAuthProvider } from "@/components/chatgpt/chatgpt-auth-provider";
 import appCss from "@/styles.css?url";
 
 const getSidebarState = createIsomorphicFn().server(() => {

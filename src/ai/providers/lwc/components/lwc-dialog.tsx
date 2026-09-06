@@ -1,6 +1,7 @@
 import { ChatGPTMark } from "@opencoredev/loginwithchatgpt-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { useChatGPTSession } from "#hooks/use-lwc-session.ts";
 import { Icon } from "#icons/huge-icon";
 import { CopyCheckIcon, CopyIcon } from "#icons/ui";
 import { Alert, AlertDescription, AlertTitle } from "#ui/alert";
@@ -15,13 +16,12 @@ import {
 } from "#ui/dialog";
 import { Kbd } from "#ui/kbd";
 import { Spinner } from "#ui/spinner";
-import { useChatGPTSession } from "@/hooks/use-chatgpt-session";
 import {
   CHATGPT_APP_NAME,
   getChatGPTConsentBullets,
 } from "@/lib/chatgpt/consent";
 
-type LoginWithChatGPTDialogProps = {
+type LWCDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 };
@@ -44,10 +44,7 @@ function ConnectionLogos() {
   );
 }
 
-const LoginWithChatGPTDialog = ({
-  open,
-  onOpenChange,
-}: LoginWithChatGPTDialogProps) => {
+const LWCDialog = ({ open, onOpenChange }: LWCDialogProps) => {
   const {
     status,
     userCode,
@@ -263,4 +260,4 @@ const LoginWithChatGPTDialog = ({
   );
 };
 
-export default LoginWithChatGPTDialog;
+export default LWCDialog;

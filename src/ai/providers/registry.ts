@@ -1,6 +1,6 @@
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
-import { createLwcClientProvider } from "@/lib/ai/providers/lwc/lwc";
-import type { AiProviderClient, ProviderId } from "@/lib/ai/providers/types";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
+import { createLwcClientProvider } from "#/ai/providers/lwc/lib/lwc";
+import type { AiProviderClient, ProviderId } from "#/ai/providers/types";
 
 const providers: AiProviderClient[] = [createLwcClientProvider()];
 

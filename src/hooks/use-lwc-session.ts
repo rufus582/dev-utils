@@ -1,4 +1,4 @@
-import { useChatGPTAuth } from "@/components/chatgpt/chatgpt-auth-provider";
+import { useChatGPTAuth } from "#/ai/providers/lwc/components/auth-provider";
 
 export function useChatGPTSession() {
   const session = useChatGPTAuth();

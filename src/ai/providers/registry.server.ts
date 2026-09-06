@@ -1,6 +1,6 @@
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
-import { createLwcServerProvider } from "@/lib/ai/providers/lwc/lwc.server";
-import type { AiProviderServer, ProviderId } from "@/lib/ai/providers/types";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
+import { createLwcServerProvider } from "#/ai/providers/lwc/lib/lwc.server";
+import type { AiProviderServer, ProviderId } from "#/ai/providers/types";
 import { chatgptAuth } from "@/lib/chatgpt/auth";
 
 const providers: AiProviderServer[] = [

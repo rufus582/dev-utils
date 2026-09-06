@@ -1,7 +1,7 @@
 import { createChatGPTProxyProvider } from "@opencoredev/loginwithchatgpt-ai";
 import type { createChatGPTHandler } from "@opencoredev/loginwithchatgpt-server";
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
-import type { AiProviderServer, ProviderModel } from "@/lib/ai/providers/types";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
+import type { AiProviderServer, ProviderModel } from "#/ai/providers/types";
 
 type ChatGPTAuth = ReturnType<typeof createChatGPTHandler>;
 

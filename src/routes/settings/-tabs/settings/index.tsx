@@ -1,3 +1,4 @@
+import { listAiProvidersClient } from "#/ai/providers/registry";
 import { Icon } from "#icons/huge-icon";
 import {
   ComputerSettingsIcon,
@@ -18,7 +19,6 @@ import {
   SelectValue,
 } from "#ui/select";
 import { Switch } from "#ui/switch";
-import { listAiProvidersClient } from "@/lib/ai/providers/registry";
 import { cn } from "@/lib/utils";
 import { usePWA } from "@/store/pwa-provider";
 import SettingsSection from "./-section";

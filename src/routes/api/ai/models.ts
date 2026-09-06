@@ -2,11 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   getAiProviderServer,
   listAiProvidersServer,
-} from "@/lib/ai/providers/registry.server";
+} from "#/ai/providers/registry.server";
 import type {
   AiModelsResponse,
   AiProviderServer,
-} from "@/lib/ai/providers/types";
+} from "#/ai/providers/types";
 
 export const Route = createFileRoute("/api/ai/models")({
   server: {

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
 import type {
   AiModelsResponse,
   ProviderId,
   ProviderModel,
-} from "@/lib/ai/providers/types";
+} from "#/ai/providers/types";
 
 type UseAiModelsOptions = {
   enabled?: boolean;

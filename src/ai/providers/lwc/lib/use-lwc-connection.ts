@@ -1,5 +1,5 @@
-import { useChatGPTSession } from "@/hooks/use-chatgpt-session";
-import type { ConnectionState } from "@/lib/ai/providers/types";
+import type { ConnectionState } from "#/ai/providers/types";
+import { useChatGPTSession } from "#hooks/use-lwc-session.ts";
 
 export function useLwcConnection(): ConnectionState {
   const session = useChatGPTSession();

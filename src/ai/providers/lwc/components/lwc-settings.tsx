@@ -1,8 +1,13 @@
 import { useLiveQuery } from "dexie-react-hooks";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
+import LoginWithChatGPTDialog from "#/ai/providers/lwc/components/lwc-dialog";
 import { Icon } from "#components/icons/huge-icon.tsx";
+import { useChatGPTSession } from "#hooks/use-lwc-session.ts";
+import { CheckmarkCircleIcon } from "#icons/ui";
 import { Button } from "#ui/button";
+import { ProtectedText } from "#ui/custom-components/protected-text.tsx";
 import { Field, FieldDescription, FieldLabel } from "#ui/field";
 import {
   Select,
@@ -15,13 +20,9 @@ import {
 } from "#ui/select";
 import { Skeleton } from "#ui/skeleton.tsx";
 import { Spinner } from "#ui/spinner";
-import LoginWithChatGPTDialog from "@/components/chatgpt/login-with-chatgpt-dialog";
 import { useAiModels } from "@/hooks/use-ai-models";
-import { useChatGPTSession } from "@/hooks/use-chatgpt-session";
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
 import { cn } from "@/lib/utils";
 import { settingsOps } from "@/store/indexed-db/settings";
-import { CheckmarkCircleIcon } from "../icons/ui";
 
 const selectTriggerClassName = cn(
   "min-w-40 max-w-56 rounded-3xl! transition-all border-0 dark:bg-transparent my-auto",
@@ -108,9 +109,19 @@ const LoginWithChatGPTSettings = () => {
               <div className="flex flex-row items-center gap-1">
                 <Icon icon={CheckmarkCircleIcon} className="text-green-500" />
                 <p>
-                  {user?.plan
-                    ? `Connected - ${user.plan.normalize().toUpperCase()} Subscription`
-                    : "Connected"}
+                  {user?.email ? (
+                    <span>
+                      Connected as <ProtectedText text={user.email ?? ""} />
+                    </span>
+                  ) : (
+                    "Connected"
+                  )}
+                  {user?.plan && (
+                    <span className="font-medium">
+                      {" "}
+                      - {user.plan.toUpperCase()} Subscription
+                    </span>
+                  )}
                 </p>
               </div>
             ) : (

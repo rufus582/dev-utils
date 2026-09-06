@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { sanitizeGeneratedExpression } from "#/ai/generation-tools";
+import GenerateExpressionPopover from "#/ai/providers/lwc/components/generate-expression-popover";
 import JQLogo from "#icons/sidebar/jq-logo";
 import CodeEditor from "#ui/code/code-editor";
 import {
@@ -7,11 +9,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "#ui/resizable";
-import GenerateExpressionPopover from "@/components/chatgpt/generate-expression-popover";
 import Header from "@/components/layout/header/page-header";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { useJQ } from "@/hooks/use-jq";
-import { sanitizeGeneratedExpression } from "@/lib/ai/generation-tools";
 import { JQActions } from "@/store/redux/jq-slice";
 
 export const Route = createFileRoute("/jq")({

@@ -2,9 +2,17 @@ import { Arrow } from "@radix-ui/react-popover";
 import { useNavigate } from "@tanstack/react-router";
 import { type ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+  GENERATION_TOOLS,
+  type GenerationContext,
+  type GenerationToolId,
+} from "#/ai/generation-tools";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
+import { getAiProviderClient } from "#/ai/providers/registry";
 import { Icon } from "#icons/huge-icon";
 import { AiBeautifyIcon, AiGenerativeIcon } from "#icons/pages";
 import { Alert, AlertDescription } from "#ui/alert";
+import { Badge } from "#ui/badge.tsx";
 import { Button } from "#ui/button";
 import { Button as AnimatedButton } from "#ui/custom-components/animated-button";
 import {
@@ -20,13 +28,6 @@ import {
   getGenerateExpressionErrorMessage,
   useGenerateExpression,
 } from "@/hooks/use-generate-expression";
-import {
-  GENERATION_TOOLS,
-  type GenerationContext,
-  type GenerationToolId,
-} from "@/lib/ai/generation-tools";
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
-import { getAiProviderClient } from "@/lib/ai/providers/registry";
 
 type ContextToggleId = "json" | "expression" | "output";
 
@@ -229,7 +230,15 @@ const GenerateExpressionPopover = ({
         <Arrow className="fill-popover" />
         <div className="flex flex-col gap-3">
           <div>
-            <p className="text-sm font-medium">{toolConfig.generateLabel}</p>
+            <div className="flex w-full justify-between *:my-auto">
+              <p className="text-sm font-medium">{toolConfig.generateLabel}</p>
+              <Badge
+                variant="secondary"
+                className="text-xs font-medium font-mono text-muted-foreground uppercase select-none"
+              >
+                beta
+              </Badge>
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               Describe what you want in plain language. Your prompt and any
               selected context are sent to ChatGPT.

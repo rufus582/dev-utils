@@ -4,10 +4,10 @@ import {
   buildGenerationUserContent,
   GENERATION_TOOLS,
   isGenerationToolId,
-} from "@/lib/ai/generation-tools";
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
-import { pickPreferredLwcModel } from "@/lib/ai/providers/lwc/lwc.server";
-import { getAiProviderServer } from "@/lib/ai/providers/registry.server";
+} from "#/ai/generation-tools";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
+import { pickPreferredLwcModel } from "#/ai/providers/lwc/lib/lwc.server";
+import { getAiProviderServer } from "#/ai/providers/registry.server";
 
 type GenerateExpressionRequest = {
   tool?: string;

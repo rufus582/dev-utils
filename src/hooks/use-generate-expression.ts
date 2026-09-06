@@ -4,8 +4,8 @@ import {
   type GenerationContext,
   type GenerationToolId,
   sanitizeGeneratedExpression,
-} from "@/lib/ai/generation-tools";
-import { LWC_PROVIDER_ID } from "@/lib/ai/providers/ids";
+} from "#/ai/generation-tools";
+import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
 import { settingsOps } from "@/store/indexed-db/settings";
 
 export type GenerateExpressionErrorCode =
