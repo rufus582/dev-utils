@@ -1,8 +1,7 @@
-import { clsx, type ClassValue } from "clsx";
+import { regex } from "@arktype/regex";
+import { type ClassValue, clsx } from "clsx";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
-import { regex } from "@arktype/regex";
-import _ from "lodash";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -64,7 +63,11 @@ export const incrementName = (name: string) => {
   const match = regex("copy(?: (?<count>[\\d]*))?$").exec(name);
   if (!match) return `${name} copy`;
 
-  const count = match.groups.count ?? "1"
-  const trimmedName = _.trimEnd(name, " " + count)
-  return `${trimmedName} ${Number(count) + 1}`;
+  const count = match.groups.count ?? "1";
+  const trimmedName = name.slice(0, match.index);
+  return `${trimmedName} copy ${Number(count) + 1}`;
+};
+
+export const getFileExtension = (fileName: string) => {
+  return fileName.split(".").at(-1) ?? "";
 };

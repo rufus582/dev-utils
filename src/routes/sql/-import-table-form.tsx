@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { AnimatePresence, motion } from "motion/react";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
@@ -6,6 +5,7 @@ import * as z from "zod";
 import { Icon } from "#icons/huge-icon";
 import { DatabaseAddIcon } from "#icons/pages";
 import { TableIcon } from "#icons/routes";
+import { getFileExtension } from "#lib/utils.ts";
 import { Button as NormalButton } from "#ui/button";
 import { Button } from "#ui/custom-components/animated-button";
 import { Tooltip } from "#ui/custom-components/tooltip-wrapper";
@@ -65,7 +65,7 @@ const ImportTableForm = ({ db, disabled }: ImportTableFormProps) => {
         {},
       );
 
-      const fileExtension = _.toPath(formResponse.file.name).pop();
+      const fileExtension = getFileExtension(formResponse.file.name);
 
       const fileFormat = TextFormatsList.find(
         (format) =>

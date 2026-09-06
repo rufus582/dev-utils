@@ -1,9 +1,9 @@
 import { Arrow } from "@radix-ui/react-popover";
 import { createFileRoute } from "@tanstack/react-router";
-import _ from "lodash";
 import { useEffect, useRef, useState } from "react";
 import { usePanelRef } from "react-resizable-panels";
 import { toast } from "sonner";
+import Header from "#components/layout/header/page-header";
 import { useCurl } from "#hooks/use-curl";
 import useOpenFile from "#hooks/use-open-file";
 import { Icon } from "#icons/huge-icon";
@@ -13,21 +13,24 @@ import {
   PanelLeftOpenIcon,
   PlayCircleIcon,
 } from "#icons/pages";
-import { FolderOpenIcon, PasteIcon } from "#icons/ui";
 import { TableIcon } from "#icons/routes";
+import { FolderOpenIcon, PasteIcon } from "#icons/ui";
 import { TextFormats, TextFormatsList } from "#lib/text-formats";
-import { getClipboardText, getCurrentEnvironment } from "#lib/utils";
+import {
+  getClipboardText,
+  getCurrentEnvironment,
+  getFileExtension,
+} from "#lib/utils";
 import CodeEditor from "#ui/code/code-editor";
 import JSONGrid from "#ui/code/json-grid";
 import { Button } from "#ui/custom-components/animated-button";
 import { Tooltip } from "#ui/custom-components/tooltip-wrapper";
+import { Popover, PopoverContent, PopoverTrigger } from "#ui/popover";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "#ui/resizable";
-import Header from "#components/layout/header/page-header";
-import { Popover, PopoverContent, PopoverTrigger } from "#ui/popover";
 import { Textarea } from "#ui/textarea";
 import { useAppDispatch, useAppSelector } from "@/hooks/hooks";
 import { JSONTableViewerActions } from "@/store/redux/json-table-viewer-slice";
@@ -82,7 +85,7 @@ function RouteComponent() {
   const onOpenFiles = async (files: FileList | null) => {
     if (files && files.length > 0) {
       const file = files[0];
-      const fileExtension = _.toPath(file.name).pop();
+      const fileExtension = getFileExtension(file.name);
 
       const fileFormat = TextFormatsList.find(
         (format) =>
