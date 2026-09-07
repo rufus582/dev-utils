@@ -1,4 +1,5 @@
 import { useLiveQuery } from "dexie-react-hooks";
+import { pascalCase } from "es-toolkit/string";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
@@ -119,7 +120,7 @@ const LoginWithChatGPTSettings = () => {
                   {user?.plan && (
                     <span className="font-medium">
                       {" "}
-                      - {user.plan.toUpperCase()} Subscription
+                      - {pascalCase(user.plan)} Subscription
                     </span>
                   )}
                 </p>

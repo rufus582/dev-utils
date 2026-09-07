@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { chatgptAuth } from "@/lib/chatgpt/auth";
+import { chatgptAuth } from "#/ai/providers/lwc/lib/auth";
 
 export const Route = createFileRoute("/api/chatgpt/$")({
   server: {

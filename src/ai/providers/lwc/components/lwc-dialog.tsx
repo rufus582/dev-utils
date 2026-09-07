@@ -1,6 +1,10 @@
 import { ChatGPTMark } from "@opencoredev/loginwithchatgpt-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import {
+  CHATGPT_APP_NAME,
+  getChatGPTConsentBullets,
+} from "#/ai/providers/lwc/lib/consent";
 import { useChatGPTSession } from "#hooks/use-lwc-session.ts";
 import { Icon } from "#icons/huge-icon";
 import { CopyCheckIcon, CopyIcon } from "#icons/ui";
@@ -16,10 +20,6 @@ import {
 } from "#ui/dialog";
 import { Kbd } from "#ui/kbd";
 import { Spinner } from "#ui/spinner";
-import {
-  CHATGPT_APP_NAME,
-  getChatGPTConsentBullets,
-} from "@/lib/chatgpt/consent";
 
 type LWCDialogProps = {
   open: boolean;

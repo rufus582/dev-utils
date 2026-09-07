@@ -6,7 +6,6 @@ import {
   isGenerationToolId,
 } from "#/ai/generation-tools";
 import { LWC_PROVIDER_ID } from "#/ai/providers/ids";
-import { pickPreferredLwcModel } from "#/ai/providers/lwc/lib/lwc.server";
 import { getAiProviderServer } from "#/ai/providers/registry.server";
 
 type GenerateExpressionRequest = {
@@ -69,10 +68,7 @@ export const Route = createFileRoute("/api/ai/generate")({
         }
 
         if (!selected) {
-          selected =
-            provider.id === LWC_PROVIDER_ID
-              ? pickPreferredLwcModel(availableModels)
-              : availableModels[0];
+          selected = availableModels[0];
         }
 
         if (!selected) {

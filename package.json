@@ -76,6 +76,7 @@
     "cmdk": "^1.1.1",
     "dexie": "^4.4.2",
     "dexie-react-hooks": "^4.4.0",
+    "es-toolkit": "^1.52.0",
     "hyparquet": "^1.25.6",
     "immer": "^11.1.4",
     "jq-web": "^0.6.2",
